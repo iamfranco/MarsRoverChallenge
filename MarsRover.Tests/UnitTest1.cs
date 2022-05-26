@@ -45,6 +45,47 @@ namespace MarsRover.Tests
         }
 
         [Test]
+        public void RectangularPlateau_ObstaclesCoordinates_Should_Return_Coordinates_Of_Specified_Obstacles()
+        {
+            Coordinates plateauSize = new(10, 10);
+            List<Coordinates> obstacles = new()
+            {
+                new (1, 2),
+                new (2, 4),
+                new (4, 10)
+            };
+
+            RectangularPlateau plateau = new RectangularPlateau(plateauSize, obstacles);
+
+            plateau.ObstaclesCoordinates.Count.Should().Be(obstacles.Count);
+            for (int i = 0; i < obstacles.Count; i++)
+            {
+                plateau.ObstaclesCoordinates[i].Should().Be(obstacles[i]);
+            }
+        }
+
+        [Test]
+        public void RectangularPlateau_ObstaclesCoordinates_Should_Not_Include_Coordinates_Outside_Of_Plateau()
+        {
+            List<Coordinates> obstacles = new()
+            {
+                new (101, 2),
+                new (5, 5),
+                new (102, 4),
+                new (2, 4),
+                new (4, 100)
+            };
+
+            RectangularPlateau plateau = new RectangularPlateau(new(10, 10), obstacles);
+            plateau.ObstaclesCoordinates.Count.Should().Be(2);
+            plateau.ObstaclesCoordinates[0].Should().Be(new Coordinates(5, 5));
+            plateau.ObstaclesCoordinates[1].Should().Be(new Coordinates(2, 4));
+
+            RectangularPlateau plateau2 = new RectangularPlateau(new(3, 3), obstacles);
+            plateau2.ObstaclesCoordinates.Count.Should().Be(0);
+        }
+
+        [Test]
         public void Rover_GetPosition_Should_Return_Initial_Position()
         {
             string initialPosition = "2 3 N";
@@ -103,7 +144,7 @@ namespace MarsRover.Tests
         }
 
         [Test]
-        public void Rover_ApplyMoveInstruction_With_Invalid_Instruction_Should_Throw_Exception()
+        public void Rover_ApplyMoveInstruction_With_Invalid_Instruction_String_Should_Throw_Exception()
         {
             Coordinates plateauSize = new(5, 5);
             string initialPosition = "3 3 E";
@@ -117,44 +158,34 @@ namespace MarsRover.Tests
         }
 
         [Test]
-        public void RectangularPlateau_ObstaclesCoordinates_Should_Return_Coordinates_Of_Specified_Obstacles()
+        public void Rover_ApplyMoveInstruction_With_Instruction_String_That_Moves_Past_Obstacle_Should_Throw_Exception()
         {
-            Coordinates plateauSize = new(10, 10);
-            List<Coordinates> obstacles = new()
-            {
-                new (1, 2),
-                new (2, 4),
-                new (4, 10)
-            };
+            Coordinates plateauSize = new(5, 5);
+            string initialPosition = "0 0 E";
+            string instruction = "LMMMR";
 
-            RectangularPlateau plateau = new RectangularPlateau(plateauSize, obstacles);
+            List<Coordinates> obstacles = new() { new(0, 1) };
+            IPlateau plateau = new RectangularPlateau(plateauSize, obstacles);
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover = new(initialPosition, plateau, instructionReader);
 
-            plateau.ObstaclesCoordinates.Count.Should().Be(obstacles.Count);
-            for (int i = 0; i < obstacles.Count; i++)
-            {
-                plateau.ObstaclesCoordinates[i].Should().Be(obstacles[i]);
-            }
+            Action act = () => rover.ApplyMoveInstruction(instruction);
+            act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void RectangularPlateau_ObstaclesCoordinates_Should_Not_Include_Coordinates_Outside_Of_Plateau()
+        public void Rover_ApplyMoveInstruction_With_Null_String_Instruction_Should_Throw_Exception()
         {
-            List<Coordinates> obstacles = new()
-            {
-                new (101, 2),
-                new (5, 5),
-                new (102, 4),
-                new (2, 4),
-                new (4, 100)
-            };
+            Coordinates plateauSize = new(5, 5);
+            string initialPosition = "0 0 E";
+            string instruction = null;
 
-            RectangularPlateau plateau = new RectangularPlateau(new(10, 10), obstacles);
-            plateau.ObstaclesCoordinates.Count.Should().Be(2);
-            plateau.ObstaclesCoordinates[0].Should().Be(new Coordinates(5, 5));
-            plateau.ObstaclesCoordinates[1].Should().Be(new Coordinates(2, 4));
+            IPlateau plateau = new RectangularPlateau(plateauSize);
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover = new(initialPosition, plateau, instructionReader);
 
-            RectangularPlateau plateau2 = new RectangularPlateau(new(3, 3), obstacles);
-            plateau2.ObstaclesCoordinates.Count.Should().Be(0);
+            Action act = () => rover.ApplyMoveInstruction(instruction);
+            act.Should().Throw<ArgumentException>();
         }
     }
 }
