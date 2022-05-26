@@ -15,27 +15,28 @@ namespace MarsRover.Models.Vehicles
         {
             _plateau = plateau;
             _instructionReader = instructionReader;
+
             TeleportToPosition(initialPosition);
         }
 
-        public string Position => $"{_coordinates.X} {_coordinates.Y} {_direction}";
+        public string Position => $"{_coordinates.X} {_coordinates.Y} {_direction.Char}";
 
         public void ApplyMoveInstruction(string instruction)
         {
             List<SingularInstruction> instructionList = _instructionReader.EvaluateInstruction(instruction);
             Coordinates nextCoordinate = _coordinates;
-            Direction nextDirection = _direction;
+            Direction nextDirection = _direction.Clone();
 
             foreach (SingularInstruction singularInstruction in instructionList)
             {
                 if (singularInstruction is SingularInstruction.TurnLeft)
-                    nextDirection = PositionUtilities.GetDirectionAfterClockwiseRotation(nextDirection, -1);
+                    nextDirection.TurnLeft();
 
                 if (singularInstruction is SingularInstruction.TurnRight)
-                    nextDirection = PositionUtilities.GetDirectionAfterClockwiseRotation(nextDirection, +1);
+                    nextDirection.TurnRight();
 
                 if (singularInstruction is SingularInstruction.MoveForward)
-                    nextCoordinate = PositionUtilities.GetForwardCoordinate(nextCoordinate, nextDirection);
+                    nextCoordinate += nextDirection.Coordinates;
 
                 if (!_plateau.IsCoordinateValid(nextCoordinate))
                     throw new ArgumentException($"Instruction will lead to invalid coordinate {nextCoordinate}", nameof(instruction));
@@ -53,6 +54,6 @@ namespace MarsRover.Models.Vehicles
 
             _coordinates = coordinates;
             _direction = direction;
-        }
+        } 
     }
 }
