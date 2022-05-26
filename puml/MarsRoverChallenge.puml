@@ -1,0 +1,88 @@
+@startuml "Mars Rover Challenge"
+skinparam classAttributeIconSize 0
+
+class Coordinates
+{
+  + x : int
+  + y : int
+}
+
+Enum Direction <<Enum>>
+{
+  North
+  East
+  South
+  West
+}
+
+Enum SingularInstruction <<Enum>>
+{
+  TurnLeft
+  TurnRight
+  Move
+}
+
+interface IPlateau <<interface>>
+{
+  {abstract} IsCoordinateValid(coordinates : Coordinates) : bool
+}
+
+class RectangularPlateau
+{
+  - maximumCoordinates : Coordinates
+  - obstaclesCoordinates : List<Coordinates>
+  
+  + RectangularPlateau(maxCoordinates : Coordinates, obstacles : List<Coordinates>)
+  + RectangularPlateau(maxCoordinates : Coordinates)
+
+  + IsCoordinateValid(coordinates : Coordinates) : bool
+}
+
+abstract Vehicle <<abstract>>
+{
+  - coordinates : Coordinates
+  - direction : Direction
+  - plateau : IPlateau
+  - instructionReader : IInstructionReader
+
+  + Vehicle(initialPosition : string, plateau : IPlateau, instructionReader : IInstructionReader)
+
+  + GetPosition() : string
+  + ApplyMoveInstruction(instruction : string) : void
+}
+
+class Rover
+{
+  - remainingSampleStorageSpace : int
+
+  + Rover(initialPosition : string, plateau : IPlateau)
+
+  + TakePhotoAndSendToStation() : void
+  + CollectSample() : void
+}
+
+interface IInstructionReader <<interface>>
+{
+  {abstract} EvaluateInstruction(instruction: string) : List<SingularInstruction>
+}
+
+class StandardInstructionReader
+{
+  EvaluateInstruction(instruction: string) : List<SingularInstruction>
+}
+
+Vehicle <|--- Rover
+IPlateau <|.. RectangularPlateau
+
+Vehicle o-l- Coordinates 
+Vehicle o-l- Direction
+Vehicle o-- IPlateau
+Vehicle o-r- IInstructionReader
+
+Coordinates <-- IPlateau 
+
+IInstructionReader <|.. StandardInstructionReader
+IInstructionReader --> SingularInstruction
+Vehicle --> SingularInstruction
+
+@enduml
