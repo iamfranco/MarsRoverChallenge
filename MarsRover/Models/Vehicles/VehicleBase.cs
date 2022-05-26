@@ -48,6 +48,9 @@ namespace MarsRover.Models.Vehicles
 
         public void TeleportToPosition(string position)
         {
+            if (position is null)
+                throw new ArgumentNullException("position cannot be null", nameof(position));
+
             (Coordinates coordinates, Direction direction) = PositionUtilities.GetCoordinatesDirectionFromPosition(position);
             if (!_plateau.IsCoordinateValid(coordinates))
                 throw new ArgumentException("initial position cannot be outside of plateau", nameof(position));
