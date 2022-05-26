@@ -187,5 +187,17 @@ namespace MarsRover.Tests
             Action act = () => rover.ApplyMoveInstruction(instruction);
             act.Should().Throw<ArgumentException>();
         }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_As_Null_String_Should_Throw_Exception()
+        {
+            string initialPosition = null;
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover;
+                
+            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            act.Should().Throw<ArgumentException>();
+        }
     }
 }
