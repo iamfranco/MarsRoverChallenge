@@ -11,6 +11,9 @@
 
         public List<SingularInstruction> EvaluateInstruction(string instruction)
         {
+            if (instruction is null)
+                throw new ArgumentException("Instruction cannot be null", nameof(instruction));
+
             instruction = instruction.Replace(" ", string.Empty);
 
             if (!IsValidInstruction(instruction))
