@@ -1,4 +1,5 @@
-﻿using MarsRover.Models.Positions;
+﻿using MarsRover.Helpers;
+using MarsRover.Models.Positions;
 using System.Linq;
 
 namespace MarsRover.Models.Plateaus
@@ -10,8 +11,8 @@ namespace MarsRover.Models.Plateaus
 
         public RectangularPlateau(Coordinates maximumCoordinates, List<Coordinates> obstacles)
         {
-            if (maximumCoordinates.X < 0 || maximumCoordinates.Y < 0)
-                throw new ArgumentException("Coordinate X,Y components cannot be negative", nameof(maximumCoordinates));
+            Guard.ThrowIfBelowZero(maximumCoordinates.X);
+            Guard.ThrowIfBelowZero(maximumCoordinates.Y);
 
             MaximumCoordinates = maximumCoordinates;
             ObstaclesCoordinates = obstacles.Where(item => IsCoordinateValid(item)).ToList();
