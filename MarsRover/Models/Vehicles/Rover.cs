@@ -1,5 +1,6 @@
 ﻿using MarsRover.Models.MovementInstructions;
 using MarsRover.Models.Plateaus;
+using MarsRover.Models.Positions;
 
 namespace MarsRover.Models.Vehicles
 {
@@ -7,13 +8,14 @@ namespace MarsRover.Models.Vehicles
     {
         private int _remainingSampleStorageSpace = 10;
 
-        public Rover(string initialPosition, IPlateau plateau, IInstructionReader instructionReader)
-            : base(initialPosition, plateau, instructionReader)
+        public Rover(string initialPosition, IPlateau plateau, 
+            IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
+            : base(initialPosition, plateau, instructionReader, positionStringConverter)
         {
         }
 
         public Rover(string initialPosition, IPlateau plateau)
-            : this(initialPosition, plateau, new StandardInstructionReader())
+            : this(initialPosition, plateau, new StandardInstructionReader(), new PositionStringConverter())
         {
         }
 

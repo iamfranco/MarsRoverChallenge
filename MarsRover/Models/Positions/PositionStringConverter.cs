@@ -2,12 +2,12 @@
 
 namespace MarsRover.Models.Positions
 {
-    public static class PositionStringConverter
+    public class PositionStringConverter : IPositionStringConverter
     {
-        private static readonly Regex _positionRegex = new(@"^\d+ \d+ (N|E|S|W)$");
-        public static bool IsValidPositionString(string position) => _positionRegex.IsMatch(position);
+        private readonly Regex _positionRegex = new(@"^\d+ \d+ (N|E|S|W)$");
+        public bool IsValidPositionString(string position) => _positionRegex.IsMatch(position);
 
-        public static (Coordinates, Direction) ToCoordinatesDirection(string position)
+        public (Coordinates, Direction) ToCoordinatesDirection(string position)
         {
             if (!IsValidPositionString(position))
                 throw new ArgumentException("Invalid position string", nameof(position));
@@ -23,7 +23,7 @@ namespace MarsRover.Models.Positions
             return (new Coordinates(x, y), new Direction(positionComponents[2]));
         }
 
-        public static string ToPositionString(Coordinates coordinates, Direction direction) => 
+        public string ToPositionString(Coordinates coordinates, Direction direction) =>
             $"{coordinates.X} {coordinates.Y} {direction.Char}";
     }
 }
