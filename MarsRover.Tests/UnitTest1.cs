@@ -90,8 +90,7 @@ namespace MarsRover.Tests
         {
             string initialPosition = "2 3 N";
             IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             rover.Position.Should().Be(initialPosition);
         }
@@ -101,8 +100,7 @@ namespace MarsRover.Tests
         {
             Coordinates plateauSize = new(5, 5);
             IPlateau plateau = new RectangularPlateau(plateauSize);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new("1 2 N", plateau, instructionReader);
+            Rover rover = new("1 2 N", plateau);
 
             rover.ApplyMoveInstruction("LMLMLMLMM");
             rover.Position.Should().Be("1 3 N");
@@ -119,8 +117,7 @@ namespace MarsRover.Tests
             string initialPosition = "3 3 E";
             string instruction = "";
             IPlateau plateau = new RectangularPlateau(plateauSize);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             rover.ApplyMoveInstruction(instruction);
 
@@ -135,8 +132,7 @@ namespace MarsRover.Tests
             string instruction = "MM R MM R M RR M";
             string expectedPosition = "5 1 E";
             IPlateau plateau = new RectangularPlateau(plateauSize);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             rover.ApplyMoveInstruction(instruction);
 
@@ -150,8 +146,7 @@ namespace MarsRover.Tests
             string initialPosition = "3 3 E";
             string instruction = "MM R MM R M RR M? !";
             IPlateau plateau = new RectangularPlateau(plateauSize);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             Action act = () => rover.ApplyMoveInstruction(instruction);
             act.Should().Throw<ArgumentException>();
@@ -166,8 +161,7 @@ namespace MarsRover.Tests
 
             List<Coordinates> obstacles = new() { new(0, 1) };
             IPlateau plateau = new RectangularPlateau(plateauSize, obstacles);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             Action act = () => rover.ApplyMoveInstruction(instruction);
             act.Should().Throw<ArgumentException>();
@@ -181,8 +175,7 @@ namespace MarsRover.Tests
             string instruction = null;
 
             IPlateau plateau = new RectangularPlateau(plateauSize);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Rover rover = new(initialPosition, plateau, instructionReader);
+            Rover rover = new(initialPosition, plateau);
 
             Action act = () => rover.ApplyMoveInstruction(instruction);
             act.Should().Throw<ArgumentException>();
@@ -193,10 +186,53 @@ namespace MarsRover.Tests
         {
             string initialPosition = null;
             IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
-            IInstructionReader instructionReader = new StandardInstructionReader();
             Rover rover;
                 
-            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            Action act = () => rover = new(initialPosition, plateau);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Too_Many_Components_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 E E";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Too_Few_Components_Should_Throw_Exception()
+        {
+            string initialPosition = "0 E";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Invalid_Direction_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 A";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Multiple_Characters_Direction_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 EE";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau);
             act.Should().Throw<ArgumentException>();
         }
     }

@@ -1,12 +1,18 @@
-﻿namespace MarsRover.Models.Positions
+﻿using System.Text.RegularExpressions;
+
+namespace MarsRover.Models.Positions
 {
-    public static class PositionStringConverter
+    public class PositionStringConverter : IPositionStringConverter
     {
-        public static (Coordinates, Direction) ToCoordinatesDirection(string position)
+        private readonly Regex _positionRegex = new(@"^\d+ \d+ (N|E|S|W)$");
+        public bool IsValidPositionString(string position) => _positionRegex.IsMatch(position);
+
+        public (Coordinates, Direction) ToCoordinatesDirection(string position)
         {
-            string[] positionComponents = position.Split(' ');
-            if (positionComponents.Length != 3)
+            if (!IsValidPositionString(position))
                 throw new ArgumentException("Invalid position string", nameof(position));
+
+            string[] positionComponents = position.Split(' ');
 
             if (!int.TryParse(positionComponents[0], out int x))
                 throw new ArgumentException("Invalid X component in position string", nameof(position));
@@ -17,7 +23,7 @@
             return (new Coordinates(x, y), new Direction(positionComponents[2]));
         }
 
-        public static string ToPositionString(Coordinates coordinates, Direction direction) => 
+        public string ToPositionString(Coordinates coordinates, Direction direction) =>
             $"{coordinates.X} {coordinates.Y} {direction.Char}";
     }
 }
