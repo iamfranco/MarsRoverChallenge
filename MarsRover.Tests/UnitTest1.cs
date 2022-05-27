@@ -172,7 +172,7 @@ namespace MarsRover.Tests
         {
             Coordinates plateauSize = new(5, 5);
             string initialPosition = "0 0 E";
-            string instruction = null;
+            string instruction = null!;
 
             IPlateau plateau = new RectangularPlateau(plateauSize);
             Rover rover = new(initialPosition, plateau);
@@ -184,7 +184,7 @@ namespace MarsRover.Tests
         [Test]
         public void Rover_Construct_With_InitialPosition_As_Null_String_Should_Throw_Exception()
         {
-            string initialPosition = null;
+            string initialPosition = null!;
             IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
             Rover rover;
                 
