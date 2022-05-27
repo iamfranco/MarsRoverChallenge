@@ -199,5 +199,53 @@ namespace MarsRover.Tests
             Action act = () => rover = new(initialPosition, plateau, instructionReader);
             act.Should().Throw<ArgumentException>();
         }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Too_Many_Components_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 E E";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Too_Few_Components_Should_Throw_Exception()
+        {
+            string initialPosition = "0 E";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Invalid_Direction_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 A";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void Rover_Construct_With_InitialPosition_With_Multiple_Characters_Direction_Should_Throw_Exception()
+        {
+            string initialPosition = "0 0 EE";
+            IPlateau plateau = new RectangularPlateau(new Coordinates(5, 5));
+            IInstructionReader instructionReader = new StandardInstructionReader();
+            Rover rover;
+
+            Action act = () => rover = new(initialPosition, plateau, instructionReader);
+            act.Should().Throw<ArgumentException>();
+        }
     }
 }
