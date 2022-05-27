@@ -13,14 +13,14 @@ namespace MarsRover.Models.Vehicles
         private readonly IInstructionReader _instructionReader;
         private readonly IPositionStringConverter _positionStringConverter;
 
-        public VehicleBase(string initialPosition, IPlateau plateau, 
+        public VehicleBase(string initialPosition, IPlateau plateau,
             IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
         {
             _plateau = plateau;
             _instructionReader = instructionReader;
             _positionStringConverter = positionStringConverter;
 
-            TeleportToPosition(initialPosition);
+            TeleportToPosition(initialPosition, out _coordinates, out _direction);
         }
 
         public string Position => _positionStringConverter.ToPositionString(_coordinates, _direction);
@@ -49,16 +49,14 @@ namespace MarsRover.Models.Vehicles
             _direction = nextDirection;
         }
 
-        public void TeleportToPosition(string position)
+        public void TeleportToPosition(string position) => TeleportToPosition(position, out _coordinates, out _direction);
+        private void TeleportToPosition(string position, out Coordinates coordinates, out Direction direction)
         {
             Guard.ThrowIfNull(position);
 
-            (Coordinates coordinates, Direction direction) = _positionStringConverter.ToCoordinatesDirection(position);
+            (coordinates, direction) = _positionStringConverter.ToCoordinatesDirection(position);
 
             Guard.ThrowIfCoordinateInvalidForPlateau(coordinates, _plateau);
-
-            _coordinates = coordinates;
-            _direction = direction;
-        } 
+        }
     }
 }
