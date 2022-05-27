@@ -1,4 +1,6 @@
-﻿namespace MarsRover.Models.MovementInstructions
+﻿using MarsRover.Helpers;
+
+namespace MarsRover.Models.MovementInstructions
 {
     public class StandardInstructionReader : IInstructionReader
     {
@@ -11,8 +13,7 @@
 
         public List<SingularInstruction> EvaluateInstruction(string instruction)
         {
-            if (instruction is null)
-                throw new ArgumentException("Instruction cannot be null", nameof(instruction));
+            Guard.ThrowIfNull(instruction);
 
             instruction = instruction.Replace(" ", string.Empty);
 

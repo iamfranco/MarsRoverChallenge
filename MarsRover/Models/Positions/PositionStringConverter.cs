@@ -1,8 +1,8 @@
 ﻿namespace MarsRover.Models.Positions
 {
-    public static class PositionUtilities
+    public static class PositionStringConverter
     {
-        public static (Coordinates, Direction) GetCoordinatesDirectionFromPosition(string position)
+        public static (Coordinates, Direction) ToCoordinatesDirection(string position)
         {
             string[] positionComponents = position.Split(' ');
             if (positionComponents.Length != 3)
@@ -16,5 +16,8 @@
 
             return (new Coordinates(x, y), new Direction(positionComponents[2]));
         }
+
+        public static string ToPositionString(Coordinates coordinates, Direction direction) => 
+            $"{coordinates.X} {coordinates.Y} {direction.Char}";
     }
 }

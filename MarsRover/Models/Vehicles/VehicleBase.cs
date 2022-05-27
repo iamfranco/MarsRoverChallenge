@@ -1,4 +1,5 @@
-﻿using MarsRover.Models.MovementInstructions;
+﻿using MarsRover.Helpers;
+using MarsRover.Models.MovementInstructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 
@@ -19,7 +20,7 @@ namespace MarsRover.Models.Vehicles
             TeleportToPosition(initialPosition);
         }
 
-        public string Position => $"{_coordinates.X} {_coordinates.Y} {_direction.Char}";
+        public string Position => PositionStringConverter.ToPositionString(_coordinates, _direction);
 
         public void ApplyMoveInstruction(string instruction)
         {
@@ -38,8 +39,7 @@ namespace MarsRover.Models.Vehicles
                 if (singularInstruction is SingularInstruction.MoveForward)
                     nextCoordinate += nextDirection.Coordinates;
 
-                if (!_plateau.IsCoordinateValid(nextCoordinate))
-                    throw new ArgumentException($"Instruction will lead to invalid coordinate {nextCoordinate}", nameof(instruction));
+                Guard.ThrowIfCoordinateInvalidForPlateau(nextCoordinate, _plateau);
             }
 
             _coordinates = nextCoordinate;
@@ -48,12 +48,11 @@ namespace MarsRover.Models.Vehicles
 
         public void TeleportToPosition(string position)
         {
-            if (position is null)
-                throw new ArgumentNullException("position cannot be null", nameof(position));
+            Guard.ThrowIfNull(position);
 
-            (Coordinates coordinates, Direction direction) = PositionUtilities.GetCoordinatesDirectionFromPosition(position);
-            if (!_plateau.IsCoordinateValid(coordinates))
-                throw new ArgumentException("initial position cannot be outside of plateau", nameof(position));
+            (Coordinates coordinates, Direction direction) = PositionStringConverter.ToCoordinatesDirection(position);
+
+            Guard.ThrowIfCoordinateInvalidForPlateau(coordinates, _plateau);
 
             _coordinates = coordinates;
             _direction = direction;
