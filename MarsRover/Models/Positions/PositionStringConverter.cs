@@ -1,6 +1,6 @@
 ﻿namespace MarsRover.Models.Positions
 {
-    public static class PositionUtilities
+    public static class PositionStringConverter
     {
         public static (Coordinates, Direction) ToCoordinatesDirection(string position)
         {

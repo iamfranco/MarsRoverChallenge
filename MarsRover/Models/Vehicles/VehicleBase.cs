@@ -19,7 +19,7 @@ namespace MarsRover.Models.Vehicles
             TeleportToPosition(initialPosition);
         }
 
-        public string Position => PositionUtilities.ToPositionString(_coordinates, _direction);
+        public string Position => PositionStringConverter.ToPositionString(_coordinates, _direction);
 
         public void ApplyMoveInstruction(string instruction)
         {
@@ -51,7 +51,7 @@ namespace MarsRover.Models.Vehicles
             if (position is null)
                 throw new ArgumentNullException("position cannot be null", nameof(position));
 
-            (Coordinates coordinates, Direction direction) = PositionUtilities.ToCoordinatesDirection(position);
+            (Coordinates coordinates, Direction direction) = PositionStringConverter.ToCoordinatesDirection(position);
             if (!_plateau.IsCoordinateValid(coordinates))
                 throw new ArgumentException("initial position cannot be outside of plateau", nameof(position));
 
