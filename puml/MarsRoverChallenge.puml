@@ -1,88 +1,124 @@
 @startuml "Mars Rover Challenge"
 skinparam classAttributeIconSize 0
 
-class Coordinates
+interface IInstructionReader <<interface>>
 {
-  + x : int
-  + y : int
+  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + IsValidInstruction(instruction : string) : bool
 }
 
-Enum Direction <<Enum>>
-{
-  North
-  East
-  South
-  West
-}
-
-Enum SingularInstruction <<Enum>>
+enum SingularInstruction
 {
   TurnLeft
   TurnRight
-  Move
+  MoveForward
+}
+
+class StandardInstructionReader
+{
+  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + IsValidInstruction(instruction : string) : bool
 }
 
 interface IPlateau <<interface>>
 {
-  {abstract} IsCoordinateValid(coordinates : Coordinates) : bool
+  + IsCoordinateValid(coordinates : Coordinates) : bool
 }
 
 class RectangularPlateau
 {
-  - maximumCoordinates : Coordinates
-  - obstaclesCoordinates : List<Coordinates>
-  
-  + RectangularPlateau(maxCoordinates : Coordinates, obstacles : List<Coordinates>)
-  + RectangularPlateau(maxCoordinates : Coordinates)
+  + maximumCoordinates : Coordinates
+  + obstaclesCoordinates : List<Coordinates>
+
+  + RectangularPlateau(maximumCoordinates : Coordinates, obstaclesCoordinates : List<Coordinates>)
+  + RectangularPlateau(maximumCoordinates : Coordinates)
 
   + IsCoordinateValid(coordinates : Coordinates) : bool
 }
 
-abstract Vehicle <<abstract>>
+class Coordinates
+{
+  + x : int
+  + y : int
+
+  + IsValidCoordinateString(input : string) : bool
+  + ToCoordinates(input : string) : Coordinates
+}
+
+class Direction
+{
+  - directions : List<(char, Coordinates)>
+  - directionIndex : int
+
+  + GetChar() : char
+  + GetCoordinates() : Coordinates
+  + TurnLeft() : void
+  + TurnRight() : void
+}
+
+interface IPositionStringConverter <<interface>>
+{
+  + IsValidPositionString(position : string) : bool
+  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
+}
+
+class PositionStringConverter
+{
+  + IsValidPositionString(position : string) : bool
+  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
+}
+
+abstract VehicleBase <<abstract>>
 {
   - coordinates : Coordinates
   - direction : Direction
   - plateau : IPlateau
   - instructionReader : IInstructionReader
+  - positionStringConverter : IPositionStringConverter
 
-  + Vehicle(initialPosition : string, plateau : IPlateau, instructionReader : IInstructionReader)
+  + VehicleBase(initialPosition : string, plateau : IPlateau, positionStringConverter : IPositionStringConverter)
+  + VehicleBase(initialPosition : string, plateau : IPlateau)
 
+  + SwapInstructionReader(instructionReader : IInstructionReader) : void
+  + SwapPositionStringConverter(positionStringConverter : IPositionStringConverter) : void
+  
   + GetPosition() : string
-  + ApplyMoveInstruction(instruction : string) : void
+  + ApplyMoveInstruction() : void
+  + TeleportToPosition(position : string) : void
 }
 
 class Rover
 {
   - remainingSampleStorageSpace : int
 
+  + Rover(initialPosition : string, plateau : IPlateau, positionStringConverter : IPositionStringConverter)
   + Rover(initialPosition : string, plateau : IPlateau)
 
   + TakePhotoAndSendToStation() : void
   + CollectSample() : void
 }
 
-interface IInstructionReader <<interface>>
-{
-  {abstract} EvaluateInstruction(instruction: string) : List<SingularInstruction>
-}
-
-class StandardInstructionReader
-{
-  EvaluateInstruction(instruction: string) : List<SingularInstruction>
-}
-
-Vehicle <|--- Rover
+IInstructionReader -> SingularInstruction
+IInstructionReader <|.. StandardInstructionReader 
 IPlateau <|.. RectangularPlateau
 
-Vehicle o-l- Coordinates 
-Vehicle o-l- Direction
-Vehicle o-- IPlateau
-Vehicle o-r- IInstructionReader
+IPositionStringConverter <|.. PositionStringConverter
 
-Coordinates <-- IPlateau 
+VehicleBase <|-r- Rover
 
-IInstructionReader <|.. StandardInstructionReader
-IInstructionReader --> SingularInstruction
-Vehicle --> SingularInstruction
+IPlateau --> Coordinates
+Direction --> Coordinates
+IPositionStringConverter --> Coordinates
+IPositionStringConverter --> Direction
+
+VehicleBase o-- Coordinates
+VehicleBase o-- Direction
+VehicleBase o--- IPlateau
+VehicleBase o-l IInstructionReader
+VehicleBase o-- IPositionStringConverter
+
+VehicleBase --> SingularInstruction
 
 @enduml
