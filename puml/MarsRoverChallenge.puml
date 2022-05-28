@@ -99,8 +99,6 @@ abstract VehicleBase <<abstract>>
 
 class Rover
 {
-  - remainingSampleStorageSpace : int
-
   + Rover(initialPosition : string, plateau : PlateauBase, positionStringConverter : IPositionStringConverter)
   + Rover(initialPosition : string, plateau : PlateauBase)
 

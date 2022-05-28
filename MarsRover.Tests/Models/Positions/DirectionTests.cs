@@ -154,5 +154,17 @@ namespace MarsRover.Tests.Models.Positions
 
             direction.Name.Should().Be("north");
         }
+
+        [Test]
+        public void Clone_Should_Copy_Value_But_Not_Reference()
+        {
+            Direction direction = new("north");
+            Direction directionCopy = direction.Clone();
+
+            directionCopy.Name.Should().Be(direction.Name);
+
+            directionCopy.TurnLeft();
+            directionCopy.Name.Should().NotBe(direction.Name);
+        }
     }
 }
