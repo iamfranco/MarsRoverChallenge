@@ -3,8 +3,8 @@ skinparam classAttributeIconSize 0
 
 interface IInstructionReader <<interface>>
 {
-  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
   + IsValidInstruction(instruction : string) : bool
+  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
 }
 
 enum SingularInstruction
@@ -16,8 +16,8 @@ enum SingularInstruction
 
 class StandardInstructionReader
 {
-  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
   + IsValidInstruction(instruction : string) : bool
+  + EvaluateInstruction(instruction : string) : List<SingularInstruction>
 }
 
 abstract PlateauBase <<abstract>>
