@@ -22,7 +22,7 @@ class StandardInstructionReader
 
 interface IPlateau <<interface>>
 {
-  + IsCoordinateValid(coordinates : Coordinates) : bool
+  + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
 }
 
 class RectangularPlateau
@@ -33,25 +33,22 @@ class RectangularPlateau
   + RectangularPlateau(maximumCoordinates : Coordinates, obstaclesCoordinates : List<Coordinates>)
   + RectangularPlateau(maximumCoordinates : Coordinates)
 
-  + IsCoordinateValid(coordinates : Coordinates) : bool
+  + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
 }
 
 class Coordinates
 {
   + x : int
   + y : int
-
-  + IsValidCoordinateString(input : string) : bool
-  + ToCoordinates(input : string) : Coordinates
 }
 
 class Direction
 {
-  - directions : List<(char, Coordinates)>
+  - directions : List< &#40;string, Coordinates&#41; >
   - directionIndex : int
 
-  + GetChar() : char
-  + GetCoordinates() : Coordinates
+  + GetName() : string
+  + GetMovementVector() : Coordinates
   + TurnLeft() : void
   + TurnRight() : void
 }
@@ -59,14 +56,22 @@ class Direction
 interface IPositionStringConverter <<interface>>
 {
   + IsValidPositionString(position : string) : bool
-  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + IsValidCoordinateString(coordinateString : string) : bool
+
   + ToPositionString(coordinates : Coordinates, direction : Direction) : string
+
+  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToCoordinates(coordinateString : string) : Coordinates
 }
 
 class PositionStringConverter
 {
   + IsValidPositionString(position : string) : bool
+  + IsValidCoordinateString(coordinateString : string) : bool
+
   + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToCoordinates(coordinateString : string) : Coordinates
+
   + ToPositionString(coordinates : Coordinates, direction : Direction) : string
 }
 
