@@ -23,6 +23,8 @@
                 throw new ArgumentOutOfRangeException(nameof(directionName));
         }
 
+        public Direction Clone() => new(Name);
+
         public string Name => _directions[_directionIndex].Name;
         public Coordinates MovementVector => _directions[_directionIndex].MovementVector;
 
