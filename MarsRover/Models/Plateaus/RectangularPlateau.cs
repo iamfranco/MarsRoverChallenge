@@ -26,7 +26,7 @@ namespace MarsRover.Models.Plateaus
 
         public void RemoveObstacle(Coordinates obstacle) => _obstacleCoordinates.Remove(obstacle);
 
-        public bool IsCoordinateValieInPlateau(Coordinates coordinates)
+        public bool IsCoordinateValidInPlateau(Coordinates coordinates)
         {
             if (coordinates.X < 0 || coordinates.X > PlateauSize.X)
                 return false;

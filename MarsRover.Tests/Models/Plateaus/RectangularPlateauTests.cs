@@ -123,18 +123,18 @@ namespace MarsRover.Tests.Models.Plateaus
         public void IsCoordinateValidInPlateau_With_Coordinate_Outside_Of_Plateau_Should_Return_False()
         {
             RectangularPlateau plateau = new(new(5, 5));
-            plateau.IsCoordinateValieInPlateau(new(-1, -2)).Should().Be(false);
-            plateau.IsCoordinateValieInPlateau(new(-1, 3)).Should().Be(false);
-            plateau.IsCoordinateValieInPlateau(new(3, 10)).Should().Be(false);
+            plateau.IsCoordinateValidInPlateau(new(-1, -2)).Should().Be(false);
+            plateau.IsCoordinateValidInPlateau(new(-1, 3)).Should().Be(false);
+            plateau.IsCoordinateValidInPlateau(new(3, 10)).Should().Be(false);
         }
 
         [Test]
         public void IsCoordinateValidInPlateau_With_Coordinate_Inside_Plateau_And_Not_On_Obstacle_Should_Return_True()
         {
             RectangularPlateau plateau = new(new(5, 5));
-            plateau.IsCoordinateValieInPlateau(new(4, 3)).Should().Be(true);
-            plateau.IsCoordinateValieInPlateau(new(1, 5)).Should().Be(true);
-            plateau.IsCoordinateValieInPlateau(new(0, 0)).Should().Be(true);
+            plateau.IsCoordinateValidInPlateau(new(4, 3)).Should().Be(true);
+            plateau.IsCoordinateValidInPlateau(new(1, 5)).Should().Be(true);
+            plateau.IsCoordinateValidInPlateau(new(0, 0)).Should().Be(true);
         }
 
         [Test]
@@ -144,8 +144,8 @@ namespace MarsRover.Tests.Models.Plateaus
             plateau.AddObstacle(new(1, 2));
             plateau.AddObstacle(new(4, 3));
 
-            plateau.IsCoordinateValieInPlateau(new(1, 2)).Should().Be(false);
-            plateau.IsCoordinateValieInPlateau(new(4, 3)).Should().Be(false);
+            plateau.IsCoordinateValidInPlateau(new(1, 2)).Should().Be(false);
+            plateau.IsCoordinateValidInPlateau(new(4, 3)).Should().Be(false);
         }
     }
 }
