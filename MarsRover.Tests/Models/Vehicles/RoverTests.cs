@@ -8,16 +8,21 @@ namespace MarsRover.Tests.Models.Vehicles
     internal class RoverTests
     {
         readonly List<string> invalidInstructions = new() { "asjdkfl", "lmr", "LM!" };
-        readonly List<string> validInstructions = new() { "", "LMRL", "L MMM R MMM", "LL MM LL RR R" };
+        readonly List<string> validInstructions = new() { "", "LMRL", "L M R L", "L M LL RR M R" };
+        readonly List<Coordinates> obstacles = new() { new(2, 3), new(5, 5) };
 
         PlateauBase plateau;
+        PlateauBase plateauWithObstacles;
 
         [SetUp]
         public void Setup()
         {
             plateau = new RectangularPlateau(new(5, 5));
-            plateau.AddObstacle(new(2, 3));
-            plateau.AddObstacle(new(4, 1));
+            plateauWithObstacles = new RectangularPlateau(new(5, 5));
+            foreach (Coordinates obstacle in obstacles)
+            {
+                plateauWithObstacles.AddObstacle(obstacle);
+            }
         }
 
         [Test]
@@ -74,10 +79,10 @@ namespace MarsRover.Tests.Models.Vehicles
             Rover rover;
             Action act;
 
-            act = () => rover = new Rover("2 3 W", plateau);
+            act = () => rover = new Rover("2 3 W", plateauWithObstacles);
             act.Should().Throw<ArgumentException>();
 
-            act = () => rover = new Rover("4 1 N", plateau);
+            act = () => rover = new Rover("5 5 N", plateauWithObstacles);
             act.Should().Throw<ArgumentException>();
         }
 
@@ -217,6 +222,112 @@ namespace MarsRover.Tests.Models.Vehicles
             rover = new Rover("3 3 E", plateau);
             rover.ApplyMoveInstruction("MMRMMRMRRM");
             rover.GetPosition().Should().Be("5 1 E");
+        }
+
+        [Test]
+        public void ApplyMoveInstruction_With_Instruction_That_Moves_Outside_Of_Plateau_Should_Throw_Exception_And_Not_Modify_Position()
+        {
+            Rover rover;
+            Action act;
+
+            rover = new Rover("1 2 N", plateau);
+            act = () => rover.ApplyMoveInstruction("MMMMMMMM");
+            act.Should().Throw<ArgumentException>();
+            rover.GetPosition().Should().Be("1 2 N");
+
+            rover = new Rover("3 3 E", plateau);
+            act = () => rover.ApplyMoveInstruction("LLMMMMM");
+            act.Should().Throw<ArgumentException>();
+            rover.GetPosition().Should().Be("3 3 E");
+        }
+
+        [Test]
+        public void ApplyMoveInstruction_With_Instruction_That_Moves_Into_Obstacle_On_Plateau_Should_Throw_Exception_And_Not_Modify_Position()
+        {
+            Rover rover;
+            Action act;
+
+            rover = new Rover("1 2 N", plateauWithObstacles);
+            act = () => rover.ApplyMoveInstruction("MRM LLLRLRLM");
+            act.Should().Throw<ArgumentException>();
+            rover.GetPosition().Should().Be("1 2 N");
+
+            rover = new Rover("3 3 E", plateauWithObstacles);
+            act = () => rover.ApplyMoveInstruction("LMMRMM LRLRLM");
+            act.Should().Throw<ArgumentException>();
+            rover.GetPosition().Should().Be("3 3 E");
+        }
+
+        [Test]
+        public void TeleportToPosition_With_Null_String_Input_Should_Throw_Exception()
+        {
+            Rover rover;
+            Action act;
+            rover = new Rover("1 2 N", plateau);
+
+            string newPosition = null;
+            act = () => rover.TeleportToPosition(newPosition);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void TeleportToPosition_With_Invalidly_Formatted_Position_String_Input_Should_Throw_Exception()
+        {
+            Rover rover = new Rover("1 2 N", plateau);
+            Action act;
+
+            act = () => rover.TeleportToPosition("123");
+            act.Should().Throw<ArgumentException>();
+
+            act = () => rover.TeleportToPosition("");
+            act.Should().Throw<ArgumentException>();
+
+            act = () => rover.TeleportToPosition("1 1 Z");
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void TeleportToPosition_With_InitialPosition_Outside_Of_Plateau_Should_Throw_Exception()
+        {
+            Rover rover = new Rover("1 2 N", plateau);
+            Action act;
+
+            act = () => rover.TeleportToPosition("-10 0 W");
+            act.Should().Throw<ArgumentException>();
+
+            act = () => rover.TeleportToPosition("2 -5 N");
+            act.Should().Throw<ArgumentException>();
+
+            act = () => rover.TeleportToPosition("2 50 E");
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void TeleportToPosition_With_InitialPosition_On_Obstacle_Of_Plateau_Should_Throw_Exception()
+        {
+            Rover rover = new Rover("1 2 N", plateauWithObstacles);
+            Action act;
+
+            act = () => rover.TeleportToPosition("2 3 W");
+            act.Should().Throw<ArgumentException>();
+
+            act = () => rover.TeleportToPosition("5 5 N");
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void TeleportToPosition_With_Valid_InitialPosition_Should_Succeed_And_Updates_Position()
+        {
+            Rover rover = new Rover("1 2 N", plateau);
+            Action act;
+
+            act = () => rover.TeleportToPosition("3 2 S");
+            act.Should().NotThrow();
+            rover.GetPosition().Should().Be("3 2 S");
+
+            act = () => rover.TeleportToPosition("1 1 W");
+            act.Should().NotThrow();
+            rover.GetPosition().Should().Be("1 1 W");
         }
     }
 }
