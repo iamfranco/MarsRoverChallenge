@@ -15,5 +15,15 @@ namespace MarsRover.Models.Vehicles
             : base(initialPosition, plateau)
         {
         }
+
+        public void TakePhotoAndSendToStation()
+        {
+            Console.WriteLine("Rover takes photo and send to station");
+        }
+
+        public void CollectSample()
+        {
+            Console.WriteLine("Rover collects Sample");
+        }
     }
 }

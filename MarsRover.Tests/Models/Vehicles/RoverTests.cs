@@ -329,5 +329,25 @@ namespace MarsRover.Tests.Models.Vehicles
             act.Should().NotThrow();
             rover.GetPosition().Should().Be("1 1 W");
         }
+
+        [Test]
+        public void TakePhotoAndSendToStation_Should_Not_Throw_Exception()
+        {
+            Rover rover = new Rover("1 2 N", plateau);
+            Action act;
+
+            act = () => rover.TakePhotoAndSendToStation();
+            act.Should().NotThrow();
+        }
+
+        [Test]
+        public void CollectSample_Should_Not_Throw_Exception()
+        {
+            Rover rover = new Rover("1 2 N", plateau);
+            Action act;
+
+            act = () => rover.CollectSample();
+            act.Should().NotThrow();
+        }
     }
 }
