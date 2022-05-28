@@ -2,7 +2,7 @@
 
 namespace MarsRover.Models.Instructions
 {
-    public class StandardInstructionReader
+    public class StandardInstructionReader : IInstructionReader
     {
         private readonly Regex _instructionRegex = new(@"^(L|R|M|\s)*$");
 
