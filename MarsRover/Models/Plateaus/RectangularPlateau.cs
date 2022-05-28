@@ -3,12 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace MarsRover.Models.Plateaus
 {
-    public class RectangularPlateau
+    public class RectangularPlateau : PlateauBase
     {
-        private List<Coordinates> _obstacleCoordinates = new();
         public Coordinates PlateauSize { get; }
-
-        public ReadOnlyCollection<Coordinates> ObstacleCoordinates => _obstacleCoordinates.AsReadOnly();
 
         public RectangularPlateau(Coordinates plateauSize)
         {
@@ -18,15 +15,7 @@ namespace MarsRover.Models.Plateaus
             PlateauSize = plateauSize;
         }
 
-        public void AddObstacle(Coordinates obstacle)
-        {
-            _obstacleCoordinates.Add(obstacle);
-            _obstacleCoordinates = _obstacleCoordinates.Distinct().ToList();
-        }
-
-        public void RemoveObstacle(Coordinates obstacle) => _obstacleCoordinates.Remove(obstacle);
-
-        public bool IsCoordinateValidInPlateau(Coordinates coordinates)
+        public override bool IsCoordinateValidInPlateau(Coordinates coordinates)
         {
             if (coordinates.X < 0 || coordinates.X > PlateauSize.X)
                 return false;
@@ -34,7 +23,7 @@ namespace MarsRover.Models.Plateaus
             if (coordinates.Y < 0 || coordinates.Y > PlateauSize.Y)
                 return false;
 
-            if (_obstacleCoordinates.Contains(coordinates))
+            if (ObstacleCoordinates.Contains(coordinates))
                 return false;
 
             return true;
