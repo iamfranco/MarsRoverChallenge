@@ -58,10 +58,10 @@ interface IPositionStringConverter <<interface>>
   + IsValidPositionString(position : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
 
-  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
-
   + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
   + ToCoordinates(coordinateString : string) : Coordinates
+
+  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
 }
 
 class PositionStringConverter

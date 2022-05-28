@@ -2,17 +2,17 @@
 {
     public struct Coordinates
     {
-        private readonly int _x;
-        private readonly int _y;
+        public int X { get; }
+        public int Y { get; }
 
         public Coordinates(int x, int y)
         {
-            _x = x;
-            _y = y;
+            X = x;
+            Y = y;
         }
 
-        public static Coordinates operator +(Coordinates a, Coordinates b) => new(a._x + b._x, a._y + b._y);
+        public static Coordinates operator +(Coordinates a, Coordinates b) => new(a.X + b.X, a.Y + b.Y);
 
-        public override string ToString() => $"({_x}, {_y})";
+        public override string ToString() => $"({X}, {Y})";
     }
 }
