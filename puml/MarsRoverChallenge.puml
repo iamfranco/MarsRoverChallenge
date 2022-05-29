@@ -93,7 +93,7 @@ abstract VehicleBase <<abstract>>
   + SwapPositionStringConverter(positionStringConverter : IPositionStringConverter) : void
   
   + GetPosition() : string
-  + ApplyMoveInstruction() : void
+  + ApplyMoveInstruction(instruction : string) : void
   + TeleportToPosition(position : string) : void
 }
 
