@@ -252,6 +252,32 @@ namespace MarsRover.Tests.AppUI
             {
                 actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
             }
-        } 
+        }
+
+        [Test]
+        public void RecentPath_After_Re_ConnectVehicle_Should_Return_Empty_List()
+        {
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            commandHandler.ConnectVehicle(vehicle);
+            commandHandler.SendMoveInstruction("MML");
+            commandHandler.SendMoveInstruction("RRMM");
+
+            commandHandler.ConnectVehicle(vehicle);
+
+            commandHandler.RecentPath.Count.Should().Be(0);
+        }
+
+        [Test]
+        public void RecentPath_After_DisconnectVehicle_Should_Return_Empty_List()
+        {
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            commandHandler.ConnectVehicle(vehicle);
+            commandHandler.SendMoveInstruction("MML");
+            commandHandler.SendMoveInstruction("RRMM");
+
+            commandHandler.DisconnectVehicle();
+
+            commandHandler.RecentPath.Count.Should().Be(0);
+        }
     }
 }

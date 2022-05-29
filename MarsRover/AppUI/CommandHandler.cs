@@ -32,11 +32,13 @@ namespace MarsRover.AppUI
                 return;
 
             _vehicle = vehicle;
+            RecentPath = new();
         }
 
         public void DisconnectVehicle()
         {
             _vehicle = null;
+            RecentPath = new();
         }
 
         public (bool status, string message) SendMoveInstruction(string instructionString)
@@ -69,7 +71,7 @@ namespace MarsRover.AppUI
                     nextCoordinate += nextDirection.MovementVector;
 
                 if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
-                    return (false, $"Instruction will lead move vehicle to invalid coordinate {nextCoordinate}");
+                    return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");
 
                 RecentPath.Add((nextCoordinate, nextDirection));
             }
