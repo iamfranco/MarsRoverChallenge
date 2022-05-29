@@ -82,49 +82,62 @@ abstract VehicleBase <<abstract>>
 {
   - coordinates : Coordinates
   - direction : Direction
-  - plateau : PlateauBase
-  - instructionReader : IInstructionReader
-  - positionStringConverter : IPositionStringConverter
 
-  + VehicleBase(initialPosition : string, plateau : PlateauBase, positionStringConverter : IPositionStringConverter)
-  + VehicleBase(initialPosition : string, plateau : PlateauBase)
+  + VehicleBase(initialCoordinates : Coordinates, initialDirection : Direction)
 
-  + SwapInstructionReader(instructionReader : IInstructionReader) : void
-  + SwapPositionStringConverter(positionStringConverter : IPositionStringConverter) : void
-  
-  + GetPosition() : string
-  + ApplyMoveInstruction(instruction : string) : void
-  + TeleportToPosition(position : string) : void
+  + GetCoordinates() : Coordinates
+  + GetDirection() : Direction
+  + ApplyMoveInstruction(instruction : List<SingularInstruction>) : void
+  + TeleportToPosition(coordinates : Coordinates, direction : Direction) : void
 }
 
 class Rover
 {
-  + Rover(initialPosition : string, plateau : PlateauBase, positionStringConverter : IPositionStringConverter)
-  + Rover(initialPosition : string, plateau : PlateauBase)
+  + Rover(initialCoordinates : Coordinates, initialDirection : Direction)
 
   + TakePhotoAndSendToStation() : void
   + CollectSample() : void
 }
 
-IInstructionReader -> SingularInstruction
+class CommandHandler
+{
+  - instructionReader : IInstructionReader
+  - positionStringConverter : IPositionStringConverter
+  - vehicle : VehicleBase
+  - plateau : PlateauBase
+
+  + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
+  
+  + ConnectVehicle(vehicle : VehicleBase)
+  + DisconnectVehicle()
+
+  + ConnectPlateau(plateau : PlateauBase)
+  + DisconnectPlateau()
+
+  + RequestPosition() : string
+  + SendMoveInstruction(instruction : string)
+}
+
+CommandHandler o-- IInstructionReader
+CommandHandler o-- IPositionStringConverter
+CommandHandler o-- VehicleBase
+CommandHandler o-- PlateauBase
+
+IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
-PlateauBase <|-- RectangularPlateau
+
+VehicleBase <|-u- Rover
+VehicleBase --> SingularInstruction
+VehicleBase o--- Direction
+VehicleBase o---- Coordinates
 
 IPositionStringConverter <|.. PositionStringConverter
+IPositionStringConverter ---> Direction
+IPositionStringConverter ----> Coordinates
 
-VehicleBase <|-r- Rover
+PlateauBase <|-u- RectangularPlateau
+PlateauBase -----> Coordinates
 
-PlateauBase --> Coordinates
-Direction --> Coordinates
-IPositionStringConverter --> Coordinates
-IPositionStringConverter --> Direction
-
-VehicleBase o-- Coordinates
-VehicleBase o-- Direction
-VehicleBase o--- PlateauBase
-VehicleBase o-l IInstructionReader
-VehicleBase o-- IPositionStringConverter
-
-VehicleBase --> SingularInstruction
+Direction --> Coordinates 
 
 @enduml
