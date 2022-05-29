@@ -88,6 +88,7 @@ abstract VehicleBase <<abstract>>
 
   + GetCoordinates() : Coordinates
   + GetDirection() : Direction
+  + GetPlateau() : PlateauBase
   + ApplyMoveInstruction(instruction : List<SingularInstruction>) : void
   + TeleportToPosition(coordinates : Coordinates, direction : Direction) : void
 }
@@ -105,7 +106,6 @@ class CommandHandler
   - instructionReader : IInstructionReader
   - positionStringConverter : IPositionStringConverter
   - vehicle : VehicleBase
-  - plateau : PlateauBase
 
   + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
   
@@ -122,7 +122,6 @@ class CommandHandler
 CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter
 CommandHandler o-- VehicleBase
-CommandHandler o-- PlateauBase
 
 IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
@@ -131,13 +130,13 @@ VehicleBase <|-u- Rover
 VehicleBase --> SingularInstruction
 VehicleBase o--- Direction
 VehicleBase o---- Coordinates
-VehicleBase o- PlateauBase
+VehicleBase o-- PlateauBase
 
 IPositionStringConverter <|.. PositionStringConverter
 IPositionStringConverter ---> Direction
-IPositionStringConverter ----> Coordinates
+IPositionStringConverter ---> Coordinates
 
-PlateauBase <|-u- RectangularPlateau
+PlateauBase <|-- RectangularPlateau
 PlateauBase -----> Coordinates
 
 Direction --> Coordinates 
