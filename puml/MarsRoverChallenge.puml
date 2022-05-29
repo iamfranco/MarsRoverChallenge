@@ -112,9 +112,6 @@ class CommandHandler
   + ConnectVehicle(vehicle : VehicleBase)
   + DisconnectVehicle()
 
-  + ConnectPlateau(plateau : PlateauBase)
-  + DisconnectPlateau()
-
   + RequestPosition() : string
   + SendMoveInstruction(instruction : string) : bool
 }
