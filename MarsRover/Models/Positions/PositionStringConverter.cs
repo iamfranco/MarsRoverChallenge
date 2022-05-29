@@ -50,8 +50,6 @@ namespace MarsRover.Models.Positions
                 .directionSymbol;
 
             return $"{coordinates.X} {coordinates.Y} {directionSymbol}";
-
-            throw new NotImplementedException();
         }
 
         private static bool IsNotNullAndMatchRegex(string? str, Regex regex) => str is not null && regex.IsMatch(str);
