@@ -7,12 +7,34 @@ namespace MarsRover.Tests.Models.Vehicles
 {
     internal class RoverTests
     {
-        readonly List<string> invalidInstructions = new() { "asjdkfl", "lmr", "LM!" };
-        readonly List<string> validInstructions = new() { "", "LMRL", "L M R L", "L M LL RR M R" };
+        readonly List<List<SingularInstruction>> validInstructions = new()
+        {
+            new() { },
+            new()
+            {
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.TurnLeft
+            },
+            new()
+            {
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward
+            }
+        };
         readonly List<Coordinates> obstacles = new() { new(2, 3), new(5, 5) };
 
         PlateauBase plateau;
         PlateauBase plateauWithObstacles;
+
+        Rover roverOnPlateau;
 
         [SetUp]
         public void Setup()
@@ -23,13 +45,18 @@ namespace MarsRover.Tests.Models.Vehicles
             {
                 plateauWithObstacles.AddObstacle(obstacle);
             }
+
+            roverOnPlateau = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
         }
 
         [Test]
-        public void Constructor_With_Null_String_Input_Should_Throw_Exception()
+        public void Constructor_With_Null_Direction_Input_Should_Throw_Exception()
         {
             Rover rover;
-            Action act = () => rover = new Rover(null, plateau);
+            Coordinates initialCoordinates = new(1, 2);
+            Direction initialDirection = null;
+
+            Action act = () => rover = new Rover(initialCoordinates, initialDirection, plateau);
             act.Should().Throw<ArgumentNullException>();
         }
 
@@ -37,175 +64,60 @@ namespace MarsRover.Tests.Models.Vehicles
         public void Constructor_With_Null_Plateau_Input_Should_Throw_Exception()
         {
             Rover rover;
-            Action act = () => rover = new Rover("1 2 N", null);
+            Coordinates initialCoordinates = new(1, 2);
+            Direction initialDirection = new("north");
+            PlateauBase plat = null;
+
+            Action act = () => rover = new Rover(initialCoordinates, initialDirection, plat);
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
-        public void Constructor_With_Invalidly_Formatted_InitialPosition_String_Should_Throw_Exception()
+        public void Constructor_With_InitialPosition_Invalid_On_Plateau_Should_Throw_Exception()
         {
             Rover rover;
-            Action act;
+            Coordinates initialCoordinates = obstacles[0];
+            Direction initialDirection = new("north");
 
-            act = () => rover = new Rover("123", plateau);
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover = new Rover("", plateau);
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover = new Rover("1 1 Z", plateau);
+            Action act = () => rover = new Rover(initialCoordinates, initialDirection, plateauWithObstacles);
             act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void Constructor_With_InitialPosition_Outside_Of_Plateau_Should_Throw_Exception()
+        public void Coordinates_After_Successful_Construction_Should_Return_InitialPosition()
         {
-            Rover rover;
-            Action act;
+            Coordinates coordinates = new(1, 2);
+            Rover rover = new Rover(coordinates, new Direction("north"), plateau);
 
-            act = () => rover = new Rover("-10 0 W", plateau);
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover = new Rover("2 -5 N", plateau);
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover = new Rover("2 50 E", plateau);
-            act.Should().Throw<ArgumentException>();
+            rover.Coordinates.Should().Be(coordinates);
         }
 
         [Test]
-        public void Constructor_With_InitialPosition_On_Obstacle_Of_Plateau_Should_Throw_Exception()
+        public void Direction_After_Successful_Construction_Should_Return_InitialPosition()
         {
-            Rover rover;
-            Action act;
+            Direction direction = new("north");
+            Rover rover = new Rover(new(1, 2), direction, plateau);
 
-            act = () => rover = new Rover("2 3 W", plateauWithObstacles);
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover = new Rover("5 5 N", plateauWithObstacles);
-            act.Should().Throw<ArgumentException>();
+            rover.Direction.Should().Be(direction);
         }
 
         [Test]
-        public void Constructor_With_Valid_InitialPosition_Should_Succeed()
+        public void ApplyMoveInstruction_With_Null_Instruction_Should_Throw_Exception()
         {
-            Rover rover;
             Action act;
 
-            act = () => rover = new Rover("3 2 S", plateau);
-            act.Should().NotThrow();
-
-            act = () => rover = new Rover("1 1 W", plateau);
-            act.Should().NotThrow();
-        }
-
-        [Test]
-        public void Constructor_With_Explicit_PositionStringConverter_Should_Succeed()
-        {
-            Rover rover;
-            IPositionStringConverter positionStringConverter = new PositionStringConverter();
-            Action act;
-
-            act = () => rover = new Rover("3 2 S", plateau, positionStringConverter);
-            act.Should().NotThrow();
-        }
-
-        [Test]
-        public void Constructor_With_Null_PositionStringConverter_Should_Throw_Exception()
-        {
-            Rover rover;
-            IPositionStringConverter positionStringConverter = null;
-            Action act;
-
-            act = () => rover = new Rover("3 2 S", plateau, positionStringConverter);
+            act = () => roverOnPlateau.ApplyMoveInstruction(null);
             act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Test]
-        public void GetPosition_After_Successful_Construction_Should_Return_InitialPosition()
-        {
-            string initialPosition = "1 2 N";
-            Rover rover = new Rover(initialPosition, plateau);
-
-            rover.GetPosition().Should().Be(initialPosition);
-        }
-
-        [Test]
-        public void SwapInstructionReader_With_Null_Input_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            IInstructionReader instructionReader = null;
-            Action act;
-
-            act = () => rover.SwapInstructionReader(instructionReader);
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Test]
-        public void SwapInstructionReader_With_Valid_InstructionReader_Should_Succeed()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            IInstructionReader instructionReader = new StandardInstructionReader();
-            Action act;
-
-            act = () => rover.SwapInstructionReader(instructionReader);
-            act.Should().NotThrow();
-        }
-
-        [Test]
-        public void SwapPositionStringConverter_With_Null_Input_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            IPositionStringConverter positionStringConverter = null;
-            Action act;
-
-            act = () => rover.SwapPositionStringConverter(positionStringConverter);
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Test]
-        public void SwapPositionStringConverter_With_Valid_PositionStringConverter_Should_Succeed()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            IPositionStringConverter positionStringConverter = new PositionStringConverter();
-            Action act;
-
-            act = () => rover.SwapPositionStringConverter(positionStringConverter);
-            act.Should().NotThrow();
-        }
-
-        [Test]
-        public void ApplyMoveInstruction_With_Null_Instruction_String_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            Action act;
-
-            act = () => rover.ApplyMoveInstruction(null);
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Test]
-        public void ApplyMoveInstruction_With_Invalid_Instruction_String_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            Action act;
-
-            foreach (string invalidInstruction in invalidInstructions)
-            {
-                act = () => rover.ApplyMoveInstruction(invalidInstruction);
-                act.Should().Throw<ArgumentException>();
-            }
         }
 
         [Test]
         public void ApplyMoveInstruction_With_Valid_Instruction_String_Should_Succeed()
         {
-            Rover rover = new Rover("1 2 N", plateau);
             Action act;
 
-            foreach (string validInstruction in validInstructions)
+            foreach (List<SingularInstruction> validInstruction in validInstructions)
             {
-                act = () => rover.ApplyMoveInstruction(validInstruction);
+                act = () => roverOnPlateau.ApplyMoveInstruction(validInstruction);
                 act.Should().NotThrow();
             }
         }
@@ -215,125 +127,122 @@ namespace MarsRover.Tests.Models.Vehicles
         {
             Rover rover;
 
-            rover = new Rover("1 2 N", plateau);
-            rover.ApplyMoveInstruction("LMLMLMLMM");
-            rover.GetPosition().Should().Be("1 3 N");
+            rover = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            rover.ApplyMoveInstruction(new()
+            {
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnLeft,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward
+            });
+            rover.Coordinates.Should().Be(new Coordinates(1, 3));
+            rover.Direction.Name.Should().Be("north");
 
-            rover = new Rover("3 3 E", plateau);
-            rover.ApplyMoveInstruction("MMRMMRMRRM");
-            rover.GetPosition().Should().Be("5 1 E");
+            rover = new Rover(new Coordinates(3, 3), new Direction("east"), plateau);
+            rover.ApplyMoveInstruction(new()
+            {
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.TurnRight,
+                SingularInstruction.MoveForward
+            });
+            rover.Coordinates.Should().Be(new Coordinates(5, 1));
+            rover.Direction.Name.Should().Be("east");
         }
 
         [Test]
-        public void ApplyMoveInstruction_With_Instruction_That_Moves_Outside_Of_Plateau_Should_Throw_Exception_And_Not_Modify_Position()
+        public void ApplymoveInstruction_Into_Invalid_Coordinate_For_Plateau_Should_Have_Position_Stop_Before_Invalid_Coordinate()
         {
-            Rover rover;
-            Action act;
+            PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
+            plateauWithOneObstacle.AddObstacle(new(2, 3));
 
-            rover = new Rover("1 2 N", plateau);
-            act = () => rover.ApplyMoveInstruction("MMMMMMMM");
-            act.Should().Throw<ArgumentException>();
-            rover.GetPosition().Should().Be("1 2 N");
+            Rover rover = new Rover(new Coordinates(1, 2), new Direction("north"), plateauWithObstacles);
 
-            rover = new Rover("3 3 E", plateau);
-            act = () => rover.ApplyMoveInstruction("LLMMMMM");
-            act.Should().Throw<ArgumentException>();
-            rover.GetPosition().Should().Be("3 3 E");
+            List<SingularInstruction> instruction = new()
+            {
+                SingularInstruction.MoveForward,
+                SingularInstruction.TurnRight,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward,
+                SingularInstruction.MoveForward,
+            };
+
+            rover.ApplyMoveInstruction(instruction);
+
+            rover.Coordinates.Should().Be(new Coordinates(1, 3));
+            rover.Direction.Name.Should().Be("east");
         }
 
         [Test]
-        public void ApplyMoveInstruction_With_Instruction_That_Moves_Into_Obstacle_On_Plateau_Should_Throw_Exception_And_Not_Modify_Position()
+        public void TeleportToPosition_With_Null_Direction_Input_Should_Throw_Exception()
         {
-            Rover rover;
             Action act;
 
-            rover = new Rover("1 2 N", plateauWithObstacles);
-            act = () => rover.ApplyMoveInstruction("MRM LLLRLRLM");
-            act.Should().Throw<ArgumentException>();
-            rover.GetPosition().Should().Be("1 2 N");
+            Coordinates nextCoordinates = new(4, 3);
+            Direction nextDirection = null;
 
-            rover = new Rover("3 3 E", plateauWithObstacles);
-            act = () => rover.ApplyMoveInstruction("LMMRMM LRLRLM");
-            act.Should().Throw<ArgumentException>();
-            rover.GetPosition().Should().Be("3 3 E");
-        }
-
-        [Test]
-        public void TeleportToPosition_With_Null_String_Input_Should_Throw_Exception()
-        {
-            Rover rover;
-            Action act;
-            rover = new Rover("1 2 N", plateau);
-
-            string newPosition = null;
-            act = () => rover.TeleportToPosition(newPosition);
+            act = () => roverOnPlateau.TeleportToPosition(nextCoordinates, nextDirection);
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
-        public void TeleportToPosition_With_Invalidly_Formatted_Position_String_Input_Should_Throw_Exception()
+        public void TeleportToPosition_With_Valid_Position_Should_Succeed_And_Updates_Position()
         {
-            Rover rover = new Rover("1 2 N", plateau);
             Action act;
+            Coordinates nextCoordinates;
+            Direction nextDirection;
 
-            act = () => rover.TeleportToPosition("123");
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover.TeleportToPosition("");
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover.TeleportToPosition("1 1 Z");
-            act.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void TeleportToPosition_With_InitialPosition_Outside_Of_Plateau_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            Action act;
-
-            act = () => rover.TeleportToPosition("-10 0 W");
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover.TeleportToPosition("2 -5 N");
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover.TeleportToPosition("2 50 E");
-            act.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void TeleportToPosition_With_InitialPosition_On_Obstacle_Of_Plateau_Should_Throw_Exception()
-        {
-            Rover rover = new Rover("1 2 N", plateauWithObstacles);
-            Action act;
-
-            act = () => rover.TeleportToPosition("2 3 W");
-            act.Should().Throw<ArgumentException>();
-
-            act = () => rover.TeleportToPosition("5 5 N");
-            act.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void TeleportToPosition_With_Valid_InitialPosition_Should_Succeed_And_Updates_Position()
-        {
-            Rover rover = new Rover("1 2 N", plateau);
-            Action act;
-
-            act = () => rover.TeleportToPosition("3 2 S");
+            nextCoordinates = new(3, 2);
+            nextDirection = new("south");
+            act = () => roverOnPlateau.TeleportToPosition(nextCoordinates, nextDirection);
             act.Should().NotThrow();
-            rover.GetPosition().Should().Be("3 2 S");
+            roverOnPlateau.Coordinates.Should().Be(nextCoordinates);
+            roverOnPlateau.Direction.Name.Should().Be(nextDirection.Name);
 
-            act = () => rover.TeleportToPosition("1 1 W");
+            nextCoordinates = new(1, 1);
+            nextDirection = new("west");
+            act = () => roverOnPlateau.TeleportToPosition(nextCoordinates, nextDirection);
             act.Should().NotThrow();
-            rover.GetPosition().Should().Be("1 1 W");
+            roverOnPlateau.Coordinates.Should().Be(nextCoordinates);
+            roverOnPlateau.Direction.Name.Should().Be(nextDirection.Name);
+        }
+
+        [Test]
+        public void TeleportToPosition_With_Coordinates_Invalid_For_Plateau_Should_Not_Update_Position()
+        {
+            Coordinates initialCoordinates = new Coordinates(1, 2);
+            Direction initialDirection = new Direction("north");
+            Rover rover = new Rover(initialCoordinates, initialDirection, plateauWithObstacles);
+            Action act;
+            Coordinates nextCoordinates;
+            Direction nextDirection;
+
+            foreach (Coordinates obstacle in obstacles)
+            {
+                nextCoordinates = obstacle;
+                nextDirection = new("south");
+                act = () => rover.TeleportToPosition(nextCoordinates, nextDirection);
+                act.Should().NotThrow();
+                rover.Coordinates.Should().Be(initialCoordinates);
+                rover.Direction.Name.Should().Be(initialDirection.Name);
+            }
         }
 
         [Test]
         public void TakePhotoAndSendToStation_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover("1 2 N", plateau);
+            Rover rover = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
             Action act;
 
             act = () => rover.TakePhotoAndSendToStation();
@@ -343,7 +252,7 @@ namespace MarsRover.Tests.Models.Vehicles
         [Test]
         public void CollectSample_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover("1 2 N", plateau);
+            Rover rover = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
             Action act;
 
             act = () => rover.CollectSample();
