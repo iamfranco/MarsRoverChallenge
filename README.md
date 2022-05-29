@@ -2,6 +2,8 @@
 
 This repository contains a C# solution to the Mars Rover Challenge.
 
+![alt text](appDemo.gif "app demo GIF")
+
 Here we have 3 folders:
 
 1. The `MarsRover` folder contains the C# solution to the challenge
@@ -12,13 +14,7 @@ Here we have 3 folders:
 
 To run the application, clone the repository to your computer.
 
-Once cloned, you can install the dependencies by running:
-
-```
-dotnet restore
-```
-
-then run the application by:
+Once cloned, you can run the application by navigating to `MarsRover` folder and run:
 
 ```
 dotnet run
