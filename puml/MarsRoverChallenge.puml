@@ -82,8 +82,9 @@ abstract VehicleBase <<abstract>>
 {
   - coordinates : Coordinates
   - direction : Direction
+  - plateau : PlateauBase
 
-  + VehicleBase(initialCoordinates : Coordinates, initialDirection : Direction)
+  + VehicleBase(initialCoordinates : Coordinates, initialDirection : Direction, plateau : PlateauBase)
 
   + GetCoordinates() : Coordinates
   + GetDirection() : Direction
@@ -115,7 +116,7 @@ class CommandHandler
   + DisconnectPlateau()
 
   + RequestPosition() : string
-  + SendMoveInstruction(instruction : string)
+  + SendMoveInstruction(instruction : string) : bool
 }
 
 CommandHandler o-- IInstructionReader
@@ -130,6 +131,7 @@ VehicleBase <|-u- Rover
 VehicleBase --> SingularInstruction
 VehicleBase o--- Direction
 VehicleBase o---- Coordinates
+VehicleBase o- PlateauBase
 
 IPositionStringConverter <|.. PositionStringConverter
 IPositionStringConverter ---> Direction
