@@ -8,7 +8,7 @@ namespace MarsRover.Models.Vehicles
     {
         private Coordinates _coordinates;
         private Direction _direction;
-        private readonly PlateauBase _plateau;
+        public PlateauBase Plateau { get; private set; }
 
         public VehicleBase(Coordinates initialCoordinates, Direction initialDirection, PlateauBase plateau)
         {
@@ -23,7 +23,7 @@ namespace MarsRover.Models.Vehicles
 
             _coordinates = initialCoordinates;
             _direction = initialDirection;
-            _plateau = plateau;
+            Plateau = plateau;
         }
 
         public Coordinates Coordinates => _coordinates;
@@ -58,7 +58,7 @@ namespace MarsRover.Models.Vehicles
             if (direction is null)
                 throw new ArgumentNullException(nameof(direction));
 
-            if (!_plateau.IsCoordinateValidInPlateau(coordinates))
+            if (!Plateau.IsCoordinateValidInPlateau(coordinates))
                 return;
 
             _coordinates = coordinates;
