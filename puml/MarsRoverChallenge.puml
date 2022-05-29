@@ -113,7 +113,7 @@ class CommandHandler
   + DisconnectVehicle()
 
   + RequestPosition() : string
-  + SendMoveInstruction(instruction : string) : bool
+  + SendMoveInstruction(instruction : string) : (bool, string)
 }
 
 CommandHandler o-- IInstructionReader
