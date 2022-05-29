@@ -39,16 +39,16 @@ namespace MarsRover.AppUI
             _vehicle = null;
         }
 
-        public bool SendMoveInstruction(string instructionString)
+        public (bool status, string message) SendMoveInstruction(string instructionString)
         {
             if (_vehicle is null)
-                return false;
+                return (false, "Instruction is null");
             
             if (string.IsNullOrEmpty(instructionString))
-                return false;
+                return (false, "Empty Instruction");
 
             if (!_instructionReader.IsValidInstruction(instructionString))
-                return false;
+                return (false, "Instruction not in correct format");
 
             List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
@@ -69,14 +69,14 @@ namespace MarsRover.AppUI
                     nextCoordinate += nextDirection.MovementVector;
 
                 if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
-                    return false;
+                    return (false, $"Instruction will lead move vehicle to invalid coordinate {nextCoordinate}");
 
                 RecentPath.Add((nextCoordinate, nextDirection));
             }
 
             _vehicle.ApplyMoveInstruction(instruction);
 
-            return true;
+            return (true, "Instruction successfully sent.");
         }
     }
 }

@@ -69,7 +69,7 @@ namespace MarsRover.Tests.AppUI
         public void SendMoveInstruction_Without_ConnectVehicle_Should_Return_False()
         {
             string instruction = "RMMLM";
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
             
             status.Should().Be(false);
         }
@@ -81,7 +81,7 @@ namespace MarsRover.Tests.AppUI
             VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
             
             commandHandler.ConnectVehicle(vehicle);
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -94,7 +94,7 @@ namespace MarsRover.Tests.AppUI
             VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
 
             commandHandler.ConnectVehicle(vehicle);
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -107,7 +107,7 @@ namespace MarsRover.Tests.AppUI
             VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
 
             commandHandler.ConnectVehicle(vehicle);
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -123,7 +123,7 @@ namespace MarsRover.Tests.AppUI
             VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateauWithOneObstacle);
 
             commandHandler.ConnectVehicle(vehicle);
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -136,7 +136,7 @@ namespace MarsRover.Tests.AppUI
             VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
 
             commandHandler.ConnectVehicle(vehicle);
-            bool status = commandHandler.SendMoveInstruction(instruction);
+            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(true);
             commandHandler.RequestPosition().Should().Be("2 3 E");
