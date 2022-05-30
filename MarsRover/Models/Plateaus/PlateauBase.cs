@@ -11,12 +11,13 @@ namespace MarsRover.Models.Plateaus
 
         public void AddObstacle(Coordinates obstacle)
         {
-            _obstacleCoordinates.Add(obstacle);
-            _obstacleCoordinates = _obstacleCoordinates.Distinct().ToList();
+            if (IsCoordinateValidInPlateau(obstacle))
+                _obstacleCoordinates.Add(obstacle);
         }
 
         public void RemoveObstacle(Coordinates obstacle) => _obstacleCoordinates.Remove(obstacle);
         
         public abstract bool IsCoordinateValidInPlateau(Coordinates coordinates);
+        public abstract void PrintMap(List<(Coordinates coordinates, Direction direction)> recentPath);
     }
 }

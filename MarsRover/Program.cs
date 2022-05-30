@@ -4,7 +4,6 @@ using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
-using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 IPositionStringConverter positionStringConverter = new PositionStringConverter();
@@ -18,7 +17,7 @@ RectangularPlateau plateau = new(plateauSize);
 
 while (true)
 {
-    PrintRectangle(plateauSize.X, plateauSize.Y, new(), plateau.ObstacleCoordinates);
+    ClearScreenAndPrintMap(plateau, new());
     string obstacleCoordinates = Ask("Enter Obstacle Coordinate (eg \"5 5\", or empty if no more obstacle): ", new Regex(@"^(\d+ \d+)?$").IsMatch);
     if (string.IsNullOrEmpty(obstacleCoordinates))
         break;
@@ -26,22 +25,21 @@ while (true)
     plateau.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
 }
 
-
 while (true)
 {
-    PrintRectangle(plateauSize.X, plateauSize.Y, new(), plateau.ObstacleCoordinates);
+    ClearScreenAndPrintMap(plateau, new());
 
     string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
     (Coordinates initialCoordinates, Direction initialDirection) = positionStringConverter.ToCoordinatesDirection(vehicleInitialPosition);
     vehicle = new(initialCoordinates, initialDirection, plateau);
     commandHandler.ConnectVehicle(vehicle);
 
-    PrintRectangle(plateauSize.X, plateauSize.Y, new() { (initialCoordinates, initialDirection) }, plateau.ObstacleCoordinates);
+    ClearScreenAndPrintMap(plateau, new() { (initialCoordinates, initialDirection) });
 
     string instructionString = Ask("Enter Movement Instruction (eg \"LMMMLRRL\"): ", instructionReader.IsValidInstruction);
     (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
 
-    PrintRectangle(plateauSize.X, plateauSize.Y, commandHandler.RecentPath, plateau.ObstacleCoordinates);
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
     if (status)
     {
         Console.WriteLine($"Instruction [{instructionString}] lead to Position: {commandHandler.RequestPosition()}");
@@ -89,78 +87,17 @@ bool IsValidVehicleInitialPosition(string position)
     return plateau.IsCoordinateValidInPlateau(coordinates);
 }
 
-void PrintRectangle(int width, int height, 
-    List<(Coordinates coordinates, Direction direction)> recentPath,
-    ReadOnlyCollection<Coordinates> obstacleCoordinates)
+void ClearScreenAndPrintMap(PlateauBase plateau, List<(Coordinates, Direction)> recentPath)
 {
-    ConsoleColor defaultBGColor = Console.BackgroundColor;
-    ConsoleColor validGroundColor = ConsoleColor.Blue;
-    ConsoleColor visitedGroundColor = ConsoleColor.DarkBlue;
-    ConsoleColor lastVisitedGroundColor = ConsoleColor.Red;
-    ConsoleColor invalidGroundColor = ConsoleColor.DarkGray;
-
-    string?[,] symbols = new string?[width+1, height+1];
-    foreach (var recentPathItem in recentPath)
-    {
-        int x = recentPathItem.coordinates.X;
-        int y = recentPathItem.coordinates.Y;
-        symbols[x, y] = recentPathItem.direction.Name switch
-        {
-            "north" => "\u2191",
-            "east" => ">",
-            "south" => "\u2193",
-            "west" => "<",
-            _ => null
-        };
-    }
-    int lastX = -1;
-    int lastY = -1;
-    if (recentPath.Count > 0)
-    {
-        lastX = recentPath.Last().coordinates.X;
-        lastY = recentPath.Last().coordinates.Y;
-    }
-
     Console.Clear();
-    Console.WriteLine("ctrl-C to quit");
-    Console.WriteLine();
-    Console.WriteLine($"  Y");
-    for (int y = height; y >= 0; y--)
+    Console.WriteLine("ctrl-C to exit");
+
+    try
     {
-        Console.Write($"{y, 3} ");
-        for (int x = 0; x <= width; x++)
-        {
-            Coordinates currentCoordinates = new(x, y);
-
-            Console.BackgroundColor = visitedGroundColor;
-            string? symbol = symbols[x, y];
-
-            if (symbol is null)
-            {
-                symbol = " ";
-                Console.BackgroundColor = validGroundColor;
-            }
-
-            if (x == lastX && y == lastY)
-                Console.BackgroundColor = lastVisitedGroundColor;
-
-            if (obstacleCoordinates.Contains(currentCoordinates))
-            {
-                symbol = "X";
-                Console.BackgroundColor = invalidGroundColor;
-            }
-
-            Console.Write($" {symbol} ");
-            Console.BackgroundColor = defaultBGColor;
-            Console.Write(" ");
-        }
-        Console.WriteLine();
+        plateau.PrintMap(recentPath);
     }
-    Console.Write("   ");
-    for (int x = 0; x <= width; x++)
-    {
-        Console.Write($"{x, 3} ");
-    }
-    Console.WriteLine("  X");
+    catch
+    { }
+
     Console.WriteLine();
 }

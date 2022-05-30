@@ -89,6 +89,15 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
+        public void AddObstacle_On_Invalid_Plateau_Coordinate_Should_Not_Change_Obstacles()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+
+            plateau.AddObstacle(new(10, 10));
+            plateau.ObstacleCoordinates.Count.Should().Be(0);
+        }
+
+        [Test]
         public void RemoveObstacle_Then_ObstacleCoordinates_Should_Not_Include_Removed_ObstacleCoordinate()
         {
             RectangularPlateau plateau = new(new(5, 5));
