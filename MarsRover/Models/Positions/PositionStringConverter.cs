@@ -6,26 +6,26 @@ namespace MarsRover.Models.Positions
     {
         private readonly Regex _positionStringRegex = new(@"^-?\d+ -?\d+ (N|E|S|W)$");
         private readonly Regex _coordinateStringRegex = new(@"^-?\d+ -?\d+$");
-        private static readonly List<(string directionSymbol, DirectionEnum direction)> _directionSymbolEnum = new()
+        private static readonly List<(string directionSymbol, Direction direction)> _directionSymbolEnum = new()
         {
-            ("N", DirectionEnum.North),
-            ("E", DirectionEnum.East),
-            ("S", DirectionEnum.South),
-            ("W", DirectionEnum.West)
+            ("N", Direction.North),
+            ("E", Direction.East),
+            ("S", Direction.South),
+            ("W", Direction.West)
         };
 
         public bool IsValidPositionString(string? positionString) => IsNotNullAndMatchRegex(positionString, _positionStringRegex);
 
         public bool IsValidCoordinateString(string? coordinateString) => IsNotNullAndMatchRegex(coordinateString, _coordinateStringRegex);
 
-        public (Coordinates, DirectionEnum) ToCoordinatesDirection(string? positionString)
+        public (Coordinates, Direction) ToCoordinatesDirection(string? positionString)
         {
             if (!IsValidPositionString(positionString))
                 throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"1 2 N\")", nameof(positionString));
 
             (string coordinateString, string directionString) = SplitPositionString(positionString!);
 
-            DirectionEnum direction = _directionSymbolEnum
+            Direction direction = _directionSymbolEnum
                 .FirstOrDefault(item => item.directionSymbol == directionString)
                 .direction;
 
@@ -44,7 +44,7 @@ namespace MarsRover.Models.Positions
             return new Coordinates(x, y);
         }
 
-        public string ToPositionString(Coordinates coordinates, DirectionEnum direction)
+        public string ToPositionString(Coordinates coordinates, Direction direction)
         {
             string directionSymbol = _directionSymbolEnum
                 .FirstOrDefault(x => x.direction == direction)

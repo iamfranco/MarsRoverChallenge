@@ -10,7 +10,7 @@ namespace MarsRover.AppUI
         private readonly IPositionStringConverter _positionStringConverter;
         private VehicleBase? _vehicle;
 
-        public List<(Coordinates, DirectionEnum)> RecentPath { get; private set; } = new();
+        public List<(Coordinates, Direction)> RecentPath { get; private set; } = new();
 
         public CommandHandler(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
         {
@@ -58,7 +58,7 @@ namespace MarsRover.AppUI
 
             foreach (SingularInstruction instructionItem in instruction)
             {
-                (Coordinates nextCoordinate, DirectionEnum nextDirection) = RecentPath.Last();
+                (Coordinates nextCoordinate, Direction nextDirection) = RecentPath.Last();
 
                 if (instructionItem is SingularInstruction.TurnLeft)
                     nextDirection = nextDirection.GetLeftTurn();

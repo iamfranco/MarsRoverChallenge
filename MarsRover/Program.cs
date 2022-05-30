@@ -30,7 +30,7 @@ while (true)
     ClearScreenAndPrintMap(plateau, new());
 
     string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
-    (Coordinates initialCoordinates, DirectionEnum initialDirection) = positionStringConverter.ToCoordinatesDirection(vehicleInitialPosition);
+    (Coordinates initialCoordinates, Direction initialDirection) = positionStringConverter.ToCoordinatesDirection(vehicleInitialPosition);
     vehicle = new(initialCoordinates, initialDirection, plateau);
     commandHandler.ConnectVehicle(vehicle);
 
@@ -83,11 +83,11 @@ bool IsValidVehicleInitialPosition(string position)
     if (!positionStringConverter.IsValidPositionString(position))
         return false;
 
-    (Coordinates coordinates, DirectionEnum direction) = positionStringConverter.ToCoordinatesDirection(position);
+    (Coordinates coordinates, Direction direction) = positionStringConverter.ToCoordinatesDirection(position);
     return plateau.IsCoordinateValidInPlateau(coordinates);
 }
 
-void ClearScreenAndPrintMap(PlateauBase plateau, List<(Coordinates, DirectionEnum)> recentPath)
+void ClearScreenAndPrintMap(PlateauBase plateau, List<(Coordinates, Direction)> recentPath)
 {
     Console.Clear();
     Console.WriteLine("ctrl-C to exit");

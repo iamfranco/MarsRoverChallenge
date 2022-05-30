@@ -7,10 +7,10 @@ namespace MarsRover.Models.Vehicles
     public abstract class VehicleBase
     {
         private Coordinates _coordinates;
-        private DirectionEnum _direction;
+        private Direction _direction;
         public PlateauBase Plateau { get; private set; }
 
-        public VehicleBase(Coordinates initialCoordinates, DirectionEnum initialDirection, PlateauBase plateau)
+        public VehicleBase(Coordinates initialCoordinates, Direction initialDirection, PlateauBase plateau)
         {
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
@@ -24,7 +24,7 @@ namespace MarsRover.Models.Vehicles
         }
 
         public Coordinates Coordinates => _coordinates;
-        public DirectionEnum Direction => _direction;
+        public Direction Direction => _direction;
 
         public void ApplyMoveInstruction(List<SingularInstruction> instruction)
         {
@@ -34,7 +34,7 @@ namespace MarsRover.Models.Vehicles
             foreach (SingularInstruction singularInstruction in instruction)
             {
                 Coordinates nextCoordinates = _coordinates;
-                DirectionEnum nextDirection = _direction;
+                Direction nextDirection = _direction;
 
                 if (singularInstruction is SingularInstruction.TurnLeft)
                     nextDirection = nextDirection.GetLeftTurn();
