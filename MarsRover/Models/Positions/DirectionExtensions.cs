@@ -22,7 +22,16 @@
             };
         }
 
-        public static Direction GetLeftTurn(this Direction direction) => (Direction)(((int)direction + 3) % 4);
-        public static Direction GetRightTurn(this Direction direction) => (Direction)(((int)direction + 1) % 4);
+        public static Direction GetLeftTurn(this Direction direction) => GetRotatedDirection(direction, -1);
+        public static Direction GetRightTurn(this Direction direction) => GetRotatedDirection(direction, 1);
+        private static Direction GetRotatedDirection(Direction direction, int amount)
+        {
+            const int directionCount = 4;
+
+            int index = (int) direction;
+            index = (index + directionCount + amount) % directionCount;
+
+            return (Direction) index;
+        }
     }
 }
