@@ -37,8 +37,8 @@ namespace MarsRover.AppUI
         {
             if (_vehicle is null)
                 return "No Vehicle Connected";
-
-            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
+            return "";
+            //return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
         }
 
         public (bool status, string message) SendMoveInstruction(string instructionString)
