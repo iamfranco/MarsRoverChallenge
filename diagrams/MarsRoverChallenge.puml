@@ -28,6 +28,7 @@ abstract PlateauBase <<abstract>>
   + AddObstacle(obstacleCoordinate: Coordinates)
   + RemoveObstacle(obstacleCoordinate: Coordinates)
   {abstract} + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
+  {abstract} + PrintMap(recentPath : List<(Coordinates, Direction)>) : void
 }
 
 class RectangularPlateau
@@ -37,6 +38,7 @@ class RectangularPlateau
   + RectangularPlateau(plateauSize : Coordinates)
 
   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
+  + PrintMap(recentPath : List<(Coordinates, Direction)>) : void
 }
 
 class Coordinates
