@@ -155,15 +155,15 @@ namespace MarsRover.Tests.AppUI
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MRM");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<Position> expectedResult = new()
             {
-                (new(1, 2), Direction.North),
-                (new(1, 3), Direction.North),
-                (new(1, 3), Direction.East),
-                (new(2, 3), Direction.East)
+                new(new(1, 2), Direction.North),
+                new(new(1, 3), Direction.North),
+                new(new(1, 3), Direction.East),
+                new(new(2, 3), Direction.East)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<Position> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i=0; i<actualResult.Count; i++)
@@ -181,16 +181,16 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MRMR");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<Position> expectedResult = new()
             {
-                (new(1, 2), Direction.North),
-                (new(1, 3), Direction.North),
-                (new(1, 3), Direction.East),
-                (new(2, 3), Direction.East),
-                (new(2, 3), Direction.South)
+                new(new(1, 2), Direction.North),
+                new(new(1, 3), Direction.North),
+                new(new(1, 3), Direction.East),
+                new(new(2, 3), Direction.East),
+                new(new(2, 3), Direction.South)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<Position> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
@@ -209,16 +209,16 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MRMR");
             commandHandler.SendMoveInstruction("ML!!?");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<Position> expectedResult = new()
             {
-                (new(1, 2), Direction.North),
-                (new(1, 3), Direction.North),
-                (new(1, 3), Direction.East),
-                (new(2, 3), Direction.East),
-                (new(2, 3), Direction.South)
+                new(new(1, 2), Direction.North),
+                new(new(1, 3), Direction.North),
+                new(new(1, 3), Direction.East),
+                new(new(2, 3), Direction.East),
+                new(new(2, 3), Direction.South)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<Position> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
@@ -238,14 +238,14 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MML");
             commandHandler.SendMoveInstruction("RRMM");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<Position> expectedResult = new()
             {
-                (new(1, 4), Direction.West),
-                (new(1, 4), Direction.North),
-                (new(1, 4), Direction.East)
+                new(new(1, 4), Direction.West),
+                new(new(1, 4), Direction.North),
+                new(new(1, 4), Direction.East)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<Position> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
