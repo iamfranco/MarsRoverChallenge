@@ -10,7 +10,7 @@ namespace MarsRover.AppUI
         private readonly IPositionStringConverter _positionStringConverter;
         private VehicleBase? _vehicle;
 
-        public List<(Coordinates, Direction)> RecentPath { get; private set; } = new();
+        public List<(Coordinates, DirectionEnum)> RecentPath { get; private set; } = new();
 
         public CommandHandler(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
         {
@@ -23,8 +23,7 @@ namespace MarsRover.AppUI
             if (_vehicle is null)
                 return "No Vehicle Connected";
 
-            return "";
-            //return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
+            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
         }
 
         public void ConnectVehicle(VehicleBase vehicle)
@@ -55,27 +54,26 @@ namespace MarsRover.AppUI
 
             List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
-            //RecentPath = new() { (_vehicle.Coordinates, _vehicle.Direction.Clone()) };
+            RecentPath = new() { (_vehicle.Coordinates, _vehicle.Direction) };
 
-            //foreach (SingularInstruction instructionItem in instruction)
-            //{
-            //    (Coordinates nextCoordinate, Direction nextDirection) = RecentPath.Last();
-            //    nextDirection = nextDirection.Clone();
+            foreach (SingularInstruction instructionItem in instruction)
+            {
+                (Coordinates nextCoordinate, DirectionEnum nextDirection) = RecentPath.Last();
 
-            //    if (instructionItem is SingularInstruction.TurnLeft)
-            //        nextDirection.TurnLeft();
+                if (instructionItem is SingularInstruction.TurnLeft)
+                    nextDirection = nextDirection.GetLeftTurn();
 
-            //    if (instructionItem is SingularInstruction.TurnRight)
-            //        nextDirection.TurnRight();
+                if (instructionItem is SingularInstruction.TurnRight)
+                    nextDirection = nextDirection.GetRightTurn();
 
-            //    if (instructionItem is SingularInstruction.MoveForward)
-            //        nextCoordinate += nextDirection.MovementVector;
+                if (instructionItem is SingularInstruction.MoveForward)
+                    nextCoordinate += nextDirection.GetMovementVector();
 
-            //    if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
-            //        return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");
+                if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
+                    return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");
 
-            //    RecentPath.Add((nextCoordinate, nextDirection));
-            //}
+                RecentPath.Add((nextCoordinate, nextDirection));
+            }
 
             _vehicle.ApplyMoveInstruction(instruction);
 

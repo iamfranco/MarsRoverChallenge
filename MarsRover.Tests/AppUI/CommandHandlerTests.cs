@@ -155,15 +155,15 @@ namespace MarsRover.Tests.AppUI
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MRM");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<(Coordinates, DirectionEnum)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east"))
+                (new(1, 2), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.East),
+                (new(2, 3), DirectionEnum.East)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<(Coordinates, DirectionEnum)> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i=0; i<actualResult.Count; i++)
@@ -181,16 +181,16 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MRMR");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<(Coordinates, DirectionEnum)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east")),
-                (new(2, 3), new("south"))
+                (new(1, 2), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.East),
+                (new(2, 3), DirectionEnum.East),
+                (new(2, 3), DirectionEnum.South)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<(Coordinates, DirectionEnum)> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
@@ -209,16 +209,16 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MRMR");
             commandHandler.SendMoveInstruction("ML!!?");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<(Coordinates, DirectionEnum)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east")),
-                (new(2, 3), new("south"))
+                (new(1, 2), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.North),
+                (new(1, 3), DirectionEnum.East),
+                (new(2, 3), DirectionEnum.East),
+                (new(2, 3), DirectionEnum.South)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<(Coordinates, DirectionEnum)> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
@@ -238,14 +238,14 @@ namespace MarsRover.Tests.AppUI
             commandHandler.SendMoveInstruction("MML");
             commandHandler.SendMoveInstruction("RRMM");
 
-            List<(Coordinates, Direction)> expectedResult = new()
+            List<(Coordinates, DirectionEnum)> expectedResult = new()
             {
-                (new(1, 4), new("west")),
-                (new(1, 4), new("north")),
-                (new(1, 4), new("east"))
+                (new(1, 4), DirectionEnum.West),
+                (new(1, 4), DirectionEnum.North),
+                (new(1, 4), DirectionEnum.East)
             };
 
-            List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
+            List<(Coordinates, DirectionEnum)> actualResult = commandHandler.RecentPath;
 
             actualResult.Count.Should().Be(expectedResult.Count);
             for (int i = 0; i < actualResult.Count; i++)
