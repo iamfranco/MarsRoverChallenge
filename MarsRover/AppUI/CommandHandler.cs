@@ -18,14 +18,6 @@ namespace MarsRover.AppUI
             _positionStringConverter = positionStringConverter;
         }
 
-        public string RequestPosition()
-        {
-            if (_vehicle is null)
-                return "No Vehicle Connected";
-
-            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
-        }
-
         public void ConnectVehicle(VehicleBase vehicle)
         {
             if (vehicle is null)
@@ -41,6 +33,14 @@ namespace MarsRover.AppUI
             RecentPath = new();
         }
 
+        public string RequestPosition()
+        {
+            if (_vehicle is null)
+                return "No Vehicle Connected";
+
+            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
+        }
+
         public (bool status, string message) SendMoveInstruction(string instructionString)
         {
             if (_vehicle is null)
@@ -54,21 +54,20 @@ namespace MarsRover.AppUI
 
             List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
-            RecentPath = new() { (_vehicle.Coordinates, _vehicle.Direction.Clone()) };
+            RecentPath = new() { (_vehicle.Coordinates, _vehicle.Direction) };
 
             foreach (SingularInstruction instructionItem in instruction)
             {
                 (Coordinates nextCoordinate, Direction nextDirection) = RecentPath.Last();
-                nextDirection = nextDirection.Clone();
 
                 if (instructionItem is SingularInstruction.TurnLeft)
-                    nextDirection.TurnLeft();
+                    nextDirection = nextDirection.GetLeftTurn();
 
                 if (instructionItem is SingularInstruction.TurnRight)
-                    nextDirection.TurnRight();
+                    nextDirection = nextDirection.GetRightTurn();
 
                 if (instructionItem is SingularInstruction.MoveForward)
-                    nextCoordinate += nextDirection.MovementVector;
+                    nextCoordinate += nextDirection.GetMovementVector();
 
                 if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
                     return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");

@@ -38,7 +38,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void ConnectVehicle_Then_RequestPosition_Should_Return_Vehicle_Position()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -47,7 +47,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void ConnectVehicle_Then_ConnectVehicle_With_Null_Then_RequestPosition_Should_Return_Initial_Vehicle_Position()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.ConnectVehicle(null);
@@ -57,7 +57,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void DisconnectVehicle_Then_RequestPosition_Should_Return_No_Vehicle_Connected()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.DisconnectVehicle();
@@ -78,7 +78,7 @@ namespace MarsRover.Tests.AppUI
         public void ConnectVehicle_Then_SendMoveInstruction_With_Null_Instruction_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
             string instruction = null;
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             
             commandHandler.ConnectVehicle(vehicle);
             (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
@@ -91,7 +91,7 @@ namespace MarsRover.Tests.AppUI
         public void ConnectVehicle_Then_SendMoveInstruction_With_Empty_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "";
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
@@ -104,7 +104,7 @@ namespace MarsRover.Tests.AppUI
         public void ConnectVehicle_Then_SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "LM!LM";
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
@@ -120,7 +120,7 @@ namespace MarsRover.Tests.AppUI
             plateauWithOneObstacle.AddObstacle(new(2, 4));
 
             string instruction = "RMLMMM";
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateauWithOneObstacle);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateauWithOneObstacle);
 
             commandHandler.ConnectVehicle(vehicle);
             (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
@@ -133,7 +133,7 @@ namespace MarsRover.Tests.AppUI
         public void ConnectVehicle_Then_SendMoveInstruction_With_Valid_Instruction_String_Should_Return_True_And_Modify_Vehicle_Position()
         {
             string instruction = "MRM";
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
 
             commandHandler.ConnectVehicle(vehicle);
             (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
@@ -151,16 +151,16 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Successful_SendMoveInstruction_Should_Return_Instructions_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MRM");
 
             List<(Coordinates, Direction)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east"))
+                (new(1, 2), Direction.North),
+                (new(1, 3), Direction.North),
+                (new(1, 3), Direction.East),
+                (new(2, 3), Direction.East)
             };
 
             List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
@@ -175,7 +175,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Multiple_Successful_SendMoveInstruction_Should_Return_Last_Instructions_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MMLL");
@@ -183,11 +183,11 @@ namespace MarsRover.Tests.AppUI
 
             List<(Coordinates, Direction)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east")),
-                (new(2, 3), new("south"))
+                (new(1, 2), Direction.North),
+                (new(1, 3), Direction.North),
+                (new(1, 3), Direction.East),
+                (new(2, 3), Direction.East),
+                (new(2, 3), Direction.South)
             };
 
             List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
@@ -202,7 +202,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Invalidly_Formatted_Instruction_To_SendMoveInstruction_Should_Return_Last_Successful_Instruction_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MMLL");
@@ -211,11 +211,11 @@ namespace MarsRover.Tests.AppUI
 
             List<(Coordinates, Direction)> expectedResult = new()
             {
-                (new(1, 2), new("north")),
-                (new(1, 3), new("north")),
-                (new(1, 3), new("east")),
-                (new(2, 3), new("east")),
-                (new(2, 3), new("south"))
+                (new(1, 2), Direction.North),
+                (new(1, 3), Direction.North),
+                (new(1, 3), Direction.East),
+                (new(2, 3), Direction.East),
+                (new(2, 3), Direction.South)
             };
 
             List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
@@ -233,16 +233,16 @@ namespace MarsRover.Tests.AppUI
             PlateauBase plateauWithObstacle = new RectangularPlateau(new(5, 5));
             plateauWithObstacle.AddObstacle(new(2, 4));
 
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateauWithObstacle);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateauWithObstacle);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MML");
             commandHandler.SendMoveInstruction("RRMM");
 
             List<(Coordinates, Direction)> expectedResult = new()
             {
-                (new(1, 4), new("west")),
-                (new(1, 4), new("north")),
-                (new(1, 4), new("east"))
+                (new(1, 4), Direction.West),
+                (new(1, 4), Direction.North),
+                (new(1, 4), Direction.East)
             };
 
             List<(Coordinates, Direction)> actualResult = commandHandler.RecentPath;
@@ -257,7 +257,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Re_ConnectVehicle_Should_Return_Empty_List()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MML");
             commandHandler.SendMoveInstruction("RRMM");
@@ -270,7 +270,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_DisconnectVehicle_Should_Return_Empty_List()
         {
-            VehicleBase vehicle = new Rover(new Coordinates(1, 2), new Direction("north"), plateau);
+            VehicleBase vehicle = new Rover(new Coordinates(1, 2), Direction.North, plateau);
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.SendMoveInstruction("MML");
             commandHandler.SendMoveInstruction("RRMM");

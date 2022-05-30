@@ -110,12 +110,12 @@ namespace MarsRover.Models.Plateaus
             {
                 int x = recentPathItem.coordinates.X;
                 int y = recentPathItem.coordinates.Y;
-                string symbol = recentPathItem.direction.Name switch
+                string symbol = recentPathItem.direction switch
                 {
-                    "north" => "\u2191",
-                    "east" => ">",
-                    "south" => "\u2193",
-                    "west" => "<",
+                    Direction.North => "\u2191",
+                    Direction.East => ">",
+                    Direction.South => "\u2193",
+                    Direction.West => "<",
                     _ => " "
                 };
                 matrixToPrint[x, y] = (symbol, visitedGroundColor);

@@ -6,12 +6,12 @@ namespace MarsRover.Models.Positions
     {
         private readonly Regex _positionStringRegex = new(@"^-?\d+ -?\d+ (N|E|S|W)$");
         private readonly Regex _coordinateStringRegex = new(@"^-?\d+ -?\d+$");
-        private static List<(string directionSymbol, string directionName)> _directionSymbolNames = new()
+        private static readonly List<(string directionSymbol, Direction direction)> _directionSymbolEnum = new()
         {
-            ("N", "north"),
-            ("E", "east"),
-            ("S", "south"),
-            ("W", "west")
+            ("N", Direction.North),
+            ("E", Direction.East),
+            ("S", Direction.South),
+            ("W", Direction.West)
         };
 
         public bool IsValidPositionString(string? positionString) => IsNotNullAndMatchRegex(positionString, _positionStringRegex);
@@ -25,7 +25,11 @@ namespace MarsRover.Models.Positions
 
             (string coordinateString, string directionString) = SplitPositionString(positionString!);
 
-            return (ToCoordinates(coordinateString), new Direction(directionString));
+            Direction direction = _directionSymbolEnum
+                .FirstOrDefault(item => item.directionSymbol == directionString)
+                .direction;
+
+            return (ToCoordinates(coordinateString), direction);
         }
 
         public Coordinates ToCoordinates(string? coordinateString)
@@ -40,13 +44,10 @@ namespace MarsRover.Models.Positions
             return new Coordinates(x, y);
         }
 
-        public string ToPositionString(Coordinates coordinates, Direction? direction)
+        public string ToPositionString(Coordinates coordinates, Direction direction)
         {
-            if (direction is null)
-                throw new ArgumentNullException(nameof(direction));
-
-            string directionSymbol = _directionSymbolNames
-                .FirstOrDefault(x => x.directionName == direction.Name)
+            string directionSymbol = _directionSymbolEnum
+                .FirstOrDefault(x => x.direction == direction)
                 .directionSymbol;
 
             return $"{coordinates.X} {coordinates.Y} {directionSymbol}";
@@ -59,9 +60,7 @@ namespace MarsRover.Models.Positions
             int lastSpaceIndex = positionString.LastIndexOf(" ");
 
             string coordinateString = positionString[..lastSpaceIndex];
-            string directionString = _directionSymbolNames
-                .FirstOrDefault(x => x.directionSymbol == positionString[(lastSpaceIndex + 1)..])
-                .directionName;
+            string directionString = positionString[(lastSpaceIndex + 1)..];
 
             return (coordinateString, directionString);
         }
