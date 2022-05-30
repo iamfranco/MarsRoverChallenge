@@ -9,7 +9,7 @@ namespace MarsRover.Tests.Models.Positions
         readonly List<string> validPositionStrings = new() { "1 2 N", "5 4 S", "-5 4 E", "0 -4 W" };
         readonly List<string> validCoordinateStrings = new() { "1 2", "5 4", "-5 4", "0 -4" };
         readonly List<Coordinates> coordinatesForValidStrings = new() { new(1, 2), new(5, 4), new(-5, 4), new(0, -4) };
-        readonly List<Direction> directionForValidStrings = new() { new("north"), new("south"), new("east"), new("west") };
+        readonly List<DirectionEnum> directionForValidStrings = new() { DirectionEnum.North, DirectionEnum.South, DirectionEnum.East, DirectionEnum.West };
 
         readonly List<string> invalidPositionStrings = new() { "", " ", "--1 2 N", "54 S", "-5-4 E", "0 -4 WW" };
         readonly List<string> invalidCoordinateStrings = new() { "--1 2", "54", "-5-4", "0- 4" };
@@ -109,13 +109,13 @@ namespace MarsRover.Tests.Models.Positions
             {
                 string positionString = validPositionStrings[i];
                 Coordinates expectedCoordinates = coordinatesForValidStrings[i];
-                Direction expectedDirection = directionForValidStrings[i];
+                DirectionEnum expectedDirection = directionForValidStrings[i];
 
-                (Coordinates actualCoordinates, Direction actualDirection) =
+                (Coordinates actualCoordinates, DirectionEnum actualDirection) =
                     positionStringConverter.ToCoordinatesDirection(positionString);
 
                 actualCoordinates.Should().Be(expectedCoordinates);
-                actualDirection.Name.Should().Be(expectedDirection.Name);
+                actualDirection.Should().Be(expectedDirection);
             }
         }
 
@@ -157,20 +157,11 @@ namespace MarsRover.Tests.Models.Positions
         [Test]
         public void ToPositionString_Should_Return_Correct_Position_String_For_Coordinates_And_Direction()
         {
-            positionStringConverter.ToPositionString(new Coordinates(1, 2), new Direction("north"))
+            positionStringConverter.ToPositionString(new Coordinates(1, 2), DirectionEnum.North)
                 .Should().Be("1 2 N");
 
-            positionStringConverter.ToPositionString(new Coordinates(5, -30), new Direction("east"))
+            positionStringConverter.ToPositionString(new Coordinates(5, -30), DirectionEnum.East)
                 .Should().Be("5 -30 E");
-        }
-
-        [Test]
-        public void ToPositionString_Should_Throw_Exception_For_Null_Direction_Input()
-        {
-            Action act;
-
-            act = () => positionStringConverter.ToPositionString(new Coordinates(1, 2), null);
-            act.Should().Throw<ArgumentNullException>();
         }
     }
 }
