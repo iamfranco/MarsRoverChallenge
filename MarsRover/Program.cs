@@ -30,11 +30,11 @@ while (true)
     ClearScreenAndPrintMap(plateau, new());
 
     string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
-    (Coordinates initialCoordinates, Direction initialDirection) = positionStringConverter.ToCoordinatesDirection(vehicleInitialPosition);
-    vehicle = new(initialCoordinates, initialDirection, plateau);
+    Position initialPosition = positionStringConverter.ToPosition(vehicleInitialPosition);
+    vehicle = new(initialPosition, plateau);
     commandHandler.ConnectVehicle(vehicle);
 
-    ClearScreenAndPrintMap(plateau, new() { (initialCoordinates, initialDirection) });
+    ClearScreenAndPrintMap(plateau, new() { initialPosition });
 
     string instructionString = Ask("Enter Movement Instruction (eg \"LMMMLRRL\"): ", instructionReader.IsValidInstruction);
     (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
@@ -78,16 +78,16 @@ static string Ask(string prompt, Func<string, bool> validationFunc)
     }
 }
 
-bool IsValidVehicleInitialPosition(string position)
+bool IsValidVehicleInitialPosition(string positionString)
 {
-    if (!positionStringConverter.IsValidPositionString(position))
+    if (!positionStringConverter.IsValidPositionString(positionString))
         return false;
 
-    (Coordinates coordinates, Direction direction) = positionStringConverter.ToCoordinatesDirection(position);
-    return plateau.IsCoordinateValidInPlateau(coordinates);
+    Position position = positionStringConverter.ToPosition(positionString);
+    return plateau.IsCoordinateValidInPlateau(position.Coordinates);
 }
 
-void ClearScreenAndPrintMap(PlateauBase plateau, List<(Coordinates, Direction)> recentPath)
+void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
 {
     Console.Clear();
     Console.WriteLine("ctrl-C to exit");

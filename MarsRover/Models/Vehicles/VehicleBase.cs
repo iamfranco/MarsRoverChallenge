@@ -6,20 +6,18 @@ namespace MarsRover.Models.Vehicles
 {
     public abstract class VehicleBase
     {
-        public Coordinates Coordinates { get; private set; }
-        public Direction Direction { get; private set; }
+        public Position Position { get; private set; }
         public PlateauBase Plateau { get; private set; }
 
-        public VehicleBase(Coordinates initialCoordinates, Direction initialDirection, PlateauBase plateau)
+        public VehicleBase(Position initialPosition, PlateauBase plateau)
         {
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
 
-            if (!plateau.IsCoordinateValidInPlateau(initialCoordinates))
-                throw new ArgumentException($"{nameof(initialCoordinates)} {initialCoordinates} is not valid in plateau", nameof(initialCoordinates));
+            if (!plateau.IsCoordinateValidInPlateau(initialPosition.Coordinates))
+                throw new ArgumentException($"{nameof(initialPosition)} {initialPosition.Coordinates} is not valid in plateau", nameof(initialPosition));
 
-            Coordinates = initialCoordinates;
-            Direction = initialDirection;
+            Position = initialPosition;
             Plateau = plateau;
         }
 
@@ -30,8 +28,8 @@ namespace MarsRover.Models.Vehicles
 
             foreach (SingularInstruction singularInstruction in instruction)
             {
-                Coordinates nextCoordinates = Coordinates;
-                Direction nextDirection = Direction;
+                Coordinates nextCoordinates = Position.Coordinates;
+                Direction nextDirection = Position.Direction;
 
                 if (singularInstruction is SingularInstruction.TurnLeft)
                     nextDirection = nextDirection.GetLeftTurn();
@@ -45,8 +43,7 @@ namespace MarsRover.Models.Vehicles
                 if (!Plateau.IsCoordinateValidInPlateau(nextCoordinates))
                     return;
 
-                Coordinates = nextCoordinates;
-                Direction = nextDirection;
+                Position = new Position(nextCoordinates, nextDirection);
             }
         }
     }

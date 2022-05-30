@@ -11,6 +11,14 @@ namespace MarsRover.Tests.Models.Positions
         readonly List<Coordinates> coordinatesForValidStrings = new() { new(1, 2), new(5, 4), new(-5, 4), new(0, -4) };
         readonly List<Direction> directionForValidStrings = new() { Direction.North, Direction.South, Direction.East, Direction.West };
 
+        readonly List<Position> positionForValidStrings = new()
+        {
+            new(new(1, 2), Direction.North),
+            new(new(5, 4), Direction.South),
+            new(new(-5, 4), Direction.East),
+            new(new(0, -4), Direction.West),
+        };
+
         readonly List<string> invalidPositionStrings = new() { "", " ", "--1 2 N", "54 S", "-5-4 E", "0 -4 WW" };
         readonly List<string> invalidCoordinateStrings = new() { "--1 2", "54", "-5-4", "0- 4" };
 
@@ -82,40 +90,37 @@ namespace MarsRover.Tests.Models.Positions
         }
 
         [Test]
-        public void ToCoordinatesDirection_Should_Throw_Exception_For_Null_Input()
+        public void ToPosition_Should_Throw_Exception_For_Null_Input()
         {
             Action act;
 
-            act = () => positionStringConverter.ToCoordinatesDirection(null);
+            act = () => positionStringConverter.ToPosition(null);
             act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void ToCoordinatesDirection_Should_Throw_Exception_For_Invalid_PositionString()
+        public void ToPosition_Should_Throw_Exception_For_Invalid_PositionString()
         {
             Action act;
 
-            foreach (string invalidCoordinateString in invalidCoordinateStrings)
+            foreach (string invalidPositionString in invalidPositionStrings)
             {
-                act = () => positionStringConverter.ToCoordinatesDirection(invalidCoordinateString);
+                act = () => positionStringConverter.ToPosition(invalidPositionString);
                 act.Should().Throw<ArgumentException>();
             }
         }
 
         [Test]
-        public void ToCoordinatesDirection_Should_Return_Correct_Coordinates_And_Direction_For_valid_PositionString()
+        public void ToPosition_Should_Return_Correct_Position_For_valid_PositionString()
         {
             for (int i = 0; i < validPositionStrings.Count; i++)
             {
                 string positionString = validPositionStrings[i];
-                Coordinates expectedCoordinates = coordinatesForValidStrings[i];
-                Direction expectedDirection = directionForValidStrings[i];
+                Position expectedCoordinates = positionForValidStrings[i];
 
-                (Coordinates actualCoordinates, Direction actualDirection) =
-                    positionStringConverter.ToCoordinatesDirection(positionString);
+                Position actualPosition = positionStringConverter.ToPosition(positionString);
 
-                actualCoordinates.Should().Be(expectedCoordinates);
-                actualDirection.Should().Be(expectedDirection);
+                actualPosition.Should().Be(expectedCoordinates);
             }
         }
 
@@ -157,10 +162,10 @@ namespace MarsRover.Tests.Models.Positions
         [Test]
         public void ToPositionString_Should_Return_Correct_Position_String_For_Coordinates_And_Direction()
         {
-            positionStringConverter.ToPositionString(new Coordinates(1, 2), Direction.North)
+            positionStringConverter.ToPositionString(new Position(new Coordinates(1, 2), Direction.North))
                 .Should().Be("1 2 N");
 
-            positionStringConverter.ToPositionString(new Coordinates(5, -30), Direction.East)
+            positionStringConverter.ToPositionString(new Position(new Coordinates(5, -30), Direction.East))
                 .Should().Be("5 -30 E");
         }
     }

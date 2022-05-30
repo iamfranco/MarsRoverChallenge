@@ -46,18 +46,17 @@ namespace MarsRover.Tests.Models.Vehicles
                 plateauWithObstacles.AddObstacle(obstacle);
             }
 
-            roverOnPlateau = new Rover(new Coordinates(1, 2), Direction.North, plateau);
+            roverOnPlateau = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
         }
 
         [Test]
         public void Constructor_With_Null_Plateau_Input_Should_Throw_Exception()
         {
             Rover rover;
-            Coordinates initialCoordinates = new(1, 2);
-            Direction initialDirection = Direction.North;
+            Position initialPosition = new Position(new Coordinates(1, 2), Direction.North);
             PlateauBase plat = null;
 
-            Action act = () => rover = new Rover(initialCoordinates, initialDirection, plat);
+            Action act = () => rover = new Rover(initialPosition, plat);
             act.Should().Throw<ArgumentNullException>();
         }
 
@@ -65,29 +64,19 @@ namespace MarsRover.Tests.Models.Vehicles
         public void Constructor_With_InitialPosition_Invalid_On_Plateau_Should_Throw_Exception()
         {
             Rover rover;
-            Coordinates initialCoordinates = obstacles[0];
-            Direction initialDirection = Direction.North;
+            Position initialPosition = new Position(obstacles[0], Direction.North);
 
-            Action act = () => rover = new Rover(initialCoordinates, initialDirection, plateauWithObstacles);
+            Action act = () => rover = new Rover(initialPosition, plateauWithObstacles);
             act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void Coordinates_After_Successful_Construction_Should_Return_InitialPosition()
+        public void Position_After_Successful_Construction_Should_Return_InitialPosition()
         {
-            Coordinates coordinates = new(1, 2);
-            Rover rover = new Rover(coordinates, Direction.North, plateau);
+            Position initialPosition = new(new(1, 2), Direction.North);
+            Rover rover = new Rover(initialPosition, plateau);
 
-            rover.Coordinates.Should().Be(coordinates);
-        }
-
-        [Test]
-        public void Direction_After_Successful_Construction_Should_Return_InitialPosition()
-        {
-            Direction direction = Direction.North;
-            Rover rover = new Rover(new(1, 2), direction, plateau);
-
-            rover.Direction.Should().Be(direction);
+            rover.Position.Should().Be(initialPosition);
         }
 
         [Test]
@@ -112,11 +101,11 @@ namespace MarsRover.Tests.Models.Vehicles
         }
 
         [Test]
-        public void GetPosition_After_ApplyMoveInstruction_Should_Return_Correct_New_Position()
+        public void Position_After_ApplyMoveInstruction_Should_Return_Correct_New_Position()
         {
             Rover rover;
 
-            rover = new Rover(new Coordinates(1, 2), Direction.North, plateau);
+            rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
             rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.TurnLeft,
@@ -129,10 +118,9 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward,
                 SingularInstruction.MoveForward
             });
-            rover.Coordinates.Should().Be(new Coordinates(1, 3));
-            rover.Direction.Should().Be(Direction.North);
+            rover.Position.Should().Be(new Position(new(1, 3), Direction.North));
 
-            rover = new Rover(new Coordinates(3, 3), Direction.East, plateau);
+            rover = new Rover(new Position(new Coordinates(3, 3), Direction.East), plateau);
             rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.MoveForward,
@@ -146,8 +134,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.TurnRight,
                 SingularInstruction.MoveForward
             });
-            rover.Coordinates.Should().Be(new Coordinates(5, 1));
-            rover.Direction.Should().Be(Direction.East);
+            rover.Position.Should().Be(new Position(new(5, 1), Direction.East));
         }
 
         [Test]
@@ -156,7 +143,7 @@ namespace MarsRover.Tests.Models.Vehicles
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
             plateauWithOneObstacle.AddObstacle(new(2, 3));
 
-            Rover rover = new Rover(new Coordinates(1, 2), Direction.North, plateauWithObstacles);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithObstacles);
 
             List<SingularInstruction> instruction = new()
             {
@@ -169,14 +156,13 @@ namespace MarsRover.Tests.Models.Vehicles
 
             rover.ApplyMoveInstruction(instruction);
 
-            rover.Coordinates.Should().Be(new Coordinates(1, 3));
-            rover.Direction.Should().Be(Direction.East);
+            rover.Position.Should().Be(new Position(new(1, 3), Direction.East));
         }
 
         [Test]
         public void TakePhotoAndSendToStation_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover(new Coordinates(1, 2), Direction.North, plateau);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
             Action act;
 
             act = () => rover.TakePhotoAndSendToStation();
@@ -186,7 +172,7 @@ namespace MarsRover.Tests.Models.Vehicles
         [Test]
         public void CollectSample_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover(new Coordinates(1, 2), Direction.North, plateau);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
             Action act;
 
             act = () => rover.CollectSample();

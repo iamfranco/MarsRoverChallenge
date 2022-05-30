@@ -18,7 +18,7 @@ namespace MarsRover.Models.Positions
 
         public bool IsValidCoordinateString(string? coordinateString) => IsNotNullAndMatchRegex(coordinateString, _coordinateStringRegex);
 
-        public (Coordinates, Direction) ToCoordinatesDirection(string? positionString)
+        public Position ToPosition(string? positionString)
         {
             if (!IsValidPositionString(positionString))
                 throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"1 2 N\")", nameof(positionString));
@@ -29,7 +29,7 @@ namespace MarsRover.Models.Positions
                 .FirstOrDefault(item => item.directionSymbol == directionString)
                 .direction;
 
-            return (ToCoordinates(coordinateString), direction);
+            return new(ToCoordinates(coordinateString), direction);
         }
 
         public Coordinates ToCoordinates(string? coordinateString)
@@ -44,13 +44,13 @@ namespace MarsRover.Models.Positions
             return new Coordinates(x, y);
         }
 
-        public string ToPositionString(Coordinates coordinates, Direction direction)
+        public string ToPositionString(Position position)
         {
             string directionSymbol = _directionSymbolEnum
-                .FirstOrDefault(x => x.direction == direction)
+                .FirstOrDefault(x => x.direction == position.Direction)
                 .directionSymbol;
 
-            return $"{coordinates.X} {coordinates.Y} {directionSymbol}";
+            return $"{position.Coordinates.X} {position.Coordinates.Y} {directionSymbol}";
         }
 
         private static bool IsNotNullAndMatchRegex(string? str, Regex regex) => str is not null && regex.IsMatch(str);

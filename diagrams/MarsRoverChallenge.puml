@@ -6,11 +6,11 @@ class CommandHandler
   - instructionReader : IInstructionReader
   - positionStringConverter : IPositionStringConverter
   - vehicle : VehicleBase
-  - RecentPath : List<&#40;Coordinates, Direction&#41;>
+  - RecentPath : List<Position>
 
   + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
   
-  + GetRecentPath() : List<(Coordinates, Direction)>
+  + GetRecentPath() : List<Position>
 
   + ConnectVehicle(vehicle : VehicleBase)
   + DisconnectVehicle()
@@ -46,7 +46,7 @@ abstract PlateauBase <<abstract>>
   + AddObstacle(obstacleCoordinate: Coordinates)
   + RemoveObstacle(obstacleCoordinate: Coordinates)
   {abstract} + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
-  {abstract} + PrintMap(recentPath : List<(Coordinates, Direction)>) : void
+  {abstract} + PrintMap(recentPath : List<Position>) : void
 }
 
 class RectangularPlateau
@@ -56,13 +56,16 @@ class RectangularPlateau
   + RectangularPlateau(plateauSize : Coordinates)
 
   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
-  + PrintMap(recentPath : List<(Coordinates, Direction)>) : void
+  + PrintMap(recentPath : List<Position>) : void
 }
 
-class Coordinates
+class Coordinates <<struct>>
 {
-  + x : int
-  + y : int
+  - x : int
+  - y : int
+
+  + GetX() : int
+  + GetY() : int
 
   + operator+(a : Coordinates, b : Coordinates) : Coordinates
 }
@@ -81,29 +84,38 @@ enum Direction
 
 interface IPositionStringConverter <<interface>>
 {
-  + IsValidPositionString(position : string) : bool
+  + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
 
-  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
 
-  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
+  + ToPositionString(position : Position) : string
+}
+
+class Position <<struct>>
+{
+  - coordinates : Coordinates
+  - direction : Direction
+
+  + GetCoordinates() : Coordinates
+  + GetDirection() : Direction
 }
 
 class PositionStringConverter
 {
-  + IsValidPositionString(position : string) : bool
+  + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
 
-  + ToCoordinatesDirection(position : string) : (Coordinates, Direction)
+  + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
 
-  + ToPositionString(coordinates : Coordinates, direction : Direction) : string
+  + ToPositionString(position : Position) : string
 }
 
 class Rover
 {
-  + Rover(initialCoordinates : Coordinates, initialDirection : Direction, plateau : PlateauBase)
+  + Rover(initialPosition : Position, plateau : PlateauBase)
 
   + TakePhotoAndSendToStation() : void
   + CollectSample() : void
@@ -111,14 +123,12 @@ class Rover
 
 abstract VehicleBase <<abstract>>
 {
-  - coordinates : Coordinates
-  - direction : Direction
+  - position : Position
   - plateau : PlateauBase
 
-  + VehicleBase(initialCoordinates : Coordinates, initialDirection : Direction, plateau : PlateauBase)
+  + VehicleBase(initialPosition : Position, plateau : PlateauBase)
 
-  + GetCoordinates() : Coordinates
-  + GetDirection() : Direction
+  + GetPosition() : Position
   + GetPlateau() : PlateauBase
   + ApplyMoveInstruction(instruction : List<SingularInstruction>) : void
 }
@@ -126,25 +136,27 @@ abstract VehicleBase <<abstract>>
 CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter
 CommandHandler o-- VehicleBase
-CommandHandler -----> Coordinates
-CommandHandler ----> Direction
+CommandHandler o---- Position
 
 IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
 
 VehicleBase <|-u- Rover
 VehicleBase --> SingularInstruction
-VehicleBase o--- Direction
-VehicleBase o---- Coordinates
+VehicleBase o--- Position
 VehicleBase o-- PlateauBase
 
-IPositionStringConverter <|.. PositionStringConverter
-IPositionStringConverter ---> Direction
+IPositionStringConverter <|..... PositionStringConverter
+IPositionStringConverter ---> Position
 IPositionStringConverter ----> Coordinates
 
-PlateauBase <|-- RectangularPlateau
+PlateauBase <|----- RectangularPlateau
+PlateauBase ---> Position
 PlateauBase o--- Coordinates
 
 Direction --> Coordinates 
+
+Position o-- Direction
+Position o-- Coordinates
 
 @enduml

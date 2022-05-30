@@ -4,8 +4,8 @@
     {
         bool IsValidPositionString(string? positionString);
         bool IsValidCoordinateString(string? coordinateString);
-        (Coordinates, Direction) ToCoordinatesDirection(string? positionString);
+        Position ToPosition(string? positionString);
         Coordinates ToCoordinates(string? coordinateString);
-        string ToPositionString(Coordinates coordinates, Direction direction);
+        string ToPositionString(Position position);
     }
 }
