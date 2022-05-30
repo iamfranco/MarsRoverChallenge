@@ -1,6 +1,24 @@
 @startuml "Mars Rover Challenge"
 skinparam classAttributeIconSize 0
 
+class CommandHandler
+{
+  - instructionReader : IInstructionReader
+  - positionStringConverter : IPositionStringConverter
+  - vehicle : VehicleBase
+  - RecentPath : List<&#40;Coordinates, Direction&#41;>
+
+  + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
+  
+  + GetRecentPath() : List<(Coordinates, Direction)>
+
+  + ConnectVehicle(vehicle : VehicleBase)
+  + DisconnectVehicle()
+
+  + RequestPosition() : string
+  + SendMoveInstruction(instruction : string) : (bool, string)
+}
+
 interface IInstructionReader <<interface>>
 {
   + IsValidInstruction(instruction : string) : bool
@@ -45,17 +63,20 @@ class Coordinates
 {
   + x : int
   + y : int
+
+  + operator+(a : Coordinates, b : Coordinates) : Coordinates
 }
 
-class Direction
+enum Direction
 {
-  - directions : List< &#40;string, Coordinates&#41; >
-  - directionIndex : int
+  North
+  East
+  South
+  West
 
-  + GetName() : string
   + GetMovementVector() : Coordinates
-  + TurnLeft() : void
-  + TurnRight() : void
+  + GetLeftTurn() : Direction
+  + GetRightTurn() : Direction
 }
 
 interface IPositionStringConverter <<interface>>
@@ -80,6 +101,14 @@ class PositionStringConverter
   + ToPositionString(coordinates : Coordinates, direction : Direction) : string
 }
 
+class Rover
+{
+  + Rover(initialCoordinates : Coordinates, initialDirection : Direction, plateau : PlateauBase)
+
+  + TakePhotoAndSendToStation() : void
+  + CollectSample() : void
+}
+
 abstract VehicleBase <<abstract>>
 {
   - coordinates : Coordinates
@@ -92,35 +121,13 @@ abstract VehicleBase <<abstract>>
   + GetDirection() : Direction
   + GetPlateau() : PlateauBase
   + ApplyMoveInstruction(instruction : List<SingularInstruction>) : void
-  + TeleportToPosition(coordinates : Coordinates, direction : Direction) : void
-}
-
-class Rover
-{
-  + Rover(initialCoordinates : Coordinates, initialDirection : Direction)
-
-  + TakePhotoAndSendToStation() : void
-  + CollectSample() : void
-}
-
-class CommandHandler
-{
-  - instructionReader : IInstructionReader
-  - positionStringConverter : IPositionStringConverter
-  - vehicle : VehicleBase
-
-  + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
-  
-  + ConnectVehicle(vehicle : VehicleBase)
-  + DisconnectVehicle()
-
-  + RequestPosition() : string
-  + SendMoveInstruction(instruction : string) : (bool, string)
 }
 
 CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter
 CommandHandler o-- VehicleBase
+CommandHandler -----> Coordinates
+CommandHandler ----> Direction
 
 IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
@@ -133,10 +140,10 @@ VehicleBase o-- PlateauBase
 
 IPositionStringConverter <|.. PositionStringConverter
 IPositionStringConverter ---> Direction
-IPositionStringConverter ---> Coordinates
+IPositionStringConverter ----> Coordinates
 
 PlateauBase <|-- RectangularPlateau
-PlateauBase -----> Coordinates
+PlateauBase o--- Coordinates
 
 Direction --> Coordinates 
 
