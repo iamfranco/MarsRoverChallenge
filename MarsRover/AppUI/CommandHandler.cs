@@ -18,14 +18,6 @@ namespace MarsRover.AppUI
             _positionStringConverter = positionStringConverter;
         }
 
-        public string RequestPosition()
-        {
-            if (_vehicle is null)
-                return "No Vehicle Connected";
-
-            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
-        }
-
         public void ConnectVehicle(VehicleBase vehicle)
         {
             if (vehicle is null)
@@ -39,6 +31,14 @@ namespace MarsRover.AppUI
         {
             _vehicle = null;
             RecentPath = new();
+        }
+
+        public string RequestPosition()
+        {
+            if (_vehicle is null)
+                return "No Vehicle Connected";
+
+            return _positionStringConverter.ToPositionString(_vehicle.Coordinates, _vehicle.Direction);
         }
 
         public (bool status, string message) SendMoveInstruction(string instructionString)
