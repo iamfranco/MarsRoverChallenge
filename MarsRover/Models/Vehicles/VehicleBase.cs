@@ -6,8 +6,8 @@ namespace MarsRover.Models.Vehicles
 {
     public abstract class VehicleBase
     {
-        private Coordinates _coordinates;
-        private Direction _direction;
+        public Coordinates Coordinates { get; private set; }
+        public Direction Direction { get; private set; }
         public PlateauBase Plateau { get; private set; }
 
         public VehicleBase(Coordinates initialCoordinates, Direction initialDirection, PlateauBase plateau)
@@ -18,13 +18,10 @@ namespace MarsRover.Models.Vehicles
             if (!plateau.IsCoordinateValidInPlateau(initialCoordinates))
                 throw new ArgumentException($"{nameof(initialCoordinates)} {initialCoordinates} is not valid in plateau", nameof(initialCoordinates));
 
-            _coordinates = initialCoordinates;
-            _direction = initialDirection;
+            Coordinates = initialCoordinates;
+            Direction = initialDirection;
             Plateau = plateau;
         }
-
-        public Coordinates Coordinates => _coordinates;
-        public Direction Direction => _direction;
 
         public void ApplyMoveInstruction(List<SingularInstruction> instruction)
         {
@@ -33,8 +30,8 @@ namespace MarsRover.Models.Vehicles
 
             foreach (SingularInstruction singularInstruction in instruction)
             {
-                Coordinates nextCoordinates = _coordinates;
-                Direction nextDirection = _direction;
+                Coordinates nextCoordinates = Coordinates;
+                Direction nextDirection = Direction;
 
                 if (singularInstruction is SingularInstruction.TurnLeft)
                     nextDirection = nextDirection.GetLeftTurn();
@@ -48,8 +45,8 @@ namespace MarsRover.Models.Vehicles
                 if (!Plateau.IsCoordinateValidInPlateau(nextCoordinates))
                     return;
 
-                _coordinates = nextCoordinates;
-                _direction = nextDirection;
+                Coordinates = nextCoordinates;
+                Direction = nextDirection;
             }
         }
     }
