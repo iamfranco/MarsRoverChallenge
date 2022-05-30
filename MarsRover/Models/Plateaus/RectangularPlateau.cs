@@ -28,7 +28,7 @@ namespace MarsRover.Models.Plateaus
             return true;
         }
 
-        public override void PrintMap(List<(Coordinates coordinates, Direction direction)> recentPath)
+        public override void PrintMap(List<(Coordinates coordinates, DirectionEnum direction)> recentPath)
         {
             int width = PlateauSize.X;
             int height = PlateauSize.Y;
@@ -82,7 +82,7 @@ namespace MarsRover.Models.Plateaus
         }
 
         private (string symbol, ConsoleColor bgColor)[,] GetMatrixToPrint(
-            List<(Coordinates coordinates, Direction direction)> recentPath, 
+            List<(Coordinates coordinates, DirectionEnum direction)> recentPath, 
             ConsoleColor validGroundColor, 
             ConsoleColor visitedGroundColor,
             ConsoleColor lastVisitedGroundColor, 
@@ -110,12 +110,12 @@ namespace MarsRover.Models.Plateaus
             {
                 int x = recentPathItem.coordinates.X;
                 int y = recentPathItem.coordinates.Y;
-                string symbol = recentPathItem.direction.Name switch
+                string symbol = recentPathItem.direction switch
                 {
-                    "north" => "\u2191",
-                    "east" => ">",
-                    "south" => "\u2193",
-                    "west" => "<",
+                    DirectionEnum.North => "\u2191",
+                    DirectionEnum.East => ">",
+                    DirectionEnum.South => "\u2193",
+                    DirectionEnum.West => "<",
                     _ => " "
                 };
                 matrixToPrint[x, y] = (symbol, visitedGroundColor);

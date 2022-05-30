@@ -18,6 +18,6 @@ namespace MarsRover.Models.Plateaus
         public void RemoveObstacle(Coordinates obstacle) => _obstacleCoordinates.Remove(obstacle);
         
         public abstract bool IsCoordinateValidInPlateau(Coordinates coordinates);
-        public abstract void PrintMap(List<(Coordinates coordinates, Direction direction)> recentPath);
+        public abstract void PrintMap(List<(Coordinates coordinates, DirectionEnum direction)> recentPath);
     }
 }
