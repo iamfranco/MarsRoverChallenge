@@ -7,14 +7,11 @@ namespace MarsRover.Models.Vehicles
     public abstract class VehicleBase
     {
         private Coordinates _coordinates;
-        private Direction _direction;
+        private DirectionEnum _direction;
         public PlateauBase Plateau { get; private set; }
 
-        public VehicleBase(Coordinates initialCoordinates, Direction initialDirection, PlateauBase plateau)
+        public VehicleBase(Coordinates initialCoordinates, DirectionEnum initialDirection, PlateauBase plateau)
         {
-            if (initialDirection is null)
-                throw new ArgumentNullException(nameof(initialDirection));
-
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
 
@@ -27,42 +24,33 @@ namespace MarsRover.Models.Vehicles
         }
 
         public Coordinates Coordinates => _coordinates;
-        public Direction Direction => _direction;
+        public DirectionEnum Direction => _direction;
 
         public void ApplyMoveInstruction(List<SingularInstruction> instruction)
         {
             if (instruction is null)
                 throw new ArgumentNullException(nameof(instruction));
 
-
             foreach (SingularInstruction singularInstruction in instruction)
             {
                 Coordinates nextCoordinates = _coordinates;
-                Direction nextDirection = _direction.Clone();
+                DirectionEnum nextDirection = _direction;
 
                 if (singularInstruction is SingularInstruction.TurnLeft)
-                    nextDirection.TurnLeft();
+                    nextDirection = nextDirection.GetLeftTurn();
 
                 if (singularInstruction is SingularInstruction.TurnRight)
-                    nextDirection.TurnRight();
+                    nextDirection = nextDirection.GetRightTurn();
 
                 if (singularInstruction is SingularInstruction.MoveForward)
-                    nextCoordinates += nextDirection.MovementVector;
+                    nextCoordinates += nextDirection.GetMovementVector();
 
-                TeleportToPosition(nextCoordinates, nextDirection);
+                if (!Plateau.IsCoordinateValidInPlateau(nextCoordinates))
+                    return;
+
+                _coordinates = nextCoordinates;
+                _direction = nextDirection;
             }
-        }
-
-        public void TeleportToPosition(Coordinates coordinates, Direction direction)
-        {
-            if (direction is null)
-                throw new ArgumentNullException(nameof(direction));
-
-            if (!Plateau.IsCoordinateValidInPlateau(coordinates))
-                return;
-
-            _coordinates = coordinates;
-            _direction = direction;
         }
     }
 }
