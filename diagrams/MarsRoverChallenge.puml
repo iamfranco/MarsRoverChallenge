@@ -59,10 +59,13 @@ class RectangularPlateau
   + PrintMap(recentPath : List<Position>) : void
 }
 
-class Coordinates
+class Coordinates <<struct>>
 {
-  + x : int
-  + y : int
+  - x : int
+  - y : int
+
+  + GetX() : int
+  + GetY() : int
 
   + operator+(a : Coordinates, b : Coordinates) : Coordinates
 }
@@ -90,10 +93,13 @@ interface IPositionStringConverter <<interface>>
   + ToPositionString(position : Position) : string
 }
 
-class Position
+class Position <<struct>>
 {
-  + coordinates : Coordinates
-  + direction : Direction
+  - coordinates : Coordinates
+  - direction : Direction
+
+  + GetCoordinates() : Coordinates
+  + GetDirection() : Direction
 }
 
 class PositionStringConverter
