@@ -44,11 +44,11 @@ abstract PlateauBase <<abstract>>
   - obstacleCoordinates : List<Coordinates>
   - vehicles : List<VehicleBase>
 
-  + GetObstacleCoordinates() : List<Coordinates>
   + AddObstacle(obstacleCoordinate: Coordinates)
   + RemoveObstacle(obstaclecoordinate : Coordinates)
 
   + GetVehicles() : List<VehicleBase>
+  + GetVehicleAtPosition(position : Position) : VehicleBase?
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
 
