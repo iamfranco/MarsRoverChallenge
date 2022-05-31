@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 IPositionStringConverter positionStringConverter = new PositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
-Rover vehicle;
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 
 string plateauSizeString = Ask("Enter Plateau Size (eg \"5 5\"): ", new Regex(@"^\d+ \d+$").IsMatch);
@@ -27,27 +26,33 @@ while (true)
 
 while (true)
 {
-    ClearScreenAndPrintMap(plateau, new());
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
     string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
     Position initialPosition = positionStringConverter.ToPosition(vehicleInitialPosition);
-    vehicle = new(initialPosition, plateau);
-    commandHandler.ConnectVehicle(vehicle);
+    commandHandler.ConnectPlateau(plateau);
 
-    ClearScreenAndPrintMap(plateau, new() { initialPosition });
+    VehicleBase vehicle;
+    (bool isSuccessfulConnect, string _) = commandHandler.ConnectToVehicleAtPosition(initialPosition);
+
+    if (isSuccessfulConnect)
+    {
+        vehicle = commandHandler.GetVehicle()!;
+    }
+    else
+    {
+        vehicle = new Rover(initialPosition);
+        commandHandler.AddVehicleToPlateau(vehicle);
+    }
+
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
     string instructionString = Ask("Enter Movement Instruction (eg \"LMMMLRRL\"): ", instructionReader.IsValidInstruction);
     (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
 
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
-    if (status)
-    {
-        Console.WriteLine($"Instruction [{instructionString}] lead to Position: {commandHandler.RequestPosition()}");
-    }
-    else
-    {
-        Console.WriteLine($"DANGEROUS INSTRUCTION [{instructionString}]: {message}");
-    }
+    Console.WriteLine(message);
+    
     Console.WriteLine();
     Console.Write("Press any key to continue.. ");
     Console.ReadKey();
@@ -84,6 +89,9 @@ bool IsValidVehicleInitialPosition(string positionString)
         return false;
 
     Position position = positionStringConverter.ToPosition(positionString);
+    if (plateau.GetVehicleAtPosition(position) != null)
+        return true;
+
     return plateau.IsCoordinateValidInPlateau(position.Coordinates);
 }
 

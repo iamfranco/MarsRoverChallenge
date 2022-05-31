@@ -4,34 +4,20 @@ namespace MarsRover.Models.Plateaus
 {
     public class RectangularPlateau : PlateauBase
     {
-        public Coordinates PlateauSize { get; }
+        private readonly Coordinates _plateauSize;
 
         public RectangularPlateau(Coordinates plateauSize)
         {
             if (!IsValidPlateauSize(plateauSize))
                 throw new ArgumentException($"{nameof(plateauSize)} {plateauSize} cannot have negative components", nameof(plateauSize));
 
-            PlateauSize = plateauSize;
-        }
-
-        public override bool IsCoordinateValidInPlateau(Coordinates coordinates)
-        {
-            if (coordinates.X < 0 || coordinates.X > PlateauSize.X)
-                return false;
-
-            if (coordinates.Y < 0 || coordinates.Y > PlateauSize.Y)
-                return false;
-
-            if (ObstacleCoordinates.Contains(coordinates))
-                return false;
-
-            return true;
+            _plateauSize = plateauSize;
         }
 
         public override void PrintMap(List<Position> recentPath)
         {
-            int width = PlateauSize.X;
-            int height = PlateauSize.Y;
+            int width = _plateauSize.X;
+            int height = _plateauSize.Y;
 
             if (width > 40 || height > 40)
             {
@@ -56,7 +42,8 @@ namespace MarsRover.Models.Plateaus
                 validGroundColor : ConsoleColor.Blue, 
                 visitedGroundColor : ConsoleColor.DarkBlue, 
                 lastVisitedGroundColor : ConsoleColor.Red, 
-                invalidGroundColor : ConsoleColor.DarkGray);
+                invalidGroundColor : ConsoleColor.DarkGray,
+                availableVehicleColor : ConsoleColor.DarkYellow);
 
             Console.WriteLine($"  Y");
             for (int y = height; y >= 0; y--)
@@ -86,9 +73,10 @@ namespace MarsRover.Models.Plateaus
             ConsoleColor validGroundColor, 
             ConsoleColor visitedGroundColor,
             ConsoleColor lastVisitedGroundColor, 
-            ConsoleColor invalidGroundColor)
+            ConsoleColor invalidGroundColor,
+            ConsoleColor availableVehicleColor)
         {
-            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[PlateauSize.X + 1, PlateauSize.Y + 1];
+            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[_plateauSize.X + 1, _plateauSize.Y + 1];
 
             for (int i = 0; i < matrixToPrint.GetLength(0); i++)
             {
@@ -101,6 +89,21 @@ namespace MarsRover.Models.Plateaus
             foreach (var obstacleCoordinate in ObstacleCoordinates)
             {
                 matrixToPrint[obstacleCoordinate.X, obstacleCoordinate.Y] = ("X", invalidGroundColor);
+            }
+
+            foreach (var vehicle in GetVehicles())
+            {
+                int x = vehicle.Position.Coordinates.X;
+                int y = vehicle.Position.Coordinates.Y;
+                string symbol = vehicle.Position.Direction switch
+                {
+                    Direction.North => "\u2191",
+                    Direction.East => ">",
+                    Direction.South => "\u2193",
+                    Direction.West => "<",
+                    _ => " "
+                };
+                matrixToPrint[x, y] = (symbol, availableVehicleColor);
             }
 
             if (recentPath.Count == 0)
@@ -128,5 +131,16 @@ namespace MarsRover.Models.Plateaus
         }
 
         private static bool IsValidPlateauSize(Coordinates plateauSize) => plateauSize.X >= 0 && plateauSize.Y >= 0;
+
+        protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
+        {
+            if (coordinates.X < 0 || coordinates.X > _plateauSize.X)
+                return false;
+
+            if (coordinates.Y < 0 || coordinates.Y > _plateauSize.X)
+                return false;
+
+            return true;
+        }
     }
 }

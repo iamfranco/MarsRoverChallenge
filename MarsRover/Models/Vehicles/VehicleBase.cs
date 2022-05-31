@@ -7,24 +7,24 @@ namespace MarsRover.Models.Vehicles
     public abstract class VehicleBase
     {
         public Position Position { get; private set; }
-        public PlateauBase Plateau { get; private set; }
 
-        public VehicleBase(Position initialPosition, PlateauBase plateau)
+        public VehicleBase(Position initialPosition)
         {
-            if (plateau is null)
-                throw new ArgumentNullException(nameof(plateau));
-
-            if (!plateau.IsCoordinateValidInPlateau(initialPosition.Coordinates))
-                throw new ArgumentException($"{nameof(initialPosition)} {initialPosition.Coordinates} is not valid in plateau", nameof(initialPosition));
-
             Position = initialPosition;
-            Plateau = plateau;
         }
 
-        public void ApplyMoveInstruction(List<SingularInstruction> instruction)
+        public (List<Position> recentPath, bool isEmergencyStopUsed) ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
         {
             if (instruction is null)
                 throw new ArgumentNullException(nameof(instruction));
+
+            if (plateau is null)
+                throw new ArgumentNullException(nameof(plateau));
+
+            if (!plateau.GetVehicles().Contains(this))
+                throw new ArgumentException("This vehicle is not on plateau's list of vehicles", nameof(plateau));
+
+            List<Position> recentPath = new() { Position };
 
             foreach (SingularInstruction singularInstruction in instruction)
             {
@@ -38,13 +38,18 @@ namespace MarsRover.Models.Vehicles
                     nextDirection = nextDirection.GetRightTurn();
 
                 if (singularInstruction is SingularInstruction.MoveForward)
+                {
                     nextCoordinates += nextDirection.GetMovementVector();
 
-                if (!Plateau.IsCoordinateValidInPlateau(nextCoordinates))
-                    return;
+                    if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
+                        return (recentPath, isEmergencyStopUsed: true);
+                }
 
                 Position = new Position(nextCoordinates, nextDirection);
+                recentPath.Add(Position);
             }
+
+            return (recentPath, isEmergencyStopUsed: false);
         }
     }
 }

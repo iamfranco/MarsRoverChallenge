@@ -5,8 +5,7 @@ namespace MarsRover.Models.Vehicles
 {
     public class Rover : VehicleBase
     {
-        public Rover(Position initialPosition, PlateauBase plateau)
-            : base(initialPosition, plateau)
+        public Rover(Position initialPosition) : base(initialPosition)
         {
         }
 
