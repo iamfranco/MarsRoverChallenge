@@ -13,13 +13,15 @@ namespace MarsRover.Models.Vehicles
             Position = initialPosition;
         }
 
-        public void ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
+        public List<Position> ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
         {
             if (instruction is null)
                 throw new ArgumentNullException(nameof(instruction));
 
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
+
+            List<Position> recentPath = new() { Position };
 
             foreach (SingularInstruction singularInstruction in instruction)
             {
@@ -36,10 +38,13 @@ namespace MarsRover.Models.Vehicles
                     nextCoordinates += nextDirection.GetMovementVector();
 
                 if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
-                    return;
+                    return recentPath;
 
                 Position = new Position(nextCoordinates, nextDirection);
+                recentPath.Add(Position);
             }
+
+            return recentPath;
         }
     }
 }

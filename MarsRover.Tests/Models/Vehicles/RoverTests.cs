@@ -92,9 +92,10 @@ namespace MarsRover.Tests.Models.Vehicles
         public void Position_After_ApplyMoveInstruction_Should_Return_Correct_New_Position()
         {
             Rover rover;
+            List<Position> recentPath;
 
             rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-            rover.ApplyMoveInstruction(new()
+            recentPath = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.TurnLeft,
                 SingularInstruction.MoveForward,
@@ -107,9 +108,23 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward
             }, plateau);
             rover.Position.Should().Be(new Position(new(1, 3), Direction.North));
+            recentPath.Count.Should().Be(10);
+            recentPath.Should().BeEquivalentTo(new List<Position>()
+            {
+                new(new(1,2), Direction.North),
+                new(new(1,2), Direction.West),
+                new(new(0,2), Direction.West),
+                new(new(0,2), Direction.South),
+                new(new(0,1), Direction.South),
+                new(new(0,1), Direction.East),
+                new(new(1,1), Direction.East),
+                new(new(1,1), Direction.North),
+                new(new(1,2), Direction.North),
+                new(new(1,3), Direction.North),
+            });
 
             rover = new Rover(new Position(new Coordinates(3, 3), Direction.East));
-            rover.ApplyMoveInstruction(new()
+            recentPath = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.MoveForward,
                 SingularInstruction.MoveForward,
@@ -123,6 +138,21 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward
             }, plateau);
             rover.Position.Should().Be(new Position(new(5, 1), Direction.East));
+            recentPath.Count.Should().Be(11);
+            recentPath.Should().BeEquivalentTo(new List<Position>()
+            {
+                new(new(3,3), Direction.East),
+                new(new(4,3), Direction.East),
+                new(new(5,3), Direction.East),
+                new(new(5,3), Direction.South),
+                new(new(5,2), Direction.South),
+                new(new(5,1), Direction.South),
+                new(new(5,1), Direction.West),
+                new(new(4,1), Direction.West),
+                new(new(4,1), Direction.North),
+                new(new(4,1), Direction.East),
+                new(new(5,1), Direction.East)
+            });
         }
 
         [Test]
@@ -142,9 +172,16 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward,
             };
 
-            rover.ApplyMoveInstruction(instruction, plateauWithObstacles);
+            List<Position> recentPath = rover.ApplyMoveInstruction(instruction, plateauWithObstacles);
 
             rover.Position.Should().Be(new Position(new(1, 3), Direction.East));
+            recentPath.Count.Should().Be(3);
+            recentPath.Should().BeEquivalentTo(new List<Position>()
+            { 
+                new(new(1, 2), Direction.North),
+                new(new(1, 3), Direction.North),
+                new(new(1, 3), Direction.East)
+            });
         }
 
         [Test]
