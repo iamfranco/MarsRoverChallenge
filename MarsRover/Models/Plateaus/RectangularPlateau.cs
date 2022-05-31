@@ -42,7 +42,8 @@ namespace MarsRover.Models.Plateaus
                 validGroundColor : ConsoleColor.Blue, 
                 visitedGroundColor : ConsoleColor.DarkBlue, 
                 lastVisitedGroundColor : ConsoleColor.Red, 
-                invalidGroundColor : ConsoleColor.DarkGray);
+                invalidGroundColor : ConsoleColor.DarkGray,
+                availableVehicleColor : ConsoleColor.DarkYellow);
 
             Console.WriteLine($"  Y");
             for (int y = height; y >= 0; y--)
@@ -72,7 +73,8 @@ namespace MarsRover.Models.Plateaus
             ConsoleColor validGroundColor, 
             ConsoleColor visitedGroundColor,
             ConsoleColor lastVisitedGroundColor, 
-            ConsoleColor invalidGroundColor)
+            ConsoleColor invalidGroundColor,
+            ConsoleColor availableVehicleColor)
         {
             (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[_plateauSize.X + 1, _plateauSize.Y + 1];
 
@@ -87,6 +89,21 @@ namespace MarsRover.Models.Plateaus
             foreach (var obstacleCoordinate in ObstacleCoordinates)
             {
                 matrixToPrint[obstacleCoordinate.X, obstacleCoordinate.Y] = ("X", invalidGroundColor);
+            }
+
+            foreach (var vehicle in GetVehicles())
+            {
+                int x = vehicle.Position.Coordinates.X;
+                int y = vehicle.Position.Coordinates.Y;
+                string symbol = vehicle.Position.Direction switch
+                {
+                    Direction.North => "\u2191",
+                    Direction.East => ">",
+                    Direction.South => "\u2193",
+                    Direction.West => "<",
+                    _ => " "
+                };
+                matrixToPrint[x, y] = (symbol, availableVehicleColor);
             }
 
             if (recentPath.Count == 0)
