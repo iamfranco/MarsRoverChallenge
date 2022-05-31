@@ -18,6 +18,7 @@ class CommandHandler
   + ConnectToVehicleAtPosition(position : Position) : (bool, string)
   + SendMoveInstruction(instruction : string) : (bool, string)
 
+  + GetPositionString() : string
   + GetRecentPath() : List<Position>
 }
 
