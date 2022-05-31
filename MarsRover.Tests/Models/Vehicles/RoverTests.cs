@@ -46,35 +46,14 @@ namespace MarsRover.Tests.Models.Vehicles
                 plateauWithObstacles.AddObstacle(obstacle);
             }
 
-            roverOnPlateau = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-        }
-
-        [Test]
-        public void Constructor_With_Null_Plateau_Input_Should_Throw_Exception()
-        {
-            Rover rover;
-            Position initialPosition = new Position(new Coordinates(1, 2), Direction.North);
-            PlateauBase plat = null;
-
-            Action act = () => rover = new Rover(initialPosition, plat);
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Test]
-        public void Constructor_With_InitialPosition_Invalid_On_Plateau_Should_Throw_Exception()
-        {
-            Rover rover;
-            Position initialPosition = new Position(obstacles[0], Direction.North);
-
-            Action act = () => rover = new Rover(initialPosition, plateauWithObstacles);
-            act.Should().Throw<ArgumentException>();
+            roverOnPlateau = new Rover(new Position(new Coordinates(1, 2), Direction.North));
         }
 
         [Test]
         public void Position_After_Successful_Construction_Should_Return_InitialPosition()
         {
             Position initialPosition = new(new(1, 2), Direction.North);
-            Rover rover = new Rover(initialPosition, plateau);
+            Rover rover = new Rover(initialPosition);
 
             rover.Position.Should().Be(initialPosition);
         }
@@ -84,7 +63,16 @@ namespace MarsRover.Tests.Models.Vehicles
         {
             Action act;
 
-            act = () => roverOnPlateau.ApplyMoveInstruction(null);
+            act = () => roverOnPlateau.ApplyMoveInstruction(null, plateau);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void ApplyMoveInstruction_With_Null_Plateau_Should_Throw_Exception()
+        {
+            Action act;
+
+            act = () => roverOnPlateau.ApplyMoveInstruction(validInstructions[0], null);
             act.Should().Throw<ArgumentNullException>();
         }
 
@@ -95,7 +83,7 @@ namespace MarsRover.Tests.Models.Vehicles
 
             foreach (List<SingularInstruction> validInstruction in validInstructions)
             {
-                act = () => roverOnPlateau.ApplyMoveInstruction(validInstruction);
+                act = () => roverOnPlateau.ApplyMoveInstruction(validInstruction, plateau);
                 act.Should().NotThrow();
             }
         }
@@ -105,7 +93,7 @@ namespace MarsRover.Tests.Models.Vehicles
         {
             Rover rover;
 
-            rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
             rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.TurnLeft,
@@ -117,10 +105,10 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.TurnLeft,
                 SingularInstruction.MoveForward,
                 SingularInstruction.MoveForward
-            });
+            }, plateau);
             rover.Position.Should().Be(new Position(new(1, 3), Direction.North));
 
-            rover = new Rover(new Position(new Coordinates(3, 3), Direction.East), plateau);
+            rover = new Rover(new Position(new Coordinates(3, 3), Direction.East));
             rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.MoveForward,
@@ -133,7 +121,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.TurnRight,
                 SingularInstruction.TurnRight,
                 SingularInstruction.MoveForward
-            });
+            }, plateau);
             rover.Position.Should().Be(new Position(new(5, 1), Direction.East));
         }
 
@@ -143,7 +131,7 @@ namespace MarsRover.Tests.Models.Vehicles
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
             plateauWithOneObstacle.AddObstacle(new(2, 3));
 
-            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithObstacles);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
 
             List<SingularInstruction> instruction = new()
             {
@@ -154,7 +142,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward,
             };
 
-            rover.ApplyMoveInstruction(instruction);
+            rover.ApplyMoveInstruction(instruction, plateauWithObstacles);
 
             rover.Position.Should().Be(new Position(new(1, 3), Direction.East));
         }
@@ -162,7 +150,7 @@ namespace MarsRover.Tests.Models.Vehicles
         [Test]
         public void TakePhotoAndSendToStation_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
             Action act;
 
             act = () => rover.TakePhotoAndSendToStation();
@@ -172,7 +160,7 @@ namespace MarsRover.Tests.Models.Vehicles
         [Test]
         public void CollectSample_Should_Not_Throw_Exception()
         {
-            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
             Action act;
 
             act = () => rover.CollectSample();

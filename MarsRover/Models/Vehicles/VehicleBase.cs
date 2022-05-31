@@ -7,24 +7,19 @@ namespace MarsRover.Models.Vehicles
     public abstract class VehicleBase
     {
         public Position Position { get; private set; }
-        public PlateauBase Plateau { get; private set; }
 
-        public VehicleBase(Position initialPosition, PlateauBase plateau)
+        public VehicleBase(Position initialPosition)
         {
-            if (plateau is null)
-                throw new ArgumentNullException(nameof(plateau));
-
-            if (!plateau.IsCoordinateValidInPlateau(initialPosition.Coordinates))
-                throw new ArgumentException($"{nameof(initialPosition)} {initialPosition.Coordinates} is not valid in plateau", nameof(initialPosition));
-
             Position = initialPosition;
-            Plateau = plateau;
         }
 
-        public void ApplyMoveInstruction(List<SingularInstruction> instruction)
+        public void ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
         {
             if (instruction is null)
                 throw new ArgumentNullException(nameof(instruction));
+
+            if (plateau is null)
+                throw new ArgumentNullException(nameof(plateau));
 
             foreach (SingularInstruction singularInstruction in instruction)
             {
@@ -40,7 +35,7 @@ namespace MarsRover.Models.Vehicles
                 if (singularInstruction is SingularInstruction.MoveForward)
                     nextCoordinates += nextDirection.GetMovementVector();
 
-                if (!Plateau.IsCoordinateValidInPlateau(nextCoordinates))
+                if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
                     return;
 
                 Position = new Position(nextCoordinates, nextDirection);
