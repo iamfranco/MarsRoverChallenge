@@ -58,7 +58,7 @@ abstract PlateauBase <<abstract>>
 
 class RectangularPlateau
 {
-  + plateauSize : Coordinates
+  - plateauSize : Coordinates
 
   + RectangularPlateau(plateauSize : Coordinates)
 
