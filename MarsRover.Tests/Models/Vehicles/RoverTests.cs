@@ -34,7 +34,7 @@ namespace MarsRover.Tests.Models.Vehicles
         PlateauBase plateau;
         PlateauBase plateauWithObstacles;
 
-        Rover roverOnPlateau;
+        Rover rover;
 
         [SetUp]
         public void Setup()
@@ -46,7 +46,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 plateauWithObstacles.AddObstacle(obstacle);
             }
 
-            roverOnPlateau = new Rover(new Position(new Coordinates(1, 2), Direction.North));
+            rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
         }
 
         [Test]
@@ -61,29 +61,33 @@ namespace MarsRover.Tests.Models.Vehicles
         [Test]
         public void ApplyMoveInstruction_With_Null_Instruction_Should_Throw_Exception()
         {
-            Action act;
-
-            act = () => roverOnPlateau.ApplyMoveInstruction(null, plateau);
+            Action act = () => rover.ApplyMoveInstruction(null, plateau);
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
         public void ApplyMoveInstruction_With_Null_Plateau_Should_Throw_Exception()
         {
-            Action act;
-
-            act = () => roverOnPlateau.ApplyMoveInstruction(validInstructions[0], null);
+            Action act = () => rover.ApplyMoveInstruction(validInstructions[0], null);
             act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void ApplyMoveInstruction_With_Vehicle_That_Does_Not_Exist_On_Plateau_Should_Throw_Exception()
+        {
+            Action act = () => rover.ApplyMoveInstruction(validInstructions[0], plateau);
+            act.Should().Throw<ArgumentException>();
         }
 
         [Test]
         public void ApplyMoveInstruction_With_Valid_Instruction_String_Should_Succeed()
         {
             Action act;
+            plateau.AddVehicle(rover);
 
             foreach (List<SingularInstruction> validInstruction in validInstructions)
             {
-                act = () => roverOnPlateau.ApplyMoveInstruction(validInstruction, plateau);
+                act = () => rover.ApplyMoveInstruction(validInstruction, plateau);
                 act.Should().NotThrow();
             }
         }
@@ -93,9 +97,11 @@ namespace MarsRover.Tests.Models.Vehicles
         {
             Rover rover;
             List<Position> recentPath;
-
+            bool isEmergencyStopUsed;
+            
             rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-            recentPath = rover.ApplyMoveInstruction(new()
+            plateau.AddVehicle(rover);
+            (recentPath, isEmergencyStopUsed) = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.TurnLeft,
                 SingularInstruction.MoveForward,
@@ -107,6 +113,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward,
                 SingularInstruction.MoveForward
             }, plateau);
+
             rover.Position.Should().Be(new Position(new(1, 3), Direction.North));
             recentPath.Count.Should().Be(10);
             recentPath.Should().BeEquivalentTo(new List<Position>()
@@ -122,9 +129,11 @@ namespace MarsRover.Tests.Models.Vehicles
                 new(new(1,2), Direction.North),
                 new(new(1,3), Direction.North),
             });
+            isEmergencyStopUsed.Should().Be(false);
 
             rover = new Rover(new Position(new Coordinates(3, 3), Direction.East));
-            recentPath = rover.ApplyMoveInstruction(new()
+            plateau.AddVehicle(rover);
+            (recentPath, isEmergencyStopUsed) = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.MoveForward,
                 SingularInstruction.MoveForward,
@@ -137,6 +146,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.TurnRight,
                 SingularInstruction.MoveForward
             }, plateau);
+
             rover.Position.Should().Be(new Position(new(5, 1), Direction.East));
             recentPath.Count.Should().Be(11);
             recentPath.Should().BeEquivalentTo(new List<Position>()
@@ -153,6 +163,7 @@ namespace MarsRover.Tests.Models.Vehicles
                 new(new(4,1), Direction.East),
                 new(new(5,1), Direction.East)
             });
+            isEmergencyStopUsed.Should().Be(false);
         }
 
         [Test]
@@ -162,9 +173,12 @@ namespace MarsRover.Tests.Models.Vehicles
             plateauWithOneObstacle.AddObstacle(new(2, 3));
 
             Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
+            plateauWithOneObstacle.AddVehicle(rover);
 
             List<SingularInstruction> instruction = new()
             {
+                SingularInstruction.TurnRight,
+                SingularInstruction.TurnLeft,
                 SingularInstruction.MoveForward,
                 SingularInstruction.TurnRight,
                 SingularInstruction.MoveForward,
@@ -172,16 +186,19 @@ namespace MarsRover.Tests.Models.Vehicles
                 SingularInstruction.MoveForward,
             };
 
-            List<Position> recentPath = rover.ApplyMoveInstruction(instruction, plateauWithObstacles);
+            (List<Position> recentPath, bool isEmergencyStopUsed) = rover.ApplyMoveInstruction(instruction, plateauWithOneObstacle);
 
             rover.Position.Should().Be(new Position(new(1, 3), Direction.East));
-            recentPath.Count.Should().Be(3);
+            recentPath.Count.Should().Be(5);
             recentPath.Should().BeEquivalentTo(new List<Position>()
-            { 
+            {
+                new(new(1, 2), Direction.North),
+                new(new(1, 2), Direction.East),
                 new(new(1, 2), Direction.North),
                 new(new(1, 3), Direction.North),
                 new(new(1, 3), Direction.East)
             });
+            isEmergencyStopUsed.Should().Be(true);
         }
 
         [Test]

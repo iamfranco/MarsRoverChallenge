@@ -13,13 +13,16 @@ namespace MarsRover.Models.Vehicles
             Position = initialPosition;
         }
 
-        public List<Position> ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
+        public (List<Position> recentPath, bool isEmergencyStopUsed) ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
         {
             if (instruction is null)
                 throw new ArgumentNullException(nameof(instruction));
 
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
+
+            if (!plateau.GetVehicles().Contains(this))
+                throw new ArgumentException("This vehicle is not on plateau's list of vehicles", nameof(plateau));
 
             List<Position> recentPath = new() { Position };
 
@@ -35,16 +38,18 @@ namespace MarsRover.Models.Vehicles
                     nextDirection = nextDirection.GetRightTurn();
 
                 if (singularInstruction is SingularInstruction.MoveForward)
+                {
                     nextCoordinates += nextDirection.GetMovementVector();
 
-                if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
-                    return recentPath;
+                    if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
+                        return (recentPath, isEmergencyStopUsed: true);
+                }
 
                 Position = new Position(nextCoordinates, nextDirection);
                 recentPath.Add(Position);
             }
 
-            return recentPath;
+            return (recentPath, isEmergencyStopUsed: false);
         }
     }
 }
