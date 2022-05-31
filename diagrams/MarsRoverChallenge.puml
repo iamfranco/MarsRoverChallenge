@@ -54,8 +54,9 @@ abstract PlateauBase <<abstract>>
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
 
-  {abstract} + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
+   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
   {abstract} + PrintMap(recentPath : List<Position>) : void
+  {abstract} # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
 class RectangularPlateau
@@ -64,8 +65,8 @@ class RectangularPlateau
 
   + RectangularPlateau(plateauSize : Coordinates)
 
-  + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
   + PrintMap(recentPath : List<Position>) : void
+  # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
 class Coordinates <<struct>>
