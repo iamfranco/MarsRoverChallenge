@@ -156,7 +156,7 @@ namespace MarsRover.Tests.Models.Vehicles
         }
 
         [Test]
-        public void ApplymoveInstruction_Into_Invalid_Coordinate_For_Plateau_Should_Have_Position_Stop_Before_Invalid_Coordinate()
+        public void ApplyMoveInstruction_Into_Invalid_Coordinate_For_Plateau_Should_Have_Position_Stop_Before_Invalid_Coordinate()
         {
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
             plateauWithOneObstacle.AddObstacle(new(2, 3));
