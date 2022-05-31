@@ -4,22 +4,22 @@ namespace MarsRover.Models.Plateaus
 {
     public class RectangularPlateau : PlateauBase
     {
-        public Coordinates PlateauSize { get; }
+        private readonly Coordinates _plateauSize;
 
         public RectangularPlateau(Coordinates plateauSize)
         {
             if (!IsValidPlateauSize(plateauSize))
                 throw new ArgumentException($"{nameof(plateauSize)} {plateauSize} cannot have negative components", nameof(plateauSize));
 
-            PlateauSize = plateauSize;
+            _plateauSize = plateauSize;
         }
 
         public override bool IsCoordinateValidInPlateau(Coordinates coordinates)
         {
-            if (coordinates.X < 0 || coordinates.X > PlateauSize.X)
+            if (coordinates.X < 0 || coordinates.X > _plateauSize.X)
                 return false;
 
-            if (coordinates.Y < 0 || coordinates.Y > PlateauSize.Y)
+            if (coordinates.Y < 0 || coordinates.Y > _plateauSize.Y)
                 return false;
 
             if (ObstacleCoordinates.Contains(coordinates))
@@ -30,8 +30,8 @@ namespace MarsRover.Models.Plateaus
 
         public override void PrintMap(List<Position> recentPath)
         {
-            int width = PlateauSize.X;
-            int height = PlateauSize.Y;
+            int width = _plateauSize.X;
+            int height = _plateauSize.Y;
 
             if (width > 40 || height > 40)
             {
@@ -88,7 +88,7 @@ namespace MarsRover.Models.Plateaus
             ConsoleColor lastVisitedGroundColor, 
             ConsoleColor invalidGroundColor)
         {
-            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[PlateauSize.X + 1, PlateauSize.Y + 1];
+            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[_plateauSize.X + 1, _plateauSize.Y + 1];
 
             for (int i = 0; i < matrixToPrint.GetLength(0); i++)
             {

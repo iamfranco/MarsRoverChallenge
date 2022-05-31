@@ -1,5 +1,6 @@
 ﻿using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
+using MarsRover.Models.Vehicles;
 
 namespace MarsRover.Tests.Models.Plateaus
 {
@@ -22,22 +23,19 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void PlateauSize_Should_Return_Constructor_PlateauSize_Input()
+        public void Constructor_Should_NotThrow_Exception_For_Input_PlateauSize_With_Only_Positive_Components()
         {
             RectangularPlateau plateau;
             Coordinates plateauSize;
+            Action act;
 
-            plateauSize = new(5, 5);
-            plateau = new(plateauSize);
-            plateau.PlateauSize.Should().Be(plateauSize);
+            plateauSize = new(5, 8);
+            act = () => plateau = new(plateauSize);
+            act.Should().NotThrow();
 
-            plateauSize = new(2, 10);
-            plateau = new(plateauSize);
-            plateau.PlateauSize.Should().Be(plateauSize);
-
-            plateauSize = new(0, 0);
-            plateau = new(plateauSize);
-            plateau.PlateauSize.Should().Be(plateauSize);
+            plateauSize = new(3, 1);
+            act = () => plateau = new(plateauSize);
+            act.Should().NotThrow();
         }
 
         [Test]
@@ -126,6 +124,116 @@ namespace MarsRover.Tests.Models.Plateaus
             plateau.ObstacleCoordinates.Count.Should().Be(2);
             plateau.ObstacleCoordinates[0].Should().Be(new Coordinates(1, 2));
             plateau.ObstacleCoordinates[1].Should().Be(new Coordinates(2, 4));
+        }
+
+        [Test]
+        public void GetVehicles_Should_Return_Empty_List_Of_VehicleBase_By_Default()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            plateau.GetVehicles().Count.Should().Be(0);
+        }
+
+        [Test]
+        public void AddVehicle_With_Vehicle_In_Plateau_Then_GetVehicles_Should_Contain_Added_Vehicle()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            Rover rover1 = new(new(new(1, 1), Direction.North));
+            Rover rover2 = new(new(new(2, 3), Direction.South));
+
+            plateau.AddVehicle(rover1);
+            plateau.AddVehicle(rover2);
+
+            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
+            vehicleList.Count.Should().Be(2);
+            vehicleList.Should().Contain(rover1);
+            vehicleList.Should().Contain(rover2);
+        }
+
+        [Test]
+        public void AddVehicle_With_Vehicle_On_Invalid_Coordinates_For_Plateau_Should_Not_Change_GetVehicles_Value()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            plateau.AddObstacle(new(3, 3));
+            Rover rover1 = new(new(new(1, 1), Direction.North));
+            Rover rover2 = new(new(new(2, 3), Direction.South));
+            Rover invalidRover1 = new(new(new(10, 10), Direction.South));
+            Rover invalidRover2 = new(new(new(3, 3), Direction.East));
+
+            plateau.AddVehicle(rover1);
+            plateau.AddVehicle(rover2);
+            List<VehicleBase> initialVehicleList = plateau.GetVehicles().ToList();
+
+            plateau.AddVehicle(invalidRover1);
+            plateau.AddVehicle(invalidRover2);
+
+            List<VehicleBase> VehicleListAfterAddingInvalidVehicles = plateau.GetVehicles().ToList();
+
+            VehicleListAfterAddingInvalidVehicles.Count.Should().Be(initialVehicleList.Count);
+            VehicleListAfterAddingInvalidVehicles.Should().BeEquivalentTo(initialVehicleList);
+        }
+
+        [Test]
+        public void GetVehicleAtPosition_With_Position_Where_There_Is_No_Vehicle_Should_Return_Null()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            plateau.AddObstacle(new(3, 3));
+            Rover rover1 = new(new(new(1, 1), Direction.North));
+            Rover rover2 = new(new(new(2, 3), Direction.South));
+            plateau.AddVehicle(rover1);
+            plateau.AddVehicle(rover2);
+
+            VehicleBase? vehicle = plateau.GetVehicleAtPosition(new Position(new(4, 4), Direction.North));
+            vehicle.Should().Be(null);
+        }
+
+        [Test]
+        public void GetVehicleAtPosition_With_Position_Where_There_Is_Vehicle_Should_Return_Vehicle()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            plateau.AddObstacle(new(3, 3));
+            Rover rover = new(new(new(1, 1), Direction.North));
+            Rover roverClone = new(new(new(1, 1), Direction.North));
+            plateau.AddVehicle(rover);
+
+            VehicleBase? vehicle = plateau.GetVehicleAtPosition(new Position(new(1, 1), Direction.North));
+            vehicle.Should().Be(rover);
+            vehicle.Should().NotBe(roverClone);
+        }
+
+        [Test]
+        public void RemoveVehicle_Then_GetVehicle_Should_Not_Contain_Removed_Vehicle()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            Rover rover1 = new(new(new(1, 1), Direction.North));
+            Rover rover2 = new(new(new(2, 3), Direction.South));
+
+            plateau.AddVehicle(rover1);
+            plateau.AddVehicle(rover2);
+            plateau.RemoveVehicle(rover1);
+            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
+
+            vehicleList.Count.Should().Be(1);
+            vehicleList.Should().NotContain(rover1);
+            vehicleList.Should().Contain(rover2);
+        }
+
+        [Test]
+        public void RemoveVehicle_With_Vehicle_Not_Already_In_Plateau_Should_Not_Change_GetVehicles_Value()
+        {
+            RectangularPlateau plateau = new(new(5, 5));
+            Rover rover1 = new(new(new(1, 1), Direction.North));
+            Rover rover2 = new(new(new(2, 3), Direction.South));
+
+            plateau.AddVehicle(rover1);
+            plateau.AddVehicle(rover2);
+            List<VehicleBase> originalVehicleList = plateau.GetVehicles().ToList();
+
+            Rover rover3 = new(new(new(1, 4), Direction.East));
+            plateau.RemoveVehicle(rover3);
+            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
+
+            vehicleList.Count.Should().Be(originalVehicleList.Count);
+            vehicleList.Should().BeEquivalentTo(originalVehicleList);
         }
 
         [Test]
