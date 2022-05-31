@@ -31,9 +31,9 @@ namespace MarsRover.AppUI
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
 
-            RecentPath = new();
-            _vehicle = null;
             _plateau = plateau;
+            _vehicle = null;
+            ResetRecentPath();
         }
 
         public VehicleBase? GetVehicle() => _vehicle;
@@ -70,8 +70,8 @@ namespace MarsRover.AppUI
 
         private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
         {
-            RecentPath = new() { vehicle.Position };
             _vehicle = vehicle;
+            ResetRecentPath();
             return (true, "Vehicle Connected");
         }
 
@@ -105,5 +105,7 @@ namespace MarsRover.AppUI
 
             return _positionStringConverter.ToPositionString(_vehicle.Position);
         }
+
+        public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
     }
 }
