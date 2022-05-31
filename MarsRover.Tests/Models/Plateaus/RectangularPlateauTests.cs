@@ -7,34 +7,34 @@ namespace MarsRover.Tests.Models.Plateaus
     internal class RectangularPlateauTests
     {
         [Test]
-        public void Constructor_Should_Throw_Exception_For_Input_PlateauSize_With_Negative_Components()
+        public void Constructor_Should_Throw_Exception_For_Input_maximumCoordinates_With_Negative_Components()
         {
             RectangularPlateau plateau;
-            Coordinates plateauSize;
+            Coordinates maximumCoordinates;
             Action act;
 
-            plateauSize = new(-5, 8);
-            act = () => plateau = new(plateauSize);
+            maximumCoordinates = new(-5, 8);
+            act = () => plateau = new(maximumCoordinates);
             act.Should().Throw<ArgumentException>();
 
-            plateauSize = new(3, -4);
-            act = () => plateau = new(plateauSize);
+            maximumCoordinates = new(3, -4);
+            act = () => plateau = new(maximumCoordinates);
             act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void Constructor_Should_NotThrow_Exception_For_Input_PlateauSize_With_Only_Positive_Components()
+        public void Constructor_Should_NotThrow_Exception_For_Input_maximumCoordinates_With_Only_Positive_Components()
         {
             RectangularPlateau plateau;
-            Coordinates plateauSize;
+            Coordinates maximumCoordinates;
             Action act;
 
-            plateauSize = new(5, 8);
-            act = () => plateau = new(plateauSize);
+            maximumCoordinates = new(5, 8);
+            act = () => plateau = new(maximumCoordinates);
             act.Should().NotThrow();
 
-            plateauSize = new(3, 1);
-            act = () => plateau = new(plateauSize);
+            maximumCoordinates = new(3, 1);
+            act = () => plateau = new(maximumCoordinates);
             act.Should().NotThrow();
         }
 
