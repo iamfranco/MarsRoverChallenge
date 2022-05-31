@@ -136,7 +136,8 @@ abstract VehicleBase <<abstract>>
   + VehicleBase(initialPosition : Position)
 
   + GetPosition() : Position
-  + ApplyMoveInstruction(instruction : List<SingularInstruction>, plateau : PlateauBase) : List<Position>
+  + ApplyMoveInstruction(instruction : List<SingularInstruction>, \n\
+                                     plateau : PlateauBase) : List<Position>
 }
 
 CommandHandler o-- IInstructionReader
