@@ -4,24 +4,24 @@ namespace MarsRover.Models.Plateaus
 {
     public class RectangularPlateau : PlateauBase
     {
-        private readonly Coordinates _plateauSize;
+        private readonly Coordinates _maximumCoordinates;
 
-        public RectangularPlateau(Coordinates plateauSize)
+        public RectangularPlateau(Coordinates maximumCoordinates)
         {
-            if (!IsValidPlateauSize(plateauSize))
-                throw new ArgumentException($"{nameof(plateauSize)} {plateauSize} cannot have negative components", nameof(plateauSize));
+            if (!IsValidMaximumCoordinates(maximumCoordinates))
+                throw new ArgumentException($"{nameof(maximumCoordinates)} {maximumCoordinates} cannot have negative components", nameof(maximumCoordinates));
 
-            _plateauSize = plateauSize;
+            _maximumCoordinates = maximumCoordinates;
         }
 
         public override void PrintMap(List<Position> recentPath)
         {
-            int width = _plateauSize.X;
-            int height = _plateauSize.Y;
+            int maxX = _maximumCoordinates.X;
+            int maxY = _maximumCoordinates.Y;
 
-            if (width > 40 || height > 40)
+            if (maxX > 40 || maxY > 40)
             {
-                Console.WriteLine($"Rectangular plateau: width [{width}] and height [{height}]");
+                Console.WriteLine($"Rectangular plateau: width [{maxX}] and height [{maxY}]");
                 Console.WriteLine($"Obstacles Count: {ObstacleCoordinates.Count}");
 
                 if (ObstacleCoordinates.Count > 0)
@@ -46,10 +46,10 @@ namespace MarsRover.Models.Plateaus
                 availableVehicleColor : ConsoleColor.DarkYellow);
 
             Console.WriteLine($"  Y");
-            for (int y = height; y >= 0; y--)
+            for (int y = maxY; y >= 0; y--)
             {
                 Console.Write($"{y,3} ");
-                for (int x = 0; x <= width; x++)
+                for (int x = 0; x <= maxX; x++)
                 {
                     (string symbol, ConsoleColor bgColor) = matrixToPrint[x, y];
 
@@ -61,7 +61,7 @@ namespace MarsRover.Models.Plateaus
                 Console.WriteLine();
             }
             Console.Write("   ");
-            for (int x = 0; x <= width; x++)
+            for (int x = 0; x <= maxX; x++)
             {
                 Console.Write($"{x,3} ");
             }
@@ -76,7 +76,7 @@ namespace MarsRover.Models.Plateaus
             ConsoleColor invalidGroundColor,
             ConsoleColor availableVehicleColor)
         {
-            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[_plateauSize.X + 1, _plateauSize.Y + 1];
+            (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[_maximumCoordinates.X + 1, _maximumCoordinates.Y + 1];
 
             for (int i = 0; i < matrixToPrint.GetLength(0); i++)
             {
@@ -130,14 +130,14 @@ namespace MarsRover.Models.Plateaus
             return matrixToPrint;
         }
 
-        private static bool IsValidPlateauSize(Coordinates plateauSize) => plateauSize.X >= 0 && plateauSize.Y >= 0;
+        private static bool IsValidMaximumCoordinates(Coordinates maximumCoordinates) => maximumCoordinates.X >= 0 && maximumCoordinates.Y >= 0;
 
         protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
         {
-            if (coordinates.X < 0 || coordinates.X > _plateauSize.X)
+            if (coordinates.X < 0 || coordinates.X > _maximumCoordinates.X)
                 return false;
 
-            if (coordinates.Y < 0 || coordinates.Y > _plateauSize.X)
+            if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.X)
                 return false;
 
             return true;

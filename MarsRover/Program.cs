@@ -10,9 +10,9 @@ IPositionStringConverter positionStringConverter = new PositionStringConverter()
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 
-string plateauSizeString = Ask("Enter Plateau Size (eg \"5 5\"): ", new Regex(@"^\d+ \d+$").IsMatch);
-Coordinates plateauSize = positionStringConverter.ToCoordinates(plateauSizeString);
-RectangularPlateau plateau = new(plateauSize);
+string maximumCoordinatesString = Ask("Enter Maximum Coordinates (eg \"5 5\"): ", new Regex(@"^\d+ \d+$").IsMatch);
+Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
+RectangularPlateau plateau = new(maximumCoordinates);
 
 while (true)
 {
