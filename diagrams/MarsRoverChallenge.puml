@@ -11,10 +11,10 @@ class CommandHandler
 
   + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
   
-  + ConnectPlateau(plateau : PlateauBase)
+  + ConnectPlateau(plateau : PlateauBase) : void
 
-  + AddVehicleToPosition(position : Position)
-  + ConnectToVehicleAtPosition(position : Position)
+  + AddVehicleToPosition(position : Position) : void
+  + ConnectToVehicleAtPosition(position : Position) : void
   + SendMoveInstruction(instruction : string) : (bool, string)
 
   + GetRecentPath() : List<Position>
