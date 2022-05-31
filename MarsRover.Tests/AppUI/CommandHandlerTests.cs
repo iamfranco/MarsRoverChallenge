@@ -38,7 +38,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void ConnectVehicle_Then_RequestPosition_Should_Return_Vehicle_Position()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
 
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.RequestPosition().Should().Be("1 2 N");
@@ -47,7 +47,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void ConnectVehicle_Then_ConnectVehicle_With_Null_Then_RequestPosition_Should_Return_Initial_Vehicle_Position()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
 
             commandHandler.ConnectVehicle(vehicle);
             commandHandler.ConnectVehicle(null);
@@ -57,12 +57,13 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void DisconnectVehicle_Then_RequestPosition_Should_Return_No_Vehicle_Connected()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
 
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.DisconnectVehicle();
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.DisconnectVehicle();
 
-            commandHandler.RequestPosition().Should().Be("No Vehicle Connected");
+            //commandHandler.RequestPosition().Should().Be("No Vehicle Connected");
         }
 
         [Test]
@@ -77,69 +78,74 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void ConnectVehicle_Then_SendMoveInstruction_With_Null_Instruction_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
-            string instruction = null;
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            
-            commandHandler.ConnectVehicle(vehicle);
-            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+            Assert.Fail();
+            //string instruction = null;
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
 
-            status.Should().Be(false);
-            commandHandler.RequestPosition().Should().Be("1 2 N");
+            //commandHandler.ConnectVehicle(vehicle);
+            //(bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+
+            //status.Should().Be(false);
+            //commandHandler.RequestPosition().Should().Be("1 2 N");
         }
 
         [Test]
         public void ConnectVehicle_Then_SendMoveInstruction_With_Empty_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
-            string instruction = "";
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Assert.Fail();
+            //string instruction = "";
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
 
-            commandHandler.ConnectVehicle(vehicle);
-            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+            //commandHandler.ConnectVehicle(vehicle);
+            //(bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
-            commandHandler.RequestPosition().Should().Be("1 2 N");
+            //status.Should().Be(false);
+            //commandHandler.RequestPosition().Should().Be("1 2 N");
         }
 
         [Test]
         public void ConnectVehicle_Then_SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
-            string instruction = "LM!LM";
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Assert.Fail();
+            //string instruction = "LM!LM";
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
 
-            commandHandler.ConnectVehicle(vehicle);
-            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+            //commandHandler.ConnectVehicle(vehicle);
+            //(bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
-            commandHandler.RequestPosition().Should().Be("1 2 N");
+            //status.Should().Be(false);
+            //commandHandler.RequestPosition().Should().Be("1 2 N");
         }
 
         [Test]
         public void ConnectVehicle_Then_SendMoveInstruction_With_Instruction_String_Which_Move_On_Invalid_Coordinates_Of_Plateau_Should_Return_False_And_Not_Modify_Vehicle_Position()
         {
-            PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
-            plateauWithOneObstacle.AddObstacle(new(2, 4));
+            Assert.Fail();
+            //PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
+            //plateauWithOneObstacle.AddObstacle(new(2, 4));
 
-            string instruction = "RMLMMM";
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithOneObstacle);
+            //string instruction = "RMLMMM";
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithOneObstacle);
 
-            commandHandler.ConnectVehicle(vehicle);
-            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+            //commandHandler.ConnectVehicle(vehicle);
+            //(bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
-            commandHandler.RequestPosition().Should().Be("1 2 N");
+            //status.Should().Be(false);
+            //commandHandler.RequestPosition().Should().Be("1 2 N");
         }
 
         [Test]
         public void ConnectVehicle_Then_SendMoveInstruction_With_Valid_Instruction_String_Should_Return_True_And_Modify_Vehicle_Position()
         {
-            string instruction = "MRM";
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            Assert.Fail();
+            //string instruction = "MRM";
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
 
-            commandHandler.ConnectVehicle(vehicle);
-            (bool status, string _) = commandHandler.SendMoveInstruction(instruction);
+            //commandHandler.ConnectVehicle(vehicle);
+            //(bool status, string _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(true);
-            commandHandler.RequestPosition().Should().Be("2 3 E");
+            //status.Should().Be(true);
+            //commandHandler.RequestPosition().Should().Be("2 3 E");
         }
 
         [Test]
@@ -151,133 +157,139 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Successful_SendMoveInstruction_Should_Return_Instructions_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MRM");
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MRM");
 
-            List<Position> expectedResult = new()
-            {
-                new(new(1, 2), Direction.North),
-                new(new(1, 3), Direction.North),
-                new(new(1, 3), Direction.East),
-                new(new(2, 3), Direction.East)
-            };
+            //List<Position> expectedResult = new()
+            //{
+            //    new(new(1, 2), Direction.North),
+            //    new(new(1, 3), Direction.North),
+            //    new(new(1, 3), Direction.East),
+            //    new(new(2, 3), Direction.East)
+            //};
 
-            List<Position> actualResult = commandHandler.RecentPath;
+            //List<Position> actualResult = commandHandler.RecentPath;
 
-            actualResult.Count.Should().Be(expectedResult.Count);
-            for (int i=0; i<actualResult.Count; i++)
-            {
-                actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
-            }
+            //actualResult.Count.Should().Be(expectedResult.Count);
+            //for (int i=0; i<actualResult.Count; i++)
+            //{
+            //    actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
+            //}
         }
 
         [Test]
         public void RecentPath_After_Multiple_Successful_SendMoveInstruction_Should_Return_Last_Instructions_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MMLL");
-            commandHandler.SendMoveInstruction("MMLL");
-            commandHandler.SendMoveInstruction("MRMR");
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MMLL");
+            //commandHandler.SendMoveInstruction("MMLL");
+            //commandHandler.SendMoveInstruction("MRMR");
 
-            List<Position> expectedResult = new()
-            {
-                new(new(1, 2), Direction.North),
-                new(new(1, 3), Direction.North),
-                new(new(1, 3), Direction.East),
-                new(new(2, 3), Direction.East),
-                new(new(2, 3), Direction.South)
-            };
+            //List<Position> expectedResult = new()
+            //{
+            //    new(new(1, 2), Direction.North),
+            //    new(new(1, 3), Direction.North),
+            //    new(new(1, 3), Direction.East),
+            //    new(new(2, 3), Direction.East),
+            //    new(new(2, 3), Direction.South)
+            //};
 
-            List<Position> actualResult = commandHandler.RecentPath;
+            //List<Position> actualResult = commandHandler.RecentPath;
 
-            actualResult.Count.Should().Be(expectedResult.Count);
-            for (int i = 0; i < actualResult.Count; i++)
-            {
-                actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
-            }
+            //actualResult.Count.Should().Be(expectedResult.Count);
+            //for (int i = 0; i < actualResult.Count; i++)
+            //{
+            //    actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
+            //}
         }
 
         [Test]
         public void RecentPath_After_Invalidly_Formatted_Instruction_To_SendMoveInstruction_Should_Return_Last_Successful_Instruction_Travel_Path()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MMLL");
-            commandHandler.SendMoveInstruction("MMLL");
-            commandHandler.SendMoveInstruction("MRMR");
-            commandHandler.SendMoveInstruction("ML!!?");
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MMLL");
+            //commandHandler.SendMoveInstruction("MMLL");
+            //commandHandler.SendMoveInstruction("MRMR");
+            //commandHandler.SendMoveInstruction("ML!!?");
 
-            List<Position> expectedResult = new()
-            {
-                new(new(1, 2), Direction.North),
-                new(new(1, 3), Direction.North),
-                new(new(1, 3), Direction.East),
-                new(new(2, 3), Direction.East),
-                new(new(2, 3), Direction.South)
-            };
+            //List<Position> expectedResult = new()
+            //{
+            //    new(new(1, 2), Direction.North),
+            //    new(new(1, 3), Direction.North),
+            //    new(new(1, 3), Direction.East),
+            //    new(new(2, 3), Direction.East),
+            //    new(new(2, 3), Direction.South)
+            //};
 
-            List<Position> actualResult = commandHandler.RecentPath;
+            //List<Position> actualResult = commandHandler.RecentPath;
 
-            actualResult.Count.Should().Be(expectedResult.Count);
-            for (int i = 0; i < actualResult.Count; i++)
-            {
-                actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
-            }
+            //actualResult.Count.Should().Be(expectedResult.Count);
+            //for (int i = 0; i < actualResult.Count; i++)
+            //{
+            //    actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
+            //}
         }
 
         [Test]
         public void RecentPath_After_SendMoveInstruction_With_Instruction_That_Leads_To_Obstacle_Should_Return_Path_Up_Until_Obstacle()
         {
-            PlateauBase plateauWithObstacle = new RectangularPlateau(new(5, 5));
-            plateauWithObstacle.AddObstacle(new(2, 4));
+            Assert.Fail();
+            //PlateauBase plateauWithObstacle = new RectangularPlateau(new(5, 5));
+            //plateauWithObstacle.AddObstacle(new(2, 4));
 
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithObstacle);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MML");
-            commandHandler.SendMoveInstruction("RRMM");
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateauWithObstacle);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MML");
+            //commandHandler.SendMoveInstruction("RRMM");
 
-            List<Position> expectedResult = new()
-            {
-                new(new(1, 4), Direction.West),
-                new(new(1, 4), Direction.North),
-                new(new(1, 4), Direction.East)
-            };
+            //List<Position> expectedResult = new()
+            //{
+            //    new(new(1, 4), Direction.West),
+            //    new(new(1, 4), Direction.North),
+            //    new(new(1, 4), Direction.East)
+            //};
 
-            List<Position> actualResult = commandHandler.RecentPath;
+            //List<Position> actualResult = commandHandler.RecentPath;
 
-            actualResult.Count.Should().Be(expectedResult.Count);
-            for (int i = 0; i < actualResult.Count; i++)
-            {
-                actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
-            }
+            //actualResult.Count.Should().Be(expectedResult.Count);
+            //for (int i = 0; i < actualResult.Count; i++)
+            //{
+            //    actualResult[i].Should().BeEquivalentTo(expectedResult[i]);
+            //}
         }
 
         [Test]
         public void RecentPath_After_Re_ConnectVehicle_Should_Return_Empty_List()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MML");
-            commandHandler.SendMoveInstruction("RRMM");
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MML");
+            //commandHandler.SendMoveInstruction("RRMM");
 
-            commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.ConnectVehicle(vehicle);
 
-            commandHandler.RecentPath.Count.Should().Be(0);
+            //commandHandler.RecentPath.Count.Should().Be(0);
         }
 
         [Test]
         public void RecentPath_After_DisconnectVehicle_Should_Return_Empty_List()
         {
-            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
-            commandHandler.ConnectVehicle(vehicle);
-            commandHandler.SendMoveInstruction("MML");
-            commandHandler.SendMoveInstruction("RRMM");
+            Assert.Fail();
+            //VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North), plateau);
+            //commandHandler.ConnectVehicle(vehicle);
+            //commandHandler.SendMoveInstruction("MML");
+            //commandHandler.SendMoveInstruction("RRMM");
 
-            commandHandler.DisconnectVehicle();
+            //commandHandler.DisconnectVehicle();
 
-            commandHandler.RecentPath.Count.Should().Be(0);
+            //commandHandler.RecentPath.Count.Should().Be(0);
         }
     }
 }

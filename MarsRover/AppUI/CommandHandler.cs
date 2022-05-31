@@ -70,13 +70,13 @@ namespace MarsRover.AppUI
                 if (instructionItem is SingularInstruction.MoveForward)
                     nextCoordinate += nextDirection.GetMovementVector();
 
-                if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
-                    return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");
+                //if (!_vehicle.Plateau.IsCoordinateValidInPlateau(nextCoordinate))
+                //    return (false, $"Instruction will move vehicle into invalid coordinate {nextCoordinate}");
 
                 RecentPath.Add(new Position(nextCoordinate, nextDirection));
             }
 
-            _vehicle.ApplyMoveInstruction(instruction);
+            //_vehicle.ApplyMoveInstruction(instruction);
 
             return (true, "Instruction successfully sent.");
         }
