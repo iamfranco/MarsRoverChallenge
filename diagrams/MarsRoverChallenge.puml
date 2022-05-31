@@ -5,18 +5,19 @@ class CommandHandler
 {
   - instructionReader : IInstructionReader
   - positionStringConverter : IPositionStringConverter
+  - plateau : PlateauBase
   - vehicle : VehicleBase
   - RecentPath : List<Position>
 
   + CommandHandler(instructionReader : IInstructionReader, positionStringConverter : IPositionStringConverter)
   
-  + GetRecentPath() : List<Position>
+  + ConnectPlateau(plateau : PlateauBase)
 
-  + ConnectVehicle(vehicle : VehicleBase)
-  + DisconnectVehicle()
-
-  + RequestPosition() : string
+  + AddVehicleToPosition(position : Position)
+  + ConnectToVehicleAtPosition(position : Position)
   + SendMoveInstruction(instruction : string) : (bool, string)
+
+  + GetRecentPath() : List<Position>
 }
 
 interface IInstructionReader <<interface>>
@@ -41,10 +42,16 @@ class StandardInstructionReader
 abstract PlateauBase <<abstract>>
 {
   - obstacleCoordinates : List<Coordinates>
+  - vehicles : List<VehicleBase>
 
   + GetObstacleCoordinates() : List<Coordinates>
   + AddObstacle(obstacleCoordinate: Coordinates)
-  + RemoveObstacle(obstacleCoordinate: Coordinates)
+  + RemoveObstacle(obstaclecoordinate : Coordinates)
+
+  + GetVehicles() : List<VehicleBase>
+  + AddVehicle(vehicle : VehicleBase) : void
+  + RemoveVehicle(vehicle : VehicleBase) : void
+
   {abstract} + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
   {abstract} + PrintMap(recentPath : List<Position>) : void
 }
@@ -115,7 +122,7 @@ class PositionStringConverter
 
 class Rover
 {
-  + Rover(initialPosition : Position, plateau : PlateauBase)
+  + Rover(initialPosition : Position)
 
   + TakePhotoAndSendToStation() : void
   + CollectSample() : void
@@ -124,35 +131,34 @@ class Rover
 abstract VehicleBase <<abstract>>
 {
   - position : Position
-  - plateau : PlateauBase
 
-  + VehicleBase(initialPosition : Position, plateau : PlateauBase)
+  + VehicleBase(initialPosition : Position)
 
   + GetPosition() : Position
-  + GetPlateau() : PlateauBase
-  + ApplyMoveInstruction(instruction : List<SingularInstruction>) : void
+  + ApplyMoveInstruction(instruction : List<SingularInstruction>, plateau : PlateauBase) : List<Position>
 }
 
 CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter
+CommandHandler o-- PlateauBase
 CommandHandler o-- VehicleBase
 CommandHandler o---- Position
 
 IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
 
-VehicleBase <|-u- Rover
+VehicleBase <|-- Rover
 VehicleBase --> SingularInstruction
 VehicleBase o--- Position
-VehicleBase o-- PlateauBase
 
 IPositionStringConverter <|..... PositionStringConverter
 IPositionStringConverter ---> Position
-IPositionStringConverter ----> Coordinates
+IPositionStringConverter ---> Coordinates
 
 PlateauBase <|----- RectangularPlateau
-PlateauBase ---> Position
-PlateauBase o--- Coordinates
+PlateauBase --> Position
+PlateauBase o-- Coordinates
+PlateauBase o- VehicleBase
 
 Direction --> Coordinates 
 
