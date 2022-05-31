@@ -20,6 +20,7 @@ class CommandHandler
 
   + GetPositionString() : string
   + GetRecentPath() : List<Position>
+  + ResetRecentPath() : void
 }
 
 interface IInstructionReader <<interface>>
