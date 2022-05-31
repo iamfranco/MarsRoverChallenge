@@ -34,7 +34,20 @@ namespace MarsRover.Models.Plateaus
 
         public void RemoveVehicle(VehicleBase vehicle) => _vehicles.Remove(vehicle);
 
-        public abstract bool IsCoordinateValidInPlateau(Coordinates coordinates);
+        public bool IsCoordinateValidInPlateau(Coordinates coordinates)
+        {
+            if (!IsCoordinateWithinPlateauBoundary(coordinates))
+                return false;
+
+            if (_obstacleCoordinates.Contains(coordinates))
+                return false;
+
+            if (_vehicles.Select(vehicle => vehicle.Position.Coordinates).Contains(coordinates))
+                return false;
+
+            return true;
+        }
         public abstract void PrintMap(List<Position> recentPath);
+        protected abstract bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates);
     }
 }

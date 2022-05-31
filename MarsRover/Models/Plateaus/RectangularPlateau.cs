@@ -14,20 +14,6 @@ namespace MarsRover.Models.Plateaus
             _plateauSize = plateauSize;
         }
 
-        public override bool IsCoordinateValidInPlateau(Coordinates coordinates)
-        {
-            if (coordinates.X < 0 || coordinates.X > _plateauSize.X)
-                return false;
-
-            if (coordinates.Y < 0 || coordinates.Y > _plateauSize.Y)
-                return false;
-
-            if (ObstacleCoordinates.Contains(coordinates))
-                return false;
-
-            return true;
-        }
-
         public override void PrintMap(List<Position> recentPath)
         {
             int width = _plateauSize.X;
@@ -128,5 +114,16 @@ namespace MarsRover.Models.Plateaus
         }
 
         private static bool IsValidPlateauSize(Coordinates plateauSize) => plateauSize.X >= 0 && plateauSize.Y >= 0;
+
+        protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
+        {
+            if (coordinates.X < 0 || coordinates.X > _plateauSize.X)
+                return false;
+
+            if (coordinates.Y < 0 || coordinates.Y > _plateauSize.X)
+                return false;
+
+            return true;
+        }
     }
 }
