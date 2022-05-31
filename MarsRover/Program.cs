@@ -26,6 +26,7 @@ while (true)
 
 while (true)
 {
+    commandHandler.ResetRecentPath();
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
     string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
