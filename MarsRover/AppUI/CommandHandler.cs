@@ -93,12 +93,9 @@ namespace MarsRover.AppUI
 
             (RecentPath, bool isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
             if (isEmergencyStopUsed)
-            {
-                string lastPositionString = _positionStringConverter.ToPositionString(RecentPath.Last());
-                return (true, $"Vehicle sensed danger ahead, so stopped at [{lastPositionString}] instead of applying full instruction.");
-            }
+                return (true, $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]");
 
-            return (true, "Instruction successfully sent.");
+            return (true, $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]");
         }
 
         public string GetPositionString()

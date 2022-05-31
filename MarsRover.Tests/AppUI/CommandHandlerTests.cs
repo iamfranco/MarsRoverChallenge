@@ -298,7 +298,6 @@ namespace MarsRover.Tests.AppUI
             (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(true);
-            message.Should().Be("Instruction successfully sent.");
             commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
         }
 
