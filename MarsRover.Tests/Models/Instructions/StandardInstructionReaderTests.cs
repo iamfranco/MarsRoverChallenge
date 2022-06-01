@@ -103,5 +103,11 @@ namespace MarsRover.Tests.Models.Instructions
             List<SingularInstruction> actualResult = standardInstructionReader.EvaluateInstruction(validInstruction);
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
+
+        [Test]
+        public void ExampleInstructionString_Should_Return_LMRMMRM()
+        {
+            standardInstructionReader.ExampleInstructionString.Should().Be("LMRMMRM");
+        }
     }
 }

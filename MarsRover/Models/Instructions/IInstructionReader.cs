@@ -2,6 +2,7 @@
 {
     public interface IInstructionReader
     {
+        string ExampleInstructionString { get; }
         bool IsValidInstruction(string? instruction);
         List<SingularInstruction> EvaluateInstruction(string? instruction);
     }
