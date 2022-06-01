@@ -49,7 +49,7 @@ namespace MarsRover.AppUI
             if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
                 return (false, "Vehicle Is On Invalid Coordinates For Plateau");
 
-            _plateau.AddVehicle(vehicle);
+            _plateau.VehiclesContainer.AddVehicle(vehicle);
             return ConnectVehicleSuccessfully(vehicle);
         }
 
@@ -58,10 +58,10 @@ namespace MarsRover.AppUI
             if (_plateau is null)
                 return (false, "Plateau Not Connected");
 
-            if (_plateau.GetVehicles().Count == 0)
+            if (_plateau.VehiclesContainer.Vehicles.Count == 0)
                 return (false, "Plateau Has No Vehicles");
 
-            VehicleBase? vehicle = _plateau.GetVehicleAtCoordinates(coordinates);
+            VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
             if (vehicle is null)
                 return (false, "Position Does Not Match Any Vehicle's Position On Plateau");
 

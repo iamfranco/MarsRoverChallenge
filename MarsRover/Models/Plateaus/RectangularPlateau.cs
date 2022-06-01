@@ -18,16 +18,17 @@ namespace MarsRover.Models.Plateaus
         {
             int maxX = _maximumCoordinates.X;
             int maxY = _maximumCoordinates.Y;
+            var obstacles = ObstaclesContainer.ObstacleCoordinates;
 
             if (maxX > 40 || maxY > 40)
             {
                 Console.WriteLine($"Rectangular plateau: width [{maxX}] and height [{maxY}]");
-                Console.WriteLine($"Obstacles Count: {ObstacleCoordinates.Count}");
+                Console.WriteLine($"Obstacles Count: {obstacles.Count}");
 
-                if (ObstacleCoordinates.Count > 0)
+                if (obstacles.Count > 0)
                 {
                     Console.WriteLine("Obstacles at Coordinates:");
-                    foreach (var obstacle in ObstacleCoordinates)
+                    foreach (var obstacle in obstacles)
                     {
                         Console.WriteLine($"   {obstacle}");
                     }
@@ -86,12 +87,12 @@ namespace MarsRover.Models.Plateaus
                 }
             }
 
-            foreach (var obstacleCoordinate in ObstacleCoordinates)
+            foreach (var obstacleCoordinate in ObstaclesContainer.ObstacleCoordinates)
             {
                 matrixToPrint[obstacleCoordinate.X, obstacleCoordinate.Y] = ("X", invalidGroundColor);
             }
 
-            foreach (var vehicle in GetVehicles())
+            foreach (var vehicle in VehiclesContainer.Vehicles)
             {
                 int x = vehicle.Position.Coordinates.X;
                 int y = vehicle.Position.Coordinates.Y;

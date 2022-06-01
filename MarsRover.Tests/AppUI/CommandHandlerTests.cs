@@ -91,7 +91,7 @@ namespace MarsRover.Tests.AppUI
             Position position = new Position(coordinates, Direction.North);
             Rover rover = new Rover(position);
 
-            plateau.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
             commandHandler.ConnectToVehicleAtCoordinates(coordinates);
@@ -141,7 +141,7 @@ namespace MarsRover.Tests.AppUI
             status.Should().Be(true);
             message.Should().Be("Vehicle Connected");
 
-            plateau.GetVehicles().Should().Contain(rover);
+            plateau.VehiclesContainer.Vehicles.Should().Contain(rover);
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace MarsRover.Tests.AppUI
         {
             Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
-            plateau.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
             (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
@@ -187,9 +187,9 @@ namespace MarsRover.Tests.AppUI
             Rover rover = new Rover(new(new(4, 3), Direction.South));
             Rover rover2 = new Rover(new(coordinates, Direction.North));
             Rover rover3 = new Rover(new(new(3, 3), Direction.West));
-            plateau.AddVehicle(rover);
-            plateau.AddVehicle(rover2);
-            plateau.AddVehicle(rover3);
+            plateau.VehiclesContainer.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover2);
+            plateau.VehiclesContainer.AddVehicle(rover3);
             commandHandler.ConnectPlateau(plateau);
 
             (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
@@ -271,7 +271,7 @@ namespace MarsRover.Tests.AppUI
         public void SendMoveInstruction_With_Instruction_String_Which_Move_Into_Invalid_Coordinates_Of_Plateau_Should_Return_False_And_Modify_Vehicle_Position_To_Just_Before_Invalid_Coordinates()
         {
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
-            plateauWithOneObstacle.AddObstacle(new(2, 4));
+            plateauWithOneObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
 
             string instruction = "RMLMMM";
             VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
@@ -356,7 +356,7 @@ namespace MarsRover.Tests.AppUI
             Coordinates coordinates = new Coordinates(1, 2);
             Position position = new Position(coordinates, Direction.North);
             VehicleBase vehicle = new Rover(position);
-            plateau.AddVehicle(vehicle);
+            plateau.VehiclesContainer.AddVehicle(vehicle);
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.ConnectToVehicleAtCoordinates(coordinates);
@@ -443,7 +443,7 @@ namespace MarsRover.Tests.AppUI
         public void RecentPath_After_SendMoveInstruction_With_Instruction_That_Leads_To_Obstacle_Should_Return_Path_Up_Until_Obstacle()
         {
             PlateauBase plateauWithObstacle = new RectangularPlateau(new(5, 5));
-            plateauWithObstacle.AddObstacle(new(2, 4));
+            plateauWithObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
 
             VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
             commandHandler.ConnectPlateau(plateauWithObstacle);
