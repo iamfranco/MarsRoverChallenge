@@ -15,7 +15,7 @@ class CommandHandler
 
   + GetVehicle() : VehicleBase?
   + AddVehicleToPlateau(vehicle : VehicleBase) : (bool, string)
-  + ConnectToVehicleAtPosition(position : Position) : (bool, string)
+  + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : (bool, string)
   + SendMoveInstruction(instruction : string) : (bool, string)
 
   + GetPositionString() : string
@@ -52,7 +52,7 @@ abstract PlateauBase <<abstract>>
   + RemoveObstacle(obstaclecoordinate : Coordinates) : void
 
   + GetVehicles() : List<VehicleBase>
-  + GetVehicleAtPosition(position : Position) : VehicleBase?
+  + GetVehicleAtCoordinates(coordinates : Coordinates) : VehicleBase?
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
 
