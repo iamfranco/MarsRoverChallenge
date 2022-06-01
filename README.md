@@ -6,7 +6,7 @@ Here we have 3 folders:
 
 1. The `MarsRover` folder contains the C# solution to the challenge
 2. The `MarsRover.Tests` folder contains the unit tests for the solution
-3. The `diagrams` folder contains diagrams related to the solution, such as <a target="_blank" href="diagrams/Mars%20Rover%20Challenge.png">UML Diagram</a>.
+3. The `diagrams` folder contains diagrams related to the solution
 
 ## Instructions
 
@@ -57,7 +57,6 @@ The developmental process of this application can be visualised by 3 UML diagram
 #### Early Stage
 
 ![Early Stage UML Diagram](https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/3b5dcb1dc1e9ca43a521743ffd925034db48f2ee/puml/Mars%20Rover%20Challenge.png)
-<a target="_blank" href="https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/3b5dcb1dc1e9ca43a521743ffd925034db48f2ee/puml/Mars%20Rover%20Challenge.png">Open "Early Stage" UML Diagram in new tab</a>
 
 At the early stage, I read the challenge and decided it's crucial that "a vehicle can move on a plateau", so the UML diagram has the `Vehicle` class as the "main class" that interacts with other classes.
 
@@ -74,7 +73,6 @@ So I ended up coding the whole UML and made many adjustments to the UML diagrams
 #### Mid Stage
 
 ![Mid Stage UML Diagram](https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/2ca66e910e8af8c6c71712dcf8c0086e2074d77f/diagrams/Mars%20Rover%20Challenge.png)
-<a target="_blank" href="https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/2ca66e910e8af8c6c71712dcf8c0086e2074d77f/diagrams/Mars%20Rover%20Challenge.png">Open "Mid Stage" UML Diagram in new tab</a>
 
 The "Mid Stage" UML diagram is the result of coding the "early stage" diagram and realising how the UML should look "in practice".
 
@@ -93,7 +91,7 @@ The drawback of turning `Direction` into a **class** is that it's reference type
 
 There's a new class `CommandHandler` at the top of the UML diagram, for sending "move instructions" (such as "LMRMMM") to the vehicle.
 
-After I reached the "Mid Stage" UML diagram, I decided to delete the whole C# code and start fresh to do TDD rigorously <a target="_blank" href="https://github.com/iamfranco/MarsRoverChallenge/commit/b83730da4d4daf442d0f0f879acf1f61c59c899c">[open that git commit in new tab]</a>.
+After I reached the "Mid Stage" UML diagram, I decided to delete the whole C# code and start fresh to do TDD rigorously [[git commit]](https://github.com/iamfranco/MarsRoverChallenge/commit/b83730da4d4daf442d0f0f879acf1f61c59c899c).
 
 This time I learned from my past mistake, so I started coding the lowest level of components, `Coordinates`, and work my way up to higher level components.
 
@@ -108,8 +106,7 @@ After the feedback and conversations, I've modified the UML and subsequently the
 
 #### Current Stage
 
-![UML Diagram](diagrams/Mars%20Rover%20Challenge.png)
-<a target="_blank" href="https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/main/diagrams/Mars%20Rover%20Challenge.png">Open Current UML Diagram in new tab</a>
+![UML Diagram](https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/main/diagrams/Mars%20Rover%20Challenge.png)
 
 Things to note:
 
