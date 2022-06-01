@@ -46,8 +46,11 @@ class StandardInstructionReader
 
 abstract PlateauBase <<abstract>>
 {
-  + obstaclesContainer : ObstaclesContainer
-  + vehiclesContainer : VehiclesContainer
+  - obstaclesContainer : ObstaclesContainer
+  - vehiclesContainer : VehiclesContainer
+
+  + GetObstaclesContainer() : ObstaclesContainer
+  + GetVehiclesContainer() : VehiclesContainer
 
   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
   {abstract} + PrintMap(recentPath : List<Position>) : void
