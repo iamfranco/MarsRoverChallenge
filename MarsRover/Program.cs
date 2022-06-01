@@ -10,7 +10,7 @@ IPositionStringConverter positionStringConverter = new PositionStringConverter()
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 
-string maximumCoordinatesString = Ask("Enter Maximum Coordinates (eg \"5 5\"): ", new Regex(@"^\d+ \d+$").IsMatch);
+string maximumCoordinatesString = Ask($"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ", new Regex(@"^\d+ \d+$").IsMatch);
 Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
 RectangularPlateau plateau = new(maximumCoordinates);
 commandHandler.ConnectPlateau(plateau);
@@ -18,7 +18,7 @@ commandHandler.ConnectPlateau(plateau);
 while (true)
 {
     ClearScreenAndPrintMap(plateau, new());
-    string obstacleCoordinates = Ask("Enter Obstacle Coordinate (eg \"5 5\", or empty if no more obstacle): ", new Regex(@"^(\d+ \d+)?$").IsMatch);
+    string obstacleCoordinates = Ask($"Enter Obstacle Coordinate (eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ", new Regex(@"^(\d+ \d+)?$").IsMatch);
     if (string.IsNullOrEmpty(obstacleCoordinates))
         break;
 
@@ -30,8 +30,8 @@ while (true)
     commandHandler.ResetRecentPath();
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
-    string vehicleInitialPositionOrCoordinates = Ask("Enter Position (eg \"1 2 N\") to add new Vehicle, or " +
-        "\nEnter Coordinates (eg \"1 2\") to connect with existing vehicle: ", IsValidVehicleInitialPositionOrCoordinates);
+    string vehicleInitialPositionOrCoordinates = Ask($"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
+        $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ", IsValidVehicleInitialPositionOrCoordinates);
     if (IsValidVehicleInitialCoordinates(vehicleInitialPositionOrCoordinates))
     {
         Coordinates initialCoordinates = positionStringConverter.ToCoordinates(vehicleInitialPositionOrCoordinates);
