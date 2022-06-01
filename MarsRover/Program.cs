@@ -13,6 +13,7 @@ CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 string maximumCoordinatesString = Ask("Enter Maximum Coordinates (eg \"5 5\"): ", new Regex(@"^\d+ \d+$").IsMatch);
 Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
 RectangularPlateau plateau = new(maximumCoordinates);
+commandHandler.ConnectPlateau(plateau);
 
 while (true)
 {
@@ -29,22 +30,19 @@ while (true)
     commandHandler.ResetRecentPath();
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
-    string vehicleInitialPosition = Ask("Enter Vehicle Initial Position (eg \"1 2 N\"): ", IsValidVehicleInitialPosition);
-    Position initialPosition = positionStringConverter.ToPosition(vehicleInitialPosition);
-    commandHandler.ConnectPlateau(plateau);
-
-    VehicleBase vehicle;
-    (bool isSuccessfulConnect, string _) = commandHandler.ConnectToVehicleAtPosition(initialPosition);
-
-    if (isSuccessfulConnect)
+    string vehicleInitialPositionOrCoordinates = Ask("Enter Position (eg \"1 2 N\") to add new Vehicle, or " +
+        "\nEnter Coordinates (eg \"1 2\") to connect with existing vehicle: ", IsValidVehicleInitialPositionOrCoordinates);
+    if (IsValidVehicleInitialCoordinates(vehicleInitialPositionOrCoordinates))
     {
-        vehicle = commandHandler.GetVehicle()!;
+        Coordinates initialCoordinates = positionStringConverter.ToCoordinates(vehicleInitialPositionOrCoordinates);
+        commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
     }
     else
     {
-        vehicle = new Rover(initialPosition);
-        commandHandler.AddVehicleToPlateau(vehicle);
+        Position initialPosition = positionStringConverter.ToPosition(vehicleInitialPositionOrCoordinates);
+        commandHandler.AddVehicleToPlateau(new Rover(initialPosition));
     }
+    Console.WriteLine($"Connected with {commandHandler.GetVehicle()!.GetType()} at Position [{commandHandler.GetPositionString()}]");
 
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
@@ -65,6 +63,7 @@ static string Ask(string prompt, Func<string, bool> validationFunc)
     {
         try
         {
+            Console.WriteLine();
             Console.Write(prompt);
             string? input = Console.ReadLine();
 
@@ -84,16 +83,39 @@ static string Ask(string prompt, Func<string, bool> validationFunc)
     }
 }
 
-bool IsValidVehicleInitialPosition(string positionString)
+bool IsValidVehicleInitialPositionOrCoordinates(string inputString)
 {
-    if (!positionStringConverter.IsValidPositionString(positionString))
+    if (!positionStringConverter.IsValidPositionString(inputString))
+    {
+        return IsValidVehicleInitialCoordinates(inputString);
+    }
+
+    Position position = positionStringConverter.ToPosition(inputString);
+    if (!plateau.IsCoordinateValidInPlateau(position.Coordinates))
+    {
+        Console.WriteLine($"Cannot add new vehicle at [{inputString}] on plateau");
         return false;
+    }
 
-    Position position = positionStringConverter.ToPosition(positionString);
-    if (plateau.GetVehicleAtPosition(position) != null)
-        return true;
+    return true;
+}
 
-    return plateau.IsCoordinateValidInPlateau(position.Coordinates);
+bool IsValidVehicleInitialCoordinates(string inputString)
+{
+    if (!positionStringConverter.IsValidCoordinateString(inputString))
+    {
+        Console.WriteLine($"[{inputString}] is neither Position nor Coordinates");
+        return false;
+    }
+
+    Coordinates coordinates = positionStringConverter.ToCoordinates(inputString);
+    if (plateau.GetVehicleAtCoordinates(coordinates) is null)
+    {
+        Console.WriteLine($"No Vehicle at coordinates [{inputString}]");
+        return false;
+    }
+
+    return true;
 }
 
 void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
