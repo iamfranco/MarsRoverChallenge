@@ -46,7 +46,7 @@ while (true)
 
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
-    string instructionString = Ask("Enter Movement Instruction (eg \"LMMMLRRL\"): ", instructionReader.IsValidInstruction);
+    string instructionString = Ask($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ", instructionReader.IsValidInstruction);
     (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
 
     ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
