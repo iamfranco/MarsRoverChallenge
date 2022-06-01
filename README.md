@@ -16,7 +16,7 @@ To run the application:
 2. then navigate to the `MarsRover` folder (with `cd` command or otherwise)
 3. then run the following command
 
-```
+```c#
 dotnet run
 ```
 
@@ -81,7 +81,7 @@ There's some "reasonable" changes made to the UML, such as changing `IPlateau` f
 There's also some "questionable" changes, such as
 changing the `Direction` **Enum** into a **class**. The reason for the change is that I wanted `Direction` a method that returns the (x,y) coordinates representation of the direction. Having such a method would make life easier because when the vehicle that's facing north needs to move forward, we can just do
 
-```
+```c#
 vehicleCoordinates += direction.GetMovementVector()
 ```
 
