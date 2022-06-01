@@ -43,7 +43,7 @@ namespace MarsRover.Tests.Models.Vehicles
             plateauWithObstacles = new RectangularPlateau(new(5, 5));
             foreach (Coordinates obstacle in obstacles)
             {
-                plateauWithObstacles.AddObstacle(obstacle);
+                plateauWithObstacles.ObstaclesContainer.AddObstacle(obstacle);
             }
 
             rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
@@ -83,7 +83,7 @@ namespace MarsRover.Tests.Models.Vehicles
         public void ApplyMoveInstruction_With_Valid_Instruction_String_Should_Succeed()
         {
             Action act;
-            plateau.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover);
 
             foreach (List<SingularInstruction> validInstruction in validInstructions)
             {
@@ -100,7 +100,7 @@ namespace MarsRover.Tests.Models.Vehicles
             bool isEmergencyStopUsed;
             
             rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-            plateau.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover);
             (recentPath, isEmergencyStopUsed) = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.TurnLeft,
@@ -132,7 +132,7 @@ namespace MarsRover.Tests.Models.Vehicles
             isEmergencyStopUsed.Should().Be(false);
 
             rover = new Rover(new Position(new Coordinates(3, 3), Direction.East));
-            plateau.AddVehicle(rover);
+            plateau.VehiclesContainer.AddVehicle(rover);
             (recentPath, isEmergencyStopUsed) = rover.ApplyMoveInstruction(new()
             {
                 SingularInstruction.MoveForward,
@@ -170,10 +170,10 @@ namespace MarsRover.Tests.Models.Vehicles
         public void ApplyMoveInstruction_Into_Invalid_Coordinate_For_Plateau_Should_Have_Position_Stop_Before_Invalid_Coordinate()
         {
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
-            plateauWithOneObstacle.AddObstacle(new(2, 3));
+            plateauWithOneObstacle.ObstaclesContainer.AddObstacle(new(2, 3));
 
             Rover rover = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-            plateauWithOneObstacle.AddVehicle(rover);
+            plateauWithOneObstacle.VehiclesContainer.AddVehicle(rover);
 
             List<SingularInstruction> instruction = new()
             {

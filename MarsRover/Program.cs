@@ -22,7 +22,7 @@ while (true)
     if (string.IsNullOrEmpty(obstacleCoordinates))
         break;
 
-    plateau.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
+    plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
 }
 
 while (true)
@@ -109,7 +109,7 @@ bool IsValidVehicleInitialCoordinates(string inputString)
     }
 
     Coordinates coordinates = positionStringConverter.ToCoordinates(inputString);
-    if (plateau.GetVehicleAtCoordinates(coordinates) is null)
+    if (plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates) is null)
     {
         Console.WriteLine($"No Vehicle at coordinates [{inputString}]");
         return false;

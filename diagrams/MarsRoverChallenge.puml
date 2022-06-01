@@ -46,21 +46,40 @@ class StandardInstructionReader
 
 abstract PlateauBase <<abstract>>
 {
+  - obstaclesContainer : ObstaclesContainer
+  - vehiclesContainer : VehiclesContainer
+
+  + GetObstaclesContainer() : ObstaclesContainer
+  + GetVehiclesContainer() : VehiclesContainer
+
+  + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
+  {abstract} + PrintMap(recentPath : List<Position>) : void
+  {abstract} # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
+}
+
+class ObstaclesContainer
+{
   - obstacleCoordinates : List<Coordinates>
-  - vehicles : List<VehicleBase>
+  - isCoordinateValidInPlateau : Func<Coordinates, bool>
+
+  + ObstaclesContainer(isCoordinateValidInPlateau : Func<Coordinates, bool>)
 
   + GetObstacleCoordinates() : List<Coordinates>
   + AddObstacle(obstacleCoordinate: Coordinates) : void
   + RemoveObstacle(obstaclecoordinate : Coordinates) : void
+}
+
+class VehiclesContainer
+{
+  - vehicles : List<VehicleBase>
+  - isCoordinateValidInPlateau : Func<Coordinates, bool>
+
+  + VehiclesContainer(isCoordinateValidInPlateau : Func<Coordinates, bool>)
 
   + GetVehicles() : List<VehicleBase>
   + GetVehicleAtCoordinates(coordinates : Coordinates) : VehicleBase?
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
-
-   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
-  {abstract} + PrintMap(recentPath : List<Position>) : void
-  {abstract} # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
 class RectangularPlateau
@@ -156,27 +175,28 @@ CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter
 CommandHandler o-- PlateauBase
 CommandHandler o-- VehicleBase
-CommandHandler o---- Position
+CommandHandler o----- Position
 
-IInstructionReader --> SingularInstruction
 IInstructionReader <|.. StandardInstructionReader 
 
 VehicleBase <|-- Rover
-VehicleBase --> SingularInstruction
 VehicleBase o--- Position
 
-IPositionStringConverter <|..... PositionStringConverter
-IPositionStringConverter ---> Position
-IPositionStringConverter ---> Coordinates
+IPositionStringConverter <|.. PositionStringConverter
 
-PlateauBase <|----- RectangularPlateau
-PlateauBase --> Position
-PlateauBase o-- Coordinates
-PlateauBase o- VehicleBase
+PlateauBase *-- ObstaclesContainer
+PlateauBase *-- VehiclesContainer
+PlateauBase <|--- RectangularPlateau
 
-Direction --> Coordinates 
+ObstaclesContainer o---- Coordinates
+VehiclesContainer o-u- VehicleBase
 
 Position o-- Direction
 Position o-- Coordinates
+
+IInstructionReader --> SingularInstruction
+VehicleBase --> SingularInstruction
+
+RectangularPlateau o-[norank]- Coordinates
 
 @enduml
