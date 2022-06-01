@@ -9,6 +9,15 @@ namespace MarsRover.Models.Plateaus
         private List<Coordinates> _obstacleCoordinates = new();
         private List<VehicleBase> _vehicles = new();
 
+        public ObstaclesContainer ObstaclesContainer { get; }
+        public VehiclesContainer VehiclesContainer { get; }
+
+        public PlateauBase()
+        {
+            ObstaclesContainer = new ObstaclesContainer(IsCoordinateValidInPlateau);
+            VehiclesContainer = new VehiclesContainer(IsCoordinateValidInPlateau);
+        }
+
         public ReadOnlyCollection<Coordinates> ObstacleCoordinates => _obstacleCoordinates.AsReadOnly();
 
         public void AddObstacle(Coordinates obstacle)
@@ -39,10 +48,10 @@ namespace MarsRover.Models.Plateaus
             if (!IsCoordinateWithinPlateauBoundary(coordinates))
                 return false;
 
-            if (_obstacleCoordinates.Contains(coordinates))
+            if (ObstaclesContainer.ObstacleCoordinates.Contains(coordinates))
                 return false;
 
-            if (_vehicles.Select(vehicle => vehicle.Position.Coordinates).Contains(coordinates))
+            if (VehiclesContainer.Vehicles.Select(vehicle => vehicle.Position.Coordinates).Contains(coordinates))
                 return false;
 
             return true;
