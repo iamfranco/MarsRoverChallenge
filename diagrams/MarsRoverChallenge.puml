@@ -27,6 +27,7 @@ interface IInstructionReader <<interface>>
 {
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + GetExampleInstructionString() : string
 }
 
 enum SingularInstruction
@@ -40,6 +41,7 @@ class StandardInstructionReader
 {
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + GetExampleInstructionString() : string
 }
 
 abstract PlateauBase <<abstract>>
