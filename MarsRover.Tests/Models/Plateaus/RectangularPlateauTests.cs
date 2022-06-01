@@ -39,29 +39,6 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void GetVehicles_Should_Return_Empty_List_Of_VehicleBase_By_Default()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            plateau.GetVehicles().Count.Should().Be(0);
-        }
-
-        [Test]
-        public void AddVehicle_With_Vehicle_In_Plateau_Then_GetVehicles_Should_Contain_Added_Vehicle()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            Rover rover1 = new(new(new(1, 1), Direction.North));
-            Rover rover2 = new(new(new(2, 3), Direction.South));
-
-            plateau.AddVehicle(rover1);
-            plateau.AddVehicle(rover2);
-
-            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
-            vehicleList.Count.Should().Be(2);
-            vehicleList.Should().Contain(rover1);
-            vehicleList.Should().Contain(rover2);
-        }
-
-        [Test]
         public void AddVehicle_With_Vehicle_On_Invalid_Coordinates_For_Plateau_Should_Not_Change_GetVehicles_Value()
         {
             RectangularPlateau plateau = new(new(5, 5));
@@ -84,69 +61,6 @@ namespace MarsRover.Tests.Models.Plateaus
             VehicleListAfterAddingInvalidVehicles.Should().BeEquivalentTo(initialVehicleList);
         }
 
-        [Test]
-        public void GetVehicleAtCoordinates_With_Position_Where_There_Is_No_Vehicle_Should_Return_Null()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            plateau.AddObstacle(new(3, 3));
-            Rover rover1 = new(new(new(1, 1), Direction.North));
-            Rover rover2 = new(new(new(2, 3), Direction.South));
-            plateau.AddVehicle(rover1);
-            plateau.AddVehicle(rover2);
-
-            VehicleBase? vehicle = plateau.GetVehicleAtCoordinates(new(4, 4));
-            vehicle.Should().Be(null);
-        }
-
-        [Test]
-        public void GetVehicleAtCoordinates_With_Position_Where_There_Is_Vehicle_Should_Return_Vehicle()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            plateau.AddObstacle(new(3, 3));
-            Rover rover = new(new(new(1, 1), Direction.North));
-            Rover roverClone = new(new(new(1, 1), Direction.North));
-            plateau.AddVehicle(rover);
-
-            VehicleBase? vehicle = plateau.GetVehicleAtCoordinates(new(1, 1));
-            vehicle.Should().Be(rover);
-            vehicle.Should().NotBe(roverClone);
-        }
-
-        [Test]
-        public void RemoveVehicle_Then_GetVehicle_Should_Not_Contain_Removed_Vehicle()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            Rover rover1 = new(new(new(1, 1), Direction.North));
-            Rover rover2 = new(new(new(2, 3), Direction.South));
-
-            plateau.AddVehicle(rover1);
-            plateau.AddVehicle(rover2);
-            plateau.RemoveVehicle(rover1);
-            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
-
-            vehicleList.Count.Should().Be(1);
-            vehicleList.Should().NotContain(rover1);
-            vehicleList.Should().Contain(rover2);
-        }
-
-        [Test]
-        public void RemoveVehicle_With_Vehicle_Not_Already_In_Plateau_Should_Not_Change_GetVehicles_Value()
-        {
-            RectangularPlateau plateau = new(new(5, 5));
-            Rover rover1 = new(new(new(1, 1), Direction.North));
-            Rover rover2 = new(new(new(2, 3), Direction.South));
-
-            plateau.AddVehicle(rover1);
-            plateau.AddVehicle(rover2);
-            List<VehicleBase> originalVehicleList = plateau.GetVehicles().ToList();
-
-            Rover rover3 = new(new(new(1, 4), Direction.East));
-            plateau.RemoveVehicle(rover3);
-            List<VehicleBase> vehicleList = plateau.GetVehicles().ToList();
-
-            vehicleList.Count.Should().Be(originalVehicleList.Count);
-            vehicleList.Should().BeEquivalentTo(originalVehicleList);
-        }
 
         [Test]
         public void IsCoordinateValidInPlateau_With_Coordinate_Outside_Of_Plateau_Should_Return_False()
