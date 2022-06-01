@@ -68,13 +68,6 @@ namespace MarsRover.AppUI
             return ConnectVehicleSuccessfully(vehicle);
         }
 
-        private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
-        {
-            _vehicle = vehicle;
-            ResetRecentPath();
-            return (true, "Vehicle Connected");
-        }
-
         public (bool status, string message) SendMoveInstruction(string instructionString)
         {
             if (_plateau is null)
@@ -107,5 +100,12 @@ namespace MarsRover.AppUI
         }
 
         public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
+
+        private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
+        {
+            _vehicle = vehicle;
+            ResetRecentPath();
+            return (true, "Vehicle Connected");
+        }
     }
 }
