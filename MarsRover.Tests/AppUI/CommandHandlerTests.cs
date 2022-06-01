@@ -87,13 +87,14 @@ namespace MarsRover.Tests.AppUI
         public void GetVehicle_After_Successful_ConnectToVehicleAtCoordinates_Should_Return_Vehicle()
         {
             commandHandler.ConnectPlateau(plateau);
-            Position position = new Position(new(1, 2), Direction.North);
+            Coordinates coordinates = new(1, 2);
+            Position position = new Position(coordinates, Direction.North);
             Rover rover = new Rover(position);
 
             plateau.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
-            commandHandler.ConnectToVehicleAtCoordinates(position);
+            commandHandler.ConnectToVehicleAtCoordinates(coordinates);
             VehicleBase? vehicle = commandHandler.GetVehicle();
 
             vehicle.Should().Be(rover);
@@ -352,12 +353,13 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_ConnectToVehicleAtCoordinates_Should_Return_List_Of_Just_One_Vehicle_Position()
         {
-            Position position = new Position(new Coordinates(1, 2), Direction.North);
+            Coordinates coordinates = new Coordinates(1, 2);
+            Position position = new Position(coordinates, Direction.North);
             VehicleBase vehicle = new Rover(position);
             plateau.AddVehicle(vehicle);
 
             commandHandler.ConnectPlateau(plateau);
-            commandHandler.ConnectToVehicleAtCoordinates(position);
+            commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             commandHandler.RecentPath.Count.Should().Be(1);
             commandHandler.RecentPath[0].Should().Be(vehicle.Position);
