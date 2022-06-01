@@ -168,5 +168,17 @@ namespace MarsRover.Tests.Models.Positions
             positionStringConverter.ToPositionString(new Position(new Coordinates(5, -30), Direction.East))
                 .Should().Be("5 -30 E");
         }
+
+        [Test]
+        public void ExamplePositionString_Should_Return_1_2_N()
+        {
+            positionStringConverter.ExamplePositionString.Should().Be("1 2 N");
+        }
+
+        [Test]
+        public void ExampleCoordinateString_Should_Return_1_2()
+        {
+            positionStringConverter.ExampleCoordinateString.Should().Be("1 2");
+        }
     }
 }

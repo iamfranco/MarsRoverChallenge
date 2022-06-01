@@ -2,6 +2,8 @@
 {
     public interface IPositionStringConverter
     {
+        string ExamplePositionString { get; }
+        string ExampleCoordinateString { get; }
         bool IsValidPositionString(string? positionString);
         bool IsValidCoordinateString(string? coordinateString);
         Position ToPosition(string? positionString);

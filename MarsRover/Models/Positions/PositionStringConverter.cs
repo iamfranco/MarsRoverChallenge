@@ -14,6 +14,10 @@ namespace MarsRover.Models.Positions
             ("W", Direction.West)
         };
 
+        public string ExamplePositionString => "1 2 N";
+
+        public string ExampleCoordinateString => "1 2";
+
         public bool IsValidPositionString(string? positionString) => IsNotNullAndMatchRegex(positionString, _positionStringRegex);
 
         public bool IsValidCoordinateString(string? coordinateString) => IsNotNullAndMatchRegex(coordinateString, _coordinateStringRegex);
