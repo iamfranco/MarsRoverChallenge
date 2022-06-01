@@ -173,7 +173,7 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void GetVehicleAtPosition_With_Position_Where_There_Is_No_Vehicle_Should_Return_Null()
+        public void GetVehicleAtCoordinates_With_Position_Where_There_Is_No_Vehicle_Should_Return_Null()
         {
             RectangularPlateau plateau = new(new(5, 5));
             plateau.AddObstacle(new(3, 3));
@@ -182,12 +182,12 @@ namespace MarsRover.Tests.Models.Plateaus
             plateau.AddVehicle(rover1);
             plateau.AddVehicle(rover2);
 
-            VehicleBase? vehicle = plateau.GetVehicleAtPosition(new Position(new(4, 4), Direction.North));
+            VehicleBase? vehicle = plateau.GetVehicleAtCoordinates(new(4, 4));
             vehicle.Should().Be(null);
         }
 
         [Test]
-        public void GetVehicleAtPosition_With_Position_Where_There_Is_Vehicle_Should_Return_Vehicle()
+        public void GetVehicleAtCoordinates_With_Position_Where_There_Is_Vehicle_Should_Return_Vehicle()
         {
             RectangularPlateau plateau = new(new(5, 5));
             plateau.AddObstacle(new(3, 3));
@@ -195,7 +195,7 @@ namespace MarsRover.Tests.Models.Plateaus
             Rover roverClone = new(new(new(1, 1), Direction.North));
             plateau.AddVehicle(rover);
 
-            VehicleBase? vehicle = plateau.GetVehicleAtPosition(new Position(new(1, 1), Direction.North));
+            VehicleBase? vehicle = plateau.GetVehicleAtCoordinates(new(1, 1));
             vehicle.Should().Be(rover);
             vehicle.Should().NotBe(roverClone);
         }

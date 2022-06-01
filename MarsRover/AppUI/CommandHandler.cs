@@ -31,9 +31,9 @@ namespace MarsRover.AppUI
             if (plateau is null)
                 throw new ArgumentNullException(nameof(plateau));
 
-            RecentPath = new();
-            _vehicle = null;
             _plateau = plateau;
+            _vehicle = null;
+            ResetRecentPath();
         }
 
         public VehicleBase? GetVehicle() => _vehicle;
@@ -53,7 +53,7 @@ namespace MarsRover.AppUI
             return ConnectVehicleSuccessfully(vehicle);
         }
 
-        public (bool status, string message) ConnectToVehicleAtPosition(Position position)
+        public (bool status, string message) ConnectToVehicleAtCoordinates(Coordinates coordinates)
         {
             if (_plateau is null)
                 return (false, "Plateau Not Connected");
@@ -61,18 +61,11 @@ namespace MarsRover.AppUI
             if (_plateau.GetVehicles().Count == 0)
                 return (false, "Plateau Has No Vehicles");
 
-            VehicleBase? vehicle = _plateau.GetVehicleAtPosition(position);
+            VehicleBase? vehicle = _plateau.GetVehicleAtCoordinates(coordinates);
             if (vehicle is null)
                 return (false, "Position Does Not Match Any Vehicle's Position On Plateau");
 
             return ConnectVehicleSuccessfully(vehicle);
-        }
-
-        private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
-        {
-            RecentPath = new() { vehicle.Position };
-            _vehicle = vehicle;
-            return (true, "Vehicle Connected");
         }
 
         public (bool status, string message) SendMoveInstruction(string instructionString)
@@ -104,6 +97,15 @@ namespace MarsRover.AppUI
                 return "Vehicle Not Connected";
 
             return _positionStringConverter.ToPositionString(_vehicle.Position);
+        }
+
+        public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
+
+        private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
+        {
+            _vehicle = vehicle;
+            ResetRecentPath();
+            return (true, "Vehicle Connected");
         }
     }
 }

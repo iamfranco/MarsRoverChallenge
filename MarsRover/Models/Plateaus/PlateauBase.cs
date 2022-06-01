@@ -21,9 +21,9 @@ namespace MarsRover.Models.Plateaus
 
         public ReadOnlyCollection<VehicleBase> GetVehicles() => _vehicles.AsReadOnly();
 
-        public VehicleBase? GetVehicleAtPosition(Position position)
+        public VehicleBase? GetVehicleAtCoordinates(Coordinates coordinates)
         {
-            return _vehicles.FirstOrDefault(vehicle => vehicle.Position.Equals(position));
+            return _vehicles.FirstOrDefault(vehicle => vehicle.Position.Coordinates.Equals(coordinates));
         }
 
         public void AddVehicle(VehicleBase vehicle)

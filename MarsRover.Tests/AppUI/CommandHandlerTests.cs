@@ -84,16 +84,17 @@ namespace MarsRover.Tests.AppUI
         }
 
         [Test]
-        public void GetVehicle_After_Successful_ConnectToVehicleAtPosition_Should_Return_Vehicle()
+        public void GetVehicle_After_Successful_ConnectToVehicleAtCoordinates_Should_Return_Vehicle()
         {
             commandHandler.ConnectPlateau(plateau);
-            Position position = new Position(new(1, 2), Direction.North);
+            Coordinates coordinates = new(1, 2);
+            Position position = new Position(coordinates, Direction.North);
             Rover rover = new Rover(position);
 
             plateau.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
-            commandHandler.ConnectToVehicleAtPosition(position);
+            commandHandler.ConnectToVehicleAtCoordinates(coordinates);
             VehicleBase? vehicle = commandHandler.GetVehicle();
 
             vehicle.Should().Be(rover);
@@ -144,55 +145,54 @@ namespace MarsRover.Tests.AppUI
         }
 
         [Test]
-        public void ConnectToVehicleAtPosition_Before_ConnectPlateau_Should_Return_False_For_Status_With_Message_NoPlateauConnected()
+        public void ConnectToVehicleAtCoordinates_Before_ConnectPlateau_Should_Return_False_For_Status_With_Message_NoPlateauConnected()
         {
-            Position position = new(new(1, 2), Direction.North);
-
-            (bool status, string message) = commandHandler.ConnectToVehicleAtPosition(position);
+            Coordinates coordinates = new(1, 2);
+            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
             message.Should().Be("Plateau Not Connected");
         }
 
         [Test]
-        public void ConnectToVehicleAtPosition_On_Plateau_With_No_Vehicle_Should_Return_False_For_Status_With_Message_PlateauHasNoVehicles()
+        public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Return_False_For_Status_With_Message_PlateauHasNoVehicles()
         {
-            Position position = new(new(1, 2), Direction.North);
+            Coordinates coordinates = new(1, 2);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.ConnectToVehicleAtPosition(position);
+            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
             message.Should().Be("Plateau Has No Vehicles");
         }
 
         [Test]
-        public void ConnectToVehicleAtPosition_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Return_False_For_Status_With_Message()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Return_False_For_Status_With_Message()
         {
-            Position position = new(new(1, 2), Direction.North);
+            Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
             plateau.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.ConnectToVehicleAtPosition(position);
+            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
             message.Should().Be("Position Does Not Match Any Vehicle's Position On Plateau");
         }
 
         [Test]
-        public void ConnectToVehicleAtPosition_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Return_True_For_Status_With_Message()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Return_True_For_Status_With_Message()
         {
-            Position position = new(new(1, 2), Direction.North);
+            Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
-            Rover rover2 = new Rover(new(new(1, 2), Direction.North));
+            Rover rover2 = new Rover(new(coordinates, Direction.North));
             Rover rover3 = new Rover(new(new(3, 3), Direction.West));
             plateau.AddVehicle(rover);
             plateau.AddVehicle(rover2);
             plateau.AddVehicle(rover3);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.ConnectToVehicleAtPosition(position);
+            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(true);
             message.Should().Be("Vehicle Connected");
@@ -351,14 +351,15 @@ namespace MarsRover.Tests.AppUI
         }
 
         [Test]
-        public void RecentPath_After_ConnectToVehicleAtPosition_Should_Return_List_Of_Just_One_Vehicle_Position()
+        public void RecentPath_After_ConnectToVehicleAtCoordinates_Should_Return_List_Of_Just_One_Vehicle_Position()
         {
-            Position position = new Position(new Coordinates(1, 2), Direction.North);
+            Coordinates coordinates = new Coordinates(1, 2);
+            Position position = new Position(coordinates, Direction.North);
             VehicleBase vehicle = new Rover(position);
             plateau.AddVehicle(vehicle);
 
             commandHandler.ConnectPlateau(plateau);
-            commandHandler.ConnectToVehicleAtPosition(position);
+            commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             commandHandler.RecentPath.Count.Should().Be(1);
             commandHandler.RecentPath[0].Should().Be(vehicle.Position);
@@ -477,6 +478,30 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.RecentPath.Count.Should().Be(1);
             commandHandler.RecentPath[0].Should().Be(vehicle2.Position);
+        }
+
+        [Test]
+        public void ResetRecentPath_Before_ConnectingVehicle_Should_Set_RecentPath_To_Empty_List()
+        {
+            commandHandler.ConnectPlateau(plateau);
+            commandHandler.ResetRecentPath();
+
+            commandHandler.RecentPath.Count.Should().Be(0);
+        }
+
+        [Test]
+        public void ResetRecentPath_With_Vehicle_Connected_Should_Set_ReachPath_To_List_Containing_Just_Vehicle_Position()
+        {
+            VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
+            commandHandler.ConnectPlateau(plateau);
+            commandHandler.AddVehicleToPlateau(vehicle);
+            commandHandler.SendMoveInstruction("MML");
+            commandHandler.SendMoveInstruction("RRMM");
+
+            commandHandler.ResetRecentPath();
+
+            commandHandler.RecentPath.Count.Should().Be(1);
+            commandHandler.RecentPath[0].Should().Be(vehicle.Position);
         }
     }
 }

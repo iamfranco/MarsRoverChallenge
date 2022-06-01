@@ -15,17 +15,19 @@ class CommandHandler
 
   + GetVehicle() : VehicleBase?
   + AddVehicleToPlateau(vehicle : VehicleBase) : (bool, string)
-  + ConnectToVehicleAtPosition(position : Position) : (bool, string)
+  + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : (bool, string)
   + SendMoveInstruction(instruction : string) : (bool, string)
 
   + GetPositionString() : string
   + GetRecentPath() : List<Position>
+  + ResetRecentPath() : void
 }
 
 interface IInstructionReader <<interface>>
 {
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + GetExampleInstructionString() : string
 }
 
 enum SingularInstruction
@@ -39,6 +41,7 @@ class StandardInstructionReader
 {
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
+  + GetExampleInstructionString() : string
 }
 
 abstract PlateauBase <<abstract>>
@@ -51,7 +54,7 @@ abstract PlateauBase <<abstract>>
   + RemoveObstacle(obstaclecoordinate : Coordinates) : void
 
   + GetVehicles() : List<VehicleBase>
-  + GetVehicleAtPosition(position : Position) : VehicleBase?
+  + GetVehicleAtCoordinates(coordinates : Coordinates) : VehicleBase?
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
 
@@ -98,6 +101,9 @@ interface IPositionStringConverter <<interface>>
   + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
 
+  + GetExamplePositionString() : string
+  + GetExampleCoordinateString() : string
+
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
 
@@ -117,6 +123,9 @@ class PositionStringConverter
 {
   + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
+
+  + GetExamplePositionString() : string
+  + GetExampleCoordinateString() : string
 
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates

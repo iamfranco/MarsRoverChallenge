@@ -13,6 +13,8 @@ namespace MarsRover.Models.Instructions
             {'M', SingularInstruction.MoveForward }
         };
 
+        public string ExampleInstructionString => "LMRMMRM";
+
         public bool IsValidInstruction(string? instruction) => instruction is not null && _instructionRegex.IsMatch(instruction);
 
         public List<SingularInstruction> EvaluateInstruction(string? instruction)
