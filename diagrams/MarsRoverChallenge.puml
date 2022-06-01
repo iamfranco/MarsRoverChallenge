@@ -99,6 +99,9 @@ interface IPositionStringConverter <<interface>>
   + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
 
+  + GetExamplePositionString() : string
+  + GetExampleCoordinateString() : string
+
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
 
@@ -118,6 +121,9 @@ class PositionStringConverter
 {
   + IsValidPositionString(positionString : string) : bool
   + IsValidCoordinateString(coordinateString : string) : bool
+
+  + GetExamplePositionString() : string
+  + GetExampleCoordinateString() : string
 
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
