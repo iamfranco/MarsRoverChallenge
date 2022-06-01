@@ -82,7 +82,7 @@ There's also some "questionable" changes, such as
 changing the `Direction` **Enum** into a **class**. The reason for the change is that I wanted `Direction` a method that returns the (x,y) coordinates representation of the direction. Having such a method would make life easier because when the vehicle that's facing north needs to move forward, we can just do
 
 ```c#
-vehicleCoordinates += direction.GetMovementVector()
+coordinates += direction.GetMovementVector();
 ```
 
 assuming we've overloaded the `+` operator for `Coordinates` to do vector sum.
