@@ -38,57 +38,57 @@ namespace MarsRover.AppUI
 
         public VehicleBase? GetVehicle() => _vehicle;
 
-        public (bool status, string message) AddVehicleToPlateau(VehicleBase vehicle)
+        public void AddVehicleToPlateau(VehicleBase vehicle)
         {
             if (vehicle is null)
                 throw new ArgumentNullException(nameof(vehicle));
 
             if (_plateau is null)
-                return (false, "Plateau not connected");
+                throw new Exception("Plateau not connected, cannot add vehicle");
 
             if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
-                return (false, $"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
+                throw new ArgumentException($"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
 
             _plateau.VehiclesContainer.AddVehicle(vehicle);
-            return ConnectVehicleSuccessfully(vehicle);
+            SetVehicle(vehicle);
         }
 
-        public (bool status, string message) ConnectToVehicleAtCoordinates(Coordinates coordinates)
+        public void ConnectToVehicleAtCoordinates(Coordinates coordinates)
         {
             if (_plateau is null)
-                return (false, "Plateau not connected");
+                throw new Exception("Plateau not connected, cannot add vehicle");
 
             if (_plateau.VehiclesContainer.Vehicles.Count == 0)
-                return (false, "Plateau has no vehicles, please create a vehicle first");
+                throw new Exception("Plateau has no vehicles, please create a vehicle first");
 
             VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
             if (vehicle is null)
-                return (false, $"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
+                throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
-            return ConnectVehicleSuccessfully(vehicle);
+            SetVehicle(vehicle);
         }
 
-        public (bool status, string message) SendMoveInstruction(string instructionString)
+        public string SendMoveInstruction(string instructionString)
         {
             if (_plateau is null)
-                return (false, "Plateau not connected");
+                throw new Exception("Plateau not connected, cannot send instruction");
 
             if (_vehicle is null)
-                return (false, "Vehicle not connected");
+                throw new Exception("Vehicle not connected, cannot send instruction");
             
             if (string.IsNullOrEmpty(instructionString))
-                return (false, "Instruction is empty");
+                return $"Instruction is empty, vehicle is in the same Position: [{GetPositionString()}]";
 
             if (!_instructionReader.IsValidInstruction(instructionString))
-                return (false, "Instruction is not in correct format");
+                throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
 
             List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
             (RecentPath, bool isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
             if (isEmergencyStopUsed)
-                return (true, $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]");
+                return $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]";
 
-            return (true, $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]");
+            return $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]";
         }
 
         public string GetPositionString()
@@ -101,11 +101,10 @@ namespace MarsRover.AppUI
 
         public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
 
-        private (bool status, string message) ConnectVehicleSuccessfully(VehicleBase vehicle)
+        private void SetVehicle(VehicleBase vehicle)
         {
             _vehicle = vehicle;
             ResetRecentPath();
-            return (true, "Vehicle Connected");
         }
     }
 }
