@@ -4,31 +4,38 @@ using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
-using System.Text.RegularExpressions;
 
 IPositionStringConverter positionStringConverter = new PositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
+RectangularPlateau plateau;
 
-string maximumCoordinatesString = Ask($"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ", new Regex(@"^\d+ \d+$").IsMatch);
-Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
-RectangularPlateau plateau = new(maximumCoordinates);
-commandHandler.ConnectPlateau(plateau);
+plateau = AskUserToMakePlateau(positionStringConverter, commandHandler);
 
 while (true)
 {
-    ClearScreenAndPrintMap(plateau, new());
-    string obstacleCoordinates = Ask($"Enter Obstacle Coordinate (eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ", new Regex(@"^(\d+ \d+)?$").IsMatch);
-    if (string.IsNullOrEmpty(obstacleCoordinates))
-        break;
+    try
+    {
+        ClearScreenAndPrintMap();
+        string obstacleCoordinates = Ask($"Enter Obstacle Coordinate " +
+            $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
+            (s) => IsEmptyNullOrValidString(s, positionStringConverter.IsValidCoordinateString));
 
-    plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
+        if (string.IsNullOrEmpty(obstacleCoordinates))
+            break;
+
+        plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
 }
 
 while (true)
 {
     commandHandler.ResetRecentPath();
-    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+    ClearScreenAndPrintMap();
 
     string vehicleInitialPositionOrCoordinates = Ask($"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
         $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ", IsValidVehicleInitialPositionOrCoordinates);
@@ -44,14 +51,14 @@ while (true)
     }
     Console.WriteLine($"Connected with {commandHandler.GetVehicle()!.GetType()} at Position [{commandHandler.GetPositionString()}]");
 
-    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+    ClearScreenAndPrintMap();
 
     string instructionString = Ask($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ", instructionReader.IsValidInstruction);
     (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
 
-    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+    ClearScreenAndPrintMap();
     Console.WriteLine(message);
-    
+
     Console.WriteLine();
     Console.Write("Press any key to continue.. ");
     Console.ReadKey();
@@ -78,9 +85,16 @@ static string Ask(string prompt, Func<string, bool> validationFunc)
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            continue;
         }
     }
+}
+
+static bool IsEmptyNullOrValidString(string input, Func<string, bool> validationFunc)
+{
+    if (string.IsNullOrEmpty(input))
+        return true;
+
+    return validationFunc(input);
 }
 
 bool IsValidVehicleInitialPositionOrCoordinates(string inputString)
@@ -118,17 +132,42 @@ bool IsValidVehicleInitialCoordinates(string inputString)
     return true;
 }
 
-void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
+void ClearScreenAndPrintMap()
 {
     Console.Clear();
     Console.WriteLine("ctrl-C to exit");
 
     try
     {
-        plateau.PrintMap(recentPath);
+        plateau.PrintMap(commandHandler.RecentPath);
     }
     catch
     { }
 
     Console.WriteLine();
+}
+
+static RectangularPlateau AskUserToMakePlateau(IPositionStringConverter positionStringConverter, CommandHandler commandHandler)
+{
+    RectangularPlateau plateau;
+    while (true)
+    {
+        try
+        {
+            string maximumCoordinatesString = Ask($"Enter Maximum Coordinates " +
+                $"(eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
+                positionStringConverter.IsValidCoordinateString);
+
+            Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
+            plateau = new(maximumCoordinates);
+            commandHandler.ConnectPlateau(plateau);
+            break;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    return plateau;
 }
