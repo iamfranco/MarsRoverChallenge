@@ -1,9 +1,8 @@
-﻿namespace MarsRover.Models.Instructions
+﻿namespace MarsRover.Models.Instructions;
+
+public interface IInstructionReader
 {
-    public interface IInstructionReader
-    {
-        string ExampleInstructionString { get; }
-        bool IsValidInstruction(string? instruction);
-        List<SingularInstruction> EvaluateInstruction(string? instruction);
-    }
+    string ExampleInstructionString { get; }
+    bool IsValidInstruction(string? instruction);
+    List<SingularInstruction> EvaluateInstruction(string? instruction);
 }

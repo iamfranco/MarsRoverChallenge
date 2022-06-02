@@ -1,9 +1,8 @@
-﻿namespace MarsRover.Models.Instructions
+﻿namespace MarsRover.Models.Instructions;
+
+public enum SingularInstruction
 {
-    public enum SingularInstruction
-    {
-        TurnLeft,
-        TurnRight,
-        MoveForward
-    }
+    TurnLeft,
+    TurnRight,
+    MoveForward
 }

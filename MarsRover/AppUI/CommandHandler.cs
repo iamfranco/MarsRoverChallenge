@@ -3,108 +3,107 @@ using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.AppUI
+namespace MarsRover.AppUI;
+
+public class CommandHandler
 {
-    public class CommandHandler
+    private readonly IInstructionReader _instructionReader;
+    private readonly IPositionStringConverter _positionStringConverter;
+    private PlateauBase? _plateau;
+    private VehicleBase? _vehicle;
+
+    public List<Position> RecentPath { get; private set; } = new();
+
+    public CommandHandler(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
     {
-        private readonly IInstructionReader _instructionReader;
-        private readonly IPositionStringConverter _positionStringConverter;
-        private PlateauBase? _plateau;
-        private VehicleBase? _vehicle;
+        if (instructionReader is null)
+            throw new ArgumentNullException(nameof(instructionReader));
 
-        public List<Position> RecentPath { get; private set; } = new();
+        if (positionStringConverter is null)
+            throw new ArgumentNullException(nameof(positionStringConverter));
 
-        public CommandHandler(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
-        {
-            if (instructionReader is null)
-                throw new ArgumentNullException(nameof(instructionReader));
+        _instructionReader = instructionReader;
+        _positionStringConverter = positionStringConverter;
+    }
 
-            if (positionStringConverter is null)
-                throw new ArgumentNullException(nameof(positionStringConverter));
+    public void ConnectPlateau(PlateauBase plateau)
+    {
+        if (plateau is null)
+            throw new ArgumentNullException(nameof(plateau));
 
-            _instructionReader = instructionReader;
-            _positionStringConverter = positionStringConverter;
-        }
+        _plateau = plateau;
+        _vehicle = null;
+        ResetRecentPath();
+    }
 
-        public void ConnectPlateau(PlateauBase plateau)
-        {
-            if (plateau is null)
-                throw new ArgumentNullException(nameof(plateau));
+    public VehicleBase? GetVehicle() => _vehicle;
 
-            _plateau = plateau;
-            _vehicle = null;
-            ResetRecentPath();
-        }
+    public void AddVehicleToPlateau(VehicleBase vehicle)
+    {
+        if (vehicle is null)
+            throw new ArgumentNullException(nameof(vehicle));
 
-        public VehicleBase? GetVehicle() => _vehicle;
+        if (_plateau is null)
+            throw new Exception("Plateau not connected, cannot add vehicle");
 
-        public void AddVehicleToPlateau(VehicleBase vehicle)
-        {
-            if (vehicle is null)
-                throw new ArgumentNullException(nameof(vehicle));
+        if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
+            throw new ArgumentException($"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
 
-            if (_plateau is null)
-                throw new Exception("Plateau not connected, cannot add vehicle");
+        _plateau.VehiclesContainer.AddVehicle(vehicle);
+        SetVehicle(vehicle);
+    }
 
-            if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
-                throw new ArgumentException($"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
+    public void ConnectToVehicleAtCoordinates(Coordinates coordinates)
+    {
+        if (_plateau is null)
+            throw new Exception("Plateau not connected, cannot add vehicle");
 
-            _plateau.VehiclesContainer.AddVehicle(vehicle);
-            SetVehicle(vehicle);
-        }
+        if (_plateau.VehiclesContainer.Vehicles.Count == 0)
+            throw new Exception("Plateau has no vehicles, please create a vehicle first");
 
-        public void ConnectToVehicleAtCoordinates(Coordinates coordinates)
-        {
-            if (_plateau is null)
-                throw new Exception("Plateau not connected, cannot add vehicle");
+        VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
+        if (vehicle is null)
+            throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
-            if (_plateau.VehiclesContainer.Vehicles.Count == 0)
-                throw new Exception("Plateau has no vehicles, please create a vehicle first");
+        SetVehicle(vehicle);
+    }
 
-            VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
-            if (vehicle is null)
-                throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
+    public string SendMoveInstruction(string instructionString)
+    {
+        if (_plateau is null)
+            throw new Exception("Plateau not connected, cannot send instruction");
 
-            SetVehicle(vehicle);
-        }
+        if (_vehicle is null)
+            throw new Exception("Vehicle not connected, cannot send instruction");
 
-        public string SendMoveInstruction(string instructionString)
-        {
-            if (_plateau is null)
-                throw new Exception("Plateau not connected, cannot send instruction");
+        if (string.IsNullOrEmpty(instructionString))
+            return $"Instruction is empty, vehicle is in the same Position: [{GetPositionString()}]";
 
-            if (_vehicle is null)
-                throw new Exception("Vehicle not connected, cannot send instruction");
-            
-            if (string.IsNullOrEmpty(instructionString))
-                return $"Instruction is empty, vehicle is in the same Position: [{GetPositionString()}]";
+        if (!_instructionReader.IsValidInstruction(instructionString))
+            throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
 
-            if (!_instructionReader.IsValidInstruction(instructionString))
-                throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
+        List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
-            List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
+        (RecentPath, bool isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
+        if (isEmergencyStopUsed)
+            return $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]";
 
-            (RecentPath, bool isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
-            if (isEmergencyStopUsed)
-                return $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]";
+        return $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]";
+    }
 
-            return $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]";
-        }
+    public string GetPositionString()
+    {
+        if (_vehicle is null)
+            return "Vehicle not connected";
 
-        public string GetPositionString()
-        {
-            if (_vehicle is null)
-                return "Vehicle not connected";
+        return _positionStringConverter.ToPositionString(_vehicle.Position);
+    }
 
-            return _positionStringConverter.ToPositionString(_vehicle.Position);
-        }
+    public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
 
-        public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
-
-        private void SetVehicle(VehicleBase vehicle)
-        {
-            _vehicle = vehicle;
-            ResetRecentPath();
-        }
+    private void SetVehicle(VehicleBase vehicle)
+    {
+        _vehicle = vehicle;
+        ResetRecentPath();
     }
 }
