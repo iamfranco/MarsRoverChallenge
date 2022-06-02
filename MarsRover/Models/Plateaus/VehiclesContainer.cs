@@ -25,9 +25,6 @@ namespace MarsRover.Models.Plateaus
             if (!_coordinateValidateFunc(vehicle.Position.Coordinates))
                 return;
 
-            if (_vehicles.Any(item => item.Position.Coordinates.Equals(vehicle.Position.Coordinates)))
-                return;
-
             _vehicles.Add(vehicle);
         }
 
