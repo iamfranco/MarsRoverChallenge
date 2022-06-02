@@ -170,7 +170,7 @@ class Position <<struct>>
   + GetDirection() : Direction
 }
 
-class PositionStringConverter
+class StandardPositionStringConverter
 {
   + GetExamplePositionString() : string
   + GetExampleCoordinateString() : string
@@ -221,7 +221,7 @@ IInstructionReader <|.. StandardInstructionReader
 VehicleBase <|-- Rover
 VehicleBase o--- Position
 
-IPositionStringConverter <|.. PositionStringConverter
+IPositionStringConverter <|.. StandardPositionStringConverter
 
 PlateauBase *-- ObstaclesContainer
 PlateauBase *-- VehiclesContainer

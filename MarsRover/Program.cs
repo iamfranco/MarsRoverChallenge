@@ -1,19 +1,18 @@
-﻿
-using MarsRover.AppUI;
+﻿using MarsRover.AppUI;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
+using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
-IPositionStringConverter positionStringConverter = new PositionStringConverter();
+IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
     {
-        "Rectangular Plateau", 
-        () =>
+        "Rectangular Plateau", () =>
         {
             string maximumCoordinatesString = AskUser.AskUntilValidStringInput(
                 $"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
@@ -24,8 +23,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
         }
     },
     {
-        "Square Plateau",
-        () =>
+        "Square Plateau", () =>
         {
             string squareLength = AskUser.AskUntilValidStringInput(
                 $"Enter Maximum X Coordinate of square (eg \"5\"): ",
@@ -40,7 +38,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
 {
     { "Rover", position => new Rover(position) },
-    { "Tesla", position => new Rover(position) }
+    { "Wall E", position => new WallE(position) }
 };
 
 PlateauBase plateau = AskUser.AskUserToMakePlateau(commandHandler, plateauMakers);

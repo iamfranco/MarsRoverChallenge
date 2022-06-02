@@ -1,55 +1,54 @@
-﻿using MarsRover.Models.Instructions;
+﻿using MarsRover.Models.Instructions.Elementals;
 using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions;
+using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.Models.Vehicles
+namespace MarsRover.Models.Vehicles;
+
+public abstract class VehicleBase
 {
-    public abstract class VehicleBase
+    public Position Position { get; private set; }
+
+    public VehicleBase(Position initialPosition)
     {
-        public Position Position { get; private set; }
+        Position = initialPosition;
+    }
 
-        public VehicleBase(Position initialPosition)
+    public (List<Position> recentPath, bool isEmergencyStopUsed) ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
+    {
+        if (instruction is null)
+            throw new ArgumentNullException(nameof(instruction));
+
+        if (plateau is null)
+            throw new ArgumentNullException(nameof(plateau));
+
+        if (!plateau.VehiclesContainer.Vehicles.Contains(this))
+            throw new ArgumentException("This vehicle is not on plateau's list of vehicles");
+
+        List<Position> recentPath = new() { Position };
+
+        foreach (SingularInstruction singularInstruction in instruction)
         {
-            Position = initialPosition;
-        }
+            Coordinates nextCoordinates = Position.Coordinates;
+            Direction nextDirection = Position.Direction;
 
-        public (List<Position> recentPath, bool isEmergencyStopUsed) ApplyMoveInstruction(List<SingularInstruction> instruction, PlateauBase plateau)
-        {
-            if (instruction is null)
-                throw new ArgumentNullException(nameof(instruction));
+            if (singularInstruction is SingularInstruction.TurnLeft)
+                nextDirection = nextDirection.GetLeftTurn();
 
-            if (plateau is null)
-                throw new ArgumentNullException(nameof(plateau));
+            if (singularInstruction is SingularInstruction.TurnRight)
+                nextDirection = nextDirection.GetRightTurn();
 
-            if (!plateau.VehiclesContainer.Vehicles.Contains(this))
-                throw new ArgumentException("This vehicle is not on plateau's list of vehicles");
-
-            List<Position> recentPath = new() { Position };
-
-            foreach (SingularInstruction singularInstruction in instruction)
+            if (singularInstruction is SingularInstruction.MoveForward)
             {
-                Coordinates nextCoordinates = Position.Coordinates;
-                Direction nextDirection = Position.Direction;
+                nextCoordinates += nextDirection.GetMovementVector();
 
-                if (singularInstruction is SingularInstruction.TurnLeft)
-                    nextDirection = nextDirection.GetLeftTurn();
-
-                if (singularInstruction is SingularInstruction.TurnRight)
-                    nextDirection = nextDirection.GetRightTurn();
-
-                if (singularInstruction is SingularInstruction.MoveForward)
-                {
-                    nextCoordinates += nextDirection.GetMovementVector();
-
-                    if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
-                        return (recentPath, isEmergencyStopUsed: true);
-                }
-
-                Position = new Position(nextCoordinates, nextDirection);
-                recentPath.Add(Position);
+                if (!plateau.IsCoordinateValidInPlateau(nextCoordinates))
+                    return (recentPath, isEmergencyStopUsed: true);
             }
 
-            return (recentPath, isEmergencyStopUsed: false);
+            Position = new Position(nextCoordinates, nextDirection);
+            recentPath.Add(Position);
         }
+
+        return (recentPath, isEmergencyStopUsed: false);
     }
 }

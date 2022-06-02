@@ -1,22 +1,20 @@
-﻿using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.Models.Vehicles
+namespace MarsRover.Models.Vehicles;
+
+public class Rover : VehicleBase
 {
-    public class Rover : VehicleBase
+    public Rover(Position initialPosition) : base(initialPosition)
     {
-        public Rover(Position initialPosition) : base(initialPosition)
-        {
-        }
+    }
 
-        public void TakePhotoAndSendToStation()
-        {
-            Console.WriteLine("Rover takes photo and send to station");
-        }
+    public void TakePhotoAndSendToStation()
+    {
+        Console.WriteLine("Rover takes photo and send to station");
+    }
 
-        public void CollectSample()
-        {
-            Console.WriteLine("Rover collects Sample");
-        }
+    public void CollectSample()
+    {
+        Console.WriteLine("Rover collects Sample");
     }
 }
