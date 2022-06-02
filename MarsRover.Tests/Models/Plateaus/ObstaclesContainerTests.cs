@@ -53,25 +53,11 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void AddObstacle_Then_ObstacleCoordinates_Should_Not_Have_Duplicate_Obstacles()
-        {
-            obstaclesContainer.AddObstacle(new(1, 3));
-            obstaclesContainer.ObstacleCoordinates.Count.Should().Be(1);
-
-            obstaclesContainer.AddObstacle(new(1, 3));
-            obstaclesContainer.ObstacleCoordinates.Count.Should().Be(1);
-
-            obstaclesContainer.AddObstacle(new(2, 2));
-            obstaclesContainer.ObstacleCoordinates.Count.Should().Be(2);
-
-            obstaclesContainer.ObstacleCoordinates[0].Should().Be(new Coordinates(1, 3));
-            obstaclesContainer.ObstacleCoordinates[1].Should().Be(new Coordinates(2, 2));
-        }
-
-        [Test]
         public void AddObstacle_On_Invalid_Coordinate_Should_Not_Change_Obstacles()
         {
-            obstaclesContainer.AddObstacle(new(-100, -100));
+            Action act = () => obstaclesContainer.AddObstacle(new(-100, -100));
+
+            act.Should().Throw<ArgumentException>();
             obstaclesContainer.ObstacleCoordinates.Count.Should().Be(0);
         }
 

@@ -22,7 +22,7 @@ namespace MarsRover.Models.Vehicles
                 throw new ArgumentNullException(nameof(plateau));
 
             if (!plateau.VehiclesContainer.Vehicles.Contains(this))
-                throw new ArgumentException("This vehicle is not on plateau's list of vehicles", nameof(plateau));
+                throw new ArgumentException("This vehicle is not on plateau's list of vehicles");
 
             List<Position> recentPath = new() { Position };
 

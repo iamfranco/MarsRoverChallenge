@@ -53,8 +53,12 @@ namespace MarsRover.Tests.Models.Plateaus
             plateau.VehiclesContainer.AddVehicle(rover2);
             List<VehicleBase> initialVehicleList = plateau.VehiclesContainer.Vehicles.ToList();
 
-            plateau.VehiclesContainer.AddVehicle(invalidRover1);
-            plateau.VehiclesContainer.AddVehicle(invalidRover2);
+            Action act;
+            act = () => plateau.VehiclesContainer.AddVehicle(invalidRover1);
+            act.Should().Throw<ArgumentException>();
+
+            act = () => plateau.VehiclesContainer.AddVehicle(invalidRover2);
+            act.Should().Throw<ArgumentException>();
 
             List<VehicleBase> VehicleListAfterAddingInvalidVehicles = plateau.VehiclesContainer.Vehicles.ToList();
 

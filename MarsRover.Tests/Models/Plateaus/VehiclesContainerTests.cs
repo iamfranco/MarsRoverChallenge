@@ -51,30 +51,12 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void AddVehicle_Multiple_Times_Then_Vehicles_Should_Not_Contain_Multiple_Vehicles_On_Same_Coordinate()
-        {
-            VehicleBase rover1 = new Rover(new(new(1, 2), Direction.North));
-            VehicleBase rover2 = new Rover(new(new(1, 2), Direction.East));
-            VehicleBase rover3 = new Rover(new(new(2, 2), Direction.West));
-
-            vehiclesContainer.AddVehicle(rover1);
-            vehiclesContainer.Vehicles.Count.Should().Be(1);
-
-            vehiclesContainer.AddVehicle(rover2);
-            vehiclesContainer.Vehicles.Count.Should().Be(1);
-
-            vehiclesContainer.AddVehicle(rover3);
-            vehiclesContainer.Vehicles.Count.Should().Be(2);
-
-            vehiclesContainer.Vehicles[0].Should().Be(rover1);
-            vehiclesContainer.Vehicles[1].Should().Be(rover3);
-        }
-
-        [Test]
-        public void AddVehicle_On_Invalid_Coordinate_Should_Not_Change_Vehicles()
+        public void AddVehicle_On_Invalid_Coordinate_Should_Throw_Exception_And_Not_Modify_Vehicles()
         {
             VehicleBase rover1 = new Rover(new(new(-100, -100), Direction.North));
-            vehiclesContainer.AddVehicle(rover1);
+            Action act = () => vehiclesContainer.AddVehicle(rover1);
+
+            act.Should().Throw<ArgumentException>();
             vehiclesContainer.Vehicles.Count.Should().Be(0);
         }
 
