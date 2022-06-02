@@ -5,7 +5,7 @@ using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
-IPositionStringConverter positionStringConverter = new PositionStringConverter();
+IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 

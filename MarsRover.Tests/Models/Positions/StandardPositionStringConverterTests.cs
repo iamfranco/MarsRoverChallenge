@@ -3,9 +3,9 @@ using MarsRover.Models.Positions.Elementals;
 
 namespace MarsRover.Tests.Models.Positions;
 
-internal class PositionStringConverterTests
+internal class StandardPositionStringConverterTests
 {
-    private PositionStringConverter positionStringConverter;
+    private StandardPositionStringConverter positionStringConverter;
     private readonly List<string> validPositionStrings = new() { "1 2 N", "5 4 S", "-5 4 E", "0 -4 W" };
     private readonly List<string> validCoordinateStrings = new() { "1 2", "5 4", "-5 4", "0 -4" };
     private readonly List<Coordinates> coordinatesForValidStrings = new() { new(1, 2), new(5, 4), new(-5, 4), new(0, -4) };

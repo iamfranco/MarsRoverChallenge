@@ -10,7 +10,7 @@ namespace MarsRover.Tests.AppUI;
 internal class CommandHandlerTests
 {
     private IInstructionReader instructionReader = new StandardInstructionReader();
-    private IPositionStringConverter positionStringConverter = new PositionStringConverter();
+    private IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
     private CommandHandler commandHandler;
     private PlateauBase plateau;
 

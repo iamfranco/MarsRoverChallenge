@@ -3,7 +3,7 @@ using MarsRover.Models.Positions.Elementals;
 
 namespace MarsRover.Models.Positions;
 
-public class PositionStringConverter : IPositionStringConverter
+public class StandardPositionStringConverter : IPositionStringConverter
 {
     private readonly Regex _positionStringRegex = new(@"^-?\d+ -?\d+ (N|E|S|W)$");
     private readonly Regex _coordinateStringRegex = new(@"^-?\d+ -?\d+$");
