@@ -23,7 +23,7 @@ namespace MarsRover.Models.Instructions
                 throw new ArgumentNullException(nameof(instruction), "instruction cannot be null");
 
             if (!IsValidInstruction(instruction))
-                throw new ArgumentException($"Instruction {instruction} is not in correct format (eg MRMMLMM)", nameof(instruction));
+                throw new ArgumentException($"Instruction [{instruction}] is not in correct format (eg MRMMLMM)");
 
             instruction = instruction.Replace(" ", "");
 

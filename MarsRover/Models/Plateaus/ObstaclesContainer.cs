@@ -22,7 +22,7 @@ namespace MarsRover.Models.Plateaus
         public void AddObstacle(Coordinates obstacle)
         {
             if (!_coordinateValidateFunc(obstacle))
-                throw new ArgumentException($"Coordinates {obstacle} is not available on plateau", nameof(obstacle));
+                throw new ArgumentException($"Coordinates {obstacle} is not available on plateau");
 
             _obstacleCoordinates.Add(obstacle);
         }

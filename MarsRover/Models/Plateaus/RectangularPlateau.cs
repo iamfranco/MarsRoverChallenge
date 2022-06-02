@@ -9,7 +9,7 @@ namespace MarsRover.Models.Plateaus
         public RectangularPlateau(Coordinates maximumCoordinates)
         {
             if (!IsValidMaximumCoordinates(maximumCoordinates))
-                throw new ArgumentException($"{nameof(maximumCoordinates)} {maximumCoordinates} cannot have negative components", nameof(maximumCoordinates));
+                throw new ArgumentException($"Maximum Coordinates {maximumCoordinates} cannot have negative components");
 
             _maximumCoordinates = maximumCoordinates;
         }

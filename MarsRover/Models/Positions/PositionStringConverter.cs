@@ -25,7 +25,7 @@ namespace MarsRover.Models.Positions
         public Position ToPosition(string? positionString)
         {
             if (!IsValidPositionString(positionString))
-                throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"1 2 N\")", nameof(positionString));
+                throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"{ExamplePositionString}\")");
 
             (string coordinateString, string directionString) = SplitPositionString(positionString!);
 
@@ -39,7 +39,7 @@ namespace MarsRover.Models.Positions
         public Coordinates ToCoordinates(string? coordinateString)
         {
             if (!IsValidCoordinateString(coordinateString))
-                throw new ArgumentException($"Input {coordinateString} is not in correct format for coordianteString (eg \"1 2\")", nameof(coordinateString));
+                throw new ArgumentException($"Input {coordinateString} is not in correct format for coordianteString (eg \"{ExampleCoordinateString}\")");
 
             string[] coordinateStringArray = coordinateString!.Split(" ");
             int x = int.Parse(coordinateStringArray[0]);
