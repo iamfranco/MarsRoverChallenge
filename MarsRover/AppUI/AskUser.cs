@@ -54,42 +54,24 @@ namespace MarsRover.AppUI
             commandHandler.ResetRecentPath();
             ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
-            bool isConnectedToVehicle;
-            string message;
-            while (true)
+            ExecuteUntilNoException(() =>
             {
                 string positionOrCoordinatesString = AskForPositionOrCoordinateasString(positionStringConverter);
 
                 if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
                 {
-                    // create new vehicle at position 
-                    Position initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
-                    Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers = GetVehicleWithKnownPositionMakers(vehicleMakers, initialPosition);
-
-                    Func<VehicleBase> selectedVehicleMaker = AskUserToSelectMaker(
-                        groupName: "vehicle",
-                        makers: vehicleWithKnownPositionMakers);
-
-                    VehicleBase vehicle = ExecuteUntilNoException(selectedVehicleMaker);
-                    (isConnectedToVehicle, message) = commandHandler.AddVehicleToPlateau(vehicle);
+                    CreateNewVehicleAtPosition(positionStringConverter, commandHandler, plateau, vehicleMakers, positionOrCoordinatesString);
                 }
                 else
                 {
-                    // connect to existing vehicle at coordinates
                     Coordinates initialCoordinates = positionStringConverter.ToCoordinates(positionOrCoordinatesString);
-                    (isConnectedToVehicle, message) = commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
+                    commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
                 }
+                return true;
+            });
 
-                if (!isConnectedToVehicle)
-                {
-                    Console.WriteLine(message);
-                    continue;
-                }
-
-                break;
-            }
             ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
-            Console.WriteLine(message);
+            Console.WriteLine(commandHandler.GetVehicle()!.GetType());
 
             static Dictionary<string, Func<VehicleBase>> GetVehicleWithKnownPositionMakers(
                 Dictionary<string, Func<Position, VehicleBase>> vehicleMakers,
@@ -107,6 +89,23 @@ namespace MarsRover.AppUI
 
                 return vehicleMakersWithKnownPosition;
             }
+
+            static void CreateNewVehicleAtPosition(IPositionStringConverter positionStringConverter, CommandHandler commandHandler, PlateauBase plateau, Dictionary<string, Func<Position, VehicleBase>> vehicleMakers, string positionOrCoordinatesString)
+            {
+                Position initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
+
+                if (!plateau.IsCoordinateValidInPlateau(initialPosition.Coordinates))
+                    throw new ArgumentException($"{positionOrCoordinatesString} is on Coordinates {initialPosition.Coordinates}, which is not valid on Plateau");
+
+                Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers = GetVehicleWithKnownPositionMakers(vehicleMakers, initialPosition);
+
+                Func<VehicleBase> selectedVehicleMaker = AskUserToSelectMaker(
+                    groupName: "vehicle",
+                    makers: vehicleWithKnownPositionMakers);
+
+                VehicleBase vehicle = ExecuteUntilNoException(selectedVehicleMaker);
+                commandHandler.AddVehicleToPlateau(vehicle);
+            }
         }
 
         public static void AskUserForMovementInstructionAndSendToVehicle(IInstructionReader instructionReader, CommandHandler commandHandler, PlateauBase plateau)
@@ -114,7 +113,7 @@ namespace MarsRover.AppUI
             string instructionString = AskUntilValidStringInput($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
                 instructionReader.IsValidInstruction);
 
-            (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
+            string message = commandHandler.SendMoveInstruction(instructionString);
 
             ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
             Console.WriteLine(message);
@@ -176,7 +175,7 @@ namespace MarsRover.AppUI
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"\n  WARNING: {ex.Message}");
                 }
             }
         }

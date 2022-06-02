@@ -51,7 +51,7 @@ namespace MarsRover.Tests.AppUI
         }
 
         [Test]
-        public void ConnectPlateau_Then_AddVehicalToPlateau_Then_ConnectPlateau_Then_GetVehicle_Should_Return_Null()
+        public void ConnectPlateau_Then_AddVehicleToPlateau_Then_ConnectPlateau_Then_GetVehicle_Should_Return_Null()
         {
             commandHandler.ConnectPlateau(plateau);
             Rover rover = new Rover(new Position(new(1, 2), Direction.North));
@@ -104,17 +104,18 @@ namespace MarsRover.Tests.AppUI
         public void AddVehicleToPlateau_With_Null_Vehicle_Should_Throw_Exception()
         {
             Action act = () => commandHandler.AddVehicleToPlateau(null);
+
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
-        public void AddVehicleToPlateau_Before_ConnectPlateau_Should_Return_False_For_Status()
+        public void AddVehicleToPlateau_Before_ConnectPlateau_Should_Throw_Exception()
         {
             Rover rover = new Rover(new Position(new(1, 2), Direction.North));
 
-            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
+            Action act = () => commandHandler.AddVehicleToPlateau(rover);
 
-            status.Should().Be(false);
+            act.Should().Throw<Exception>();
         }
 
         [Test]
@@ -123,58 +124,57 @@ namespace MarsRover.Tests.AppUI
             Rover rover = new Rover(new Position(new(100, 200), Direction.North));
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
+            Action act = () => commandHandler.AddVehicleToPlateau(rover);
 
-            status.Should().Be(false);
+            act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void AddVehicleToPlateau_With_Vehicle_On_Valid_Coordinates_For_Plateau_Should_Return_True_For_Status_And_Plateau_Should_Have_New_Vehicle()
+        public void AddVehicleToPlateau_With_Vehicle_On_Valid_Coordinates_For_Plateau_Then_Plateau_Should_Have_New_Vehicle()
         {
             Rover rover = new Rover(new Position(new(1, 2), Direction.North));
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
-
-            status.Should().Be(true);
+            commandHandler.AddVehicleToPlateau(rover);
 
             plateau.VehiclesContainer.Vehicles.Should().Contain(rover);
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_Before_ConnectPlateau_Should_Return_False_For_Status()
+        public void ConnectToVehicleAtCoordinates_Before_ConnectPlateau_Should_Throw_Exception()
         {
             Coordinates coordinates = new(1, 2);
-            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            
+            Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
-            status.Should().Be(false);
+            act.Should().Throw<Exception>();
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Return_False_For_Status()
+        public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Throw_Exception()
         {
             Coordinates coordinates = new(1, 2);
             commandHandler.ConnectPlateau(plateau);
-            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
-            status.Should().Be(false);
+            act.Should().Throw<Exception>();
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Return_False_For_Status()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Throw_Exception()
         {
             Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
             plateau.VehiclesContainer.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
-            status.Should().Be(false);
+            act.Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Return_True_For_Status()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Succeed_And_GetVehicle_Should_Return_Vehicle()
         {
             Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
@@ -185,32 +185,35 @@ namespace MarsRover.Tests.AppUI
             plateau.VehiclesContainer.AddVehicle(rover3);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            act.Should().NotThrow();
 
-            status.Should().Be(true);
+            commandHandler.GetVehicle().Should().Be(rover2);
         }
 
         [Test]
-        public void SendMoveInstruction_Without_ConnectPlateau_Should_Return_False_For_Status()
+        public void SendMoveInstruction_Without_ConnectPlateau_Should_Throw_Exception()
         {
             string instruction = "RMMLM";
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
+
+            act.Should().Throw<Exception>();
         }
 
         [Test]
-        public void SendMoveInstruction_Without_Connecting_Vehicle_Should_Return_False_For_Status()
+        public void SendMoveInstruction_Without_Connecting_Vehicle_Should_Throw_Exception()
         {
             string instruction = "RMMLM";
             commandHandler.ConnectPlateau(plateau);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
+
+            act.Should().Throw<Exception>();
         }
 
         [Test]
-        public void SendMoveInstruction_With_Null_Instruction_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Null_Instruction_Should_Succeed_And_Not_Modify_Vehicle_Position()
         {
             string instruction = null;
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -218,14 +221,15 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
+            
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
+            act.Should().NotThrow();
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Empty_Instruction_String_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Empty_Instruction_String_Should_Succeed_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "";
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -233,14 +237,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
+            act.Should().NotThrow();
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Throw_Exception_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "LM!LM";
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -248,14 +252,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(false);
+            act.Should().Throw<ArgumentException>();
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Instruction_String_Which_Move_Into_Invalid_Coordinates_Of_Plateau_Should_Return_False_For_Status_And_Modify_Vehicle_Position_To_Just_Before_Invalid_Coordinates()
+        public void SendMoveInstruction_With_Instruction_String_Which_Move_Into_Invalid_Coordinates_Of_Plateau_Should_Succeed_And_Modify_Vehicle_Position_To_Just_Before_Invalid_Coordinates()
         {
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
             plateauWithOneObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
@@ -266,14 +270,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateauWithOneObstacle);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(true);
+            act.Should().NotThrow();
             commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Valid_Instruction_String_Should_Return_True_And_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Valid_Instruction_String_Should_Succeed_And_Modify_Vehicle_Position()
         {
             string instruction = "MRM";
             VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
@@ -281,9 +285,9 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
+            Action act = () => commandHandler.SendMoveInstruction(instruction);
 
-            status.Should().Be(true);
+            act.Should().NotThrow();
             commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
         }
 
@@ -402,13 +406,15 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void RecentPath_After_Invalidly_Formatted_Instruction_To_SendMoveInstruction_Should_Return_Last_Successful_Instruction_Travel_Path()
         {
+            Action act;
             VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MMLL");
             commandHandler.SendMoveInstruction("MRMR");
-            commandHandler.SendMoveInstruction("ML!!?");
+            act = () => commandHandler.SendMoveInstruction("ML!!?");
+            act.Should().Throw<ArgumentException>();
 
             List<Position> expectedResult = new()
             {
