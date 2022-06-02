@@ -23,7 +23,7 @@ namespace MarsRover.Models.Plateaus
         public void AddVehicle(VehicleBase vehicle)
         {
             if (!_coordinateValidateFunc(vehicle.Position.Coordinates))
-                return;
+                throw new ArgumentException($"Vehicle has invalid coordinates {vehicle.Position.Coordinates} for plateau");
 
             _vehicles.Add(vehicle);
         }

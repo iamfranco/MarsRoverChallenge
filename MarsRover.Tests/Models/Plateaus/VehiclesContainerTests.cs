@@ -51,10 +51,12 @@ namespace MarsRover.Tests.Models.Plateaus
         }
 
         [Test]
-        public void AddVehicle_On_Invalid_Coordinate_Should_Not_Change_Vehicles()
+        public void AddVehicle_On_Invalid_Coordinate_Should_Throw_Exception_And_Not_Modify_Vehicles()
         {
             VehicleBase rover1 = new Rover(new(new(-100, -100), Direction.North));
-            vehiclesContainer.AddVehicle(rover1);
+            Action act = () => vehiclesContainer.AddVehicle(rover1);
+
+            act.Should().Throw<ArgumentException>();
             vehiclesContainer.Vehicles.Count.Should().Be(0);
         }
 
