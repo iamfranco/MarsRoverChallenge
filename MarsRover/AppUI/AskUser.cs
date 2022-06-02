@@ -9,26 +9,22 @@ namespace MarsRover.AppUI
     {
         public static RectangularPlateau AskUserToMakePlateau(IPositionStringConverter positionStringConverter, CommandHandler commandHandler)
         {
-            RectangularPlateau plateau;
-            while (true)
+            return ExecuteUntilNoException(func);
+
+            RectangularPlateau func()
             {
-                try
-                {
-                    string maximumCoordinatesString = AskUntilValidInput($"Enter Maximum Coordinates " +
+                RectangularPlateau plateau;
+
+                string maximumCoordinatesString = AskUntilValidInput($"Enter Maximum Coordinates " +
                         $"(eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
                         positionStringConverter.IsValidCoordinateString);
 
-                    Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
-                    plateau = new(maximumCoordinates);
-                    commandHandler.ConnectPlateau(plateau);
+                Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
+                plateau = new(maximumCoordinates);
+                commandHandler.ConnectPlateau(plateau);
 
-                    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
-                    return plateau;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+                return plateau;
             }
         }
 
@@ -103,28 +99,38 @@ namespace MarsRover.AppUI
             Console.WriteLine(message);
         }
 
-        private static string AskUntilValidInput(string prompt, Func<string, bool> validationFunc)
+        private static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
         {
             while (true)
             {
                 try
                 {
-                    Console.WriteLine();
-                    Console.Write(prompt);
-                    string? input = Console.ReadLine();
-
-                    if (input is null)
-                        throw new Exception($"Input cannot be null");
-
-                    if (!validationFunc(input))
-                        throw new Exception($"Input [{input}] is not in correct format");
-
-                    return input;
+                    func();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
+            }
+        }
+
+        private static string AskUntilValidInput(string prompt, Func<string, bool> validationFunc)
+        {
+            return ExecuteUntilNoException(func);
+
+            string func()
+            {
+                Console.WriteLine();
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+
+                if (input is null)
+                    throw new Exception($"Input cannot be null");
+
+                if (!validationFunc(input))
+                    throw new Exception($"Input [{input}] is not in correct format");
+
+                return input;
             }
         }
 
