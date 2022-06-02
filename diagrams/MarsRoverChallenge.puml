@@ -46,9 +46,9 @@ class CommandHandler
   + ConnectPlateau(plateau : PlateauBase) : void
 
   + GetVehicle() : VehicleBase?
-  + AddVehicleToPlateau(vehicle : VehicleBase) : (bool, string)
-  + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : (bool, string)
-  + SendMoveInstruction(instruction : string) : (bool, string)
+  + AddVehicleToPlateau(vehicle : VehicleBase) : void
+  + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : void
+  + SendMoveInstruction(instruction : string) : string
 
   + GetPositionString() : string
   + GetRecentPath() : List<Position>
