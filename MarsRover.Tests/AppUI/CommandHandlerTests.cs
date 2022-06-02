@@ -108,26 +108,24 @@ namespace MarsRover.Tests.AppUI
         }
 
         [Test]
-        public void AddVehicleToPlateau_Before_ConnectPlateau_Should_Return_False_For_Status_With_Message_NoPlateauConnected()
+        public void AddVehicleToPlateau_Before_ConnectPlateau_Should_Return_False_For_Status()
         {
             Rover rover = new Rover(new Position(new(1, 2), Direction.North));
 
-            (bool status, string message) = commandHandler.AddVehicleToPlateau(rover);
+            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
 
             status.Should().Be(false);
-            message.Should().Be("Plateau Not Connected");
         }
 
         [Test]
-        public void AddVehicleToPlateau_With_Vehicle_On_Invalid_Coordinates_For_Plateau_Should_Return_False_For_Status_With_Message_VehicleIsOnInvalidCoordinateForPlateau()
+        public void AddVehicleToPlateau_With_Vehicle_On_Invalid_Coordinates_For_Plateau_Should_Return_False_For_Status()
         {
             Rover rover = new Rover(new Position(new(100, 200), Direction.North));
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.AddVehicleToPlateau(rover);
+            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
 
             status.Should().Be(false);
-            message.Should().Be("Vehicle Is On Invalid Coordinates For Plateau");
         }
 
         [Test]
@@ -136,52 +134,47 @@ namespace MarsRover.Tests.AppUI
             Rover rover = new Rover(new Position(new(1, 2), Direction.North));
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.AddVehicleToPlateau(rover);
+            (bool status, _) = commandHandler.AddVehicleToPlateau(rover);
 
             status.Should().Be(true);
-            message.Should().Be("Vehicle Connected");
 
             plateau.VehiclesContainer.Vehicles.Should().Contain(rover);
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_Before_ConnectPlateau_Should_Return_False_For_Status_With_Message_NoPlateauConnected()
+        public void ConnectToVehicleAtCoordinates_Before_ConnectPlateau_Should_Return_False_For_Status()
         {
             Coordinates coordinates = new(1, 2);
-            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
-            message.Should().Be("Plateau Not Connected");
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Return_False_For_Status_With_Message_PlateauHasNoVehicles()
+        public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Return_False_For_Status()
         {
             Coordinates coordinates = new(1, 2);
             commandHandler.ConnectPlateau(plateau);
-
-            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
-            message.Should().Be("Plateau Has No Vehicles");
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Return_False_For_Status_With_Message()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Return_False_For_Status()
         {
             Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
             plateau.VehiclesContainer.AddVehicle(rover);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(false);
-            message.Should().Be("Position Does Not Match Any Vehicle's Position On Plateau");
         }
 
         [Test]
-        public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Return_True_For_Status_With_Message()
+        public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Return_True_For_Status()
         {
             Coordinates coordinates = new(1, 2);
             Rover rover = new Rover(new(new(4, 3), Direction.South));
@@ -192,35 +185,32 @@ namespace MarsRover.Tests.AppUI
             plateau.VehiclesContainer.AddVehicle(rover3);
             commandHandler.ConnectPlateau(plateau);
 
-            (bool status, string message) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+            (bool status, _) = commandHandler.ConnectToVehicleAtCoordinates(coordinates);
 
             status.Should().Be(true);
-            message.Should().Be("Vehicle Connected");
         }
 
         [Test]
-        public void SendMoveInstruction_Without_ConnectPlateau_Should_Return_False_For_StatusWith_Message()
+        public void SendMoveInstruction_Without_ConnectPlateau_Should_Return_False_For_Status()
         {
             string instruction = "RMMLM";
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
-            message.Should().Be("Plateau Not Connected");
         }
 
         [Test]
-        public void SendMoveInstruction_Without_Connecting_Vehicle_Should_Return_False_For_Status_With_Message()
+        public void SendMoveInstruction_Without_Connecting_Vehicle_Should_Return_False_For_Status()
         {
             string instruction = "RMMLM";
             commandHandler.ConnectPlateau(plateau);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
-            message.Should().Be("Vehicle Not Connected");
         }
 
         [Test]
-        public void SendMoveInstruction_With_Null_Instruction_Should_Return_False_For_Status_With_Message_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Null_Instruction_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
         {
             string instruction = null;
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -228,15 +218,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
-            message.Should().Be("Empty Instruction");
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Empty_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Empty_Instruction_String_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "";
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -244,15 +233,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
-            message.Should().Be("Empty Instruction");
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Return_False_And_Not_Modify_Vehicle_Position()
+        public void SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Return_False_For_Status_And_Not_Modify_Vehicle_Position()
         {
             string instruction = "LM!LM";
             Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
@@ -260,15 +248,14 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(false);
-            message.Should().Be("Instruction not in correct format");
             commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
         }
 
         [Test]
-        public void SendMoveInstruction_With_Instruction_String_Which_Move_Into_Invalid_Coordinates_Of_Plateau_Should_Return_False_And_Modify_Vehicle_Position_To_Just_Before_Invalid_Coordinates()
+        public void SendMoveInstruction_With_Instruction_String_Which_Move_Into_Invalid_Coordinates_Of_Plateau_Should_Return_False_For_Status_And_Modify_Vehicle_Position_To_Just_Before_Invalid_Coordinates()
         {
             PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
             plateauWithOneObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
@@ -279,10 +266,9 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateauWithOneObstacle);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(true);
-            message.Should().StartWith("Vehicle sensed danger ahead");
             commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
         }
 
@@ -295,7 +281,7 @@ namespace MarsRover.Tests.AppUI
 
             commandHandler.ConnectPlateau(plateau);
             commandHandler.AddVehicleToPlateau(vehicle);
-            (bool status, string message) = commandHandler.SendMoveInstruction(instruction);
+            (bool status, _) = commandHandler.SendMoveInstruction(instruction);
 
             status.Should().Be(true);
             commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
@@ -304,7 +290,7 @@ namespace MarsRover.Tests.AppUI
         [Test]
         public void GetPositionString_Before_Connecting_Vehicle_Should_Return_Vehicle_Not_Connected()
         {
-            commandHandler.GetPositionString().Should().Be("Vehicle Not Connected");
+            commandHandler.GetPositionString().Should().Be("Vehicle not connected");
         }
 
         [Test]

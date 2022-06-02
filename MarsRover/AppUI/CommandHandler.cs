@@ -44,10 +44,10 @@ namespace MarsRover.AppUI
                 throw new ArgumentNullException(nameof(vehicle));
 
             if (_plateau is null)
-                return (false, "Plateau Not Connected");
+                return (false, "Plateau not connected");
 
             if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
-                return (false, "Vehicle Is On Invalid Coordinates For Plateau");
+                return (false, $"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
 
             _plateau.VehiclesContainer.AddVehicle(vehicle);
             return ConnectVehicleSuccessfully(vehicle);
@@ -56,14 +56,14 @@ namespace MarsRover.AppUI
         public (bool status, string message) ConnectToVehicleAtCoordinates(Coordinates coordinates)
         {
             if (_plateau is null)
-                return (false, "Plateau Not Connected");
+                return (false, "Plateau not connected");
 
             if (_plateau.VehiclesContainer.Vehicles.Count == 0)
-                return (false, "Plateau Has No Vehicles");
+                return (false, "Plateau has no vehicles, please create a vehicle first");
 
             VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
             if (vehicle is null)
-                return (false, "Position Does Not Match Any Vehicle's Position On Plateau");
+                return (false, $"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
             return ConnectVehicleSuccessfully(vehicle);
         }
@@ -71,16 +71,16 @@ namespace MarsRover.AppUI
         public (bool status, string message) SendMoveInstruction(string instructionString)
         {
             if (_plateau is null)
-                return (false, "Plateau Not Connected");
+                return (false, "Plateau not connected");
 
             if (_vehicle is null)
-                return (false, "Vehicle Not Connected");
+                return (false, "Vehicle not connected");
             
             if (string.IsNullOrEmpty(instructionString))
-                return (false, "Empty Instruction");
+                return (false, "Instruction is empty");
 
             if (!_instructionReader.IsValidInstruction(instructionString))
-                return (false, "Instruction not in correct format");
+                return (false, "Instruction is not in correct format");
 
             List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
 
@@ -94,7 +94,7 @@ namespace MarsRover.AppUI
         public string GetPositionString()
         {
             if (_vehicle is null)
-                return "Vehicle Not Connected";
+                return "Vehicle not connected";
 
             return _positionStringConverter.ToPositionString(_vehicle.Position);
         }
