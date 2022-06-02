@@ -99,6 +99,7 @@ abstract PlateauBase <<abstract>>
   + IsCoordinateValidInPlateau(coordinates : Coordinates) : bool
   {abstract} + PrintMap(recentPath : List<Position>) : void
   {abstract} # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
+  # PrintMap(recentPath : List<Position>, maxCoordinates : Coordinates) : void
 }
 
 class RectangularPlateau

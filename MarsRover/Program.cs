@@ -33,6 +33,16 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
             return new RectangularPlateau(maximumCoordinates);
         }
     },
+    {
+        "Circular Plateau", () =>
+        {
+            string radiusString = AskUser.AskUntilValidStringInput(
+                $"Enter Radius (eg \"5\"): ",
+                s => int.TryParse(s, out _));
+
+            return new CircularPlateau(int.Parse(radiusString));
+        }
+    },
 };
 
 Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
