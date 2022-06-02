@@ -11,58 +11,22 @@ CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 RectangularPlateau plateau;
 
 plateau = AskUserToMakePlateau(positionStringConverter, commandHandler);
-ClearScreenAndPrintMap();
+
+AskUserToMakeObstacles(positionStringConverter, commandHandler, plateau);
 
 while (true)
 {
-    try
-    {
-        string obstacleCoordinates = Ask($"Enter Obstacle Coordinate " +
-            $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
-            (s) => IsEmptyNullOrValidString(s, positionStringConverter.IsValidCoordinateString));
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
 
-        if (string.IsNullOrEmpty(obstacleCoordinates))
-            break;
+    AskUserToCreateNewVehicleOrConnectToExistingVehicle(positionStringConverter, commandHandler, plateau);
 
-        plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
-        ClearScreenAndPrintMap();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
-}
-
-while (true)
-{
-    commandHandler.ResetRecentPath();
-    ClearScreenAndPrintMap();
-
-    string vehicleInitialPositionOrCoordinates = Ask($"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
-        $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ", IsValidVehicleInitialPositionOrCoordinates);
-    if (IsValidVehicleInitialCoordinates(vehicleInitialPositionOrCoordinates))
-    {
-        Coordinates initialCoordinates = positionStringConverter.ToCoordinates(vehicleInitialPositionOrCoordinates);
-        commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
-    }
-    else
-    {
-        Position initialPosition = positionStringConverter.ToPosition(vehicleInitialPositionOrCoordinates);
-        commandHandler.AddVehicleToPlateau(new Rover(initialPosition));
-    }
-    Console.WriteLine($"Connected with {commandHandler.GetVehicle()!.GetType()} at Position [{commandHandler.GetPositionString()}]");
-
-    ClearScreenAndPrintMap();
-
-    string instructionString = Ask($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ", instructionReader.IsValidInstruction);
-    (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
-
-    ClearScreenAndPrintMap();
-    Console.WriteLine(message);
+    AskUserForMovementInstructionAndSendToVehicle(instructionReader, commandHandler, plateau);
 
     Console.WriteLine();
     Console.Write("Press any key to continue.. ");
     Console.ReadKey();
+
+    commandHandler.ResetRecentPath();
 }
 
 static string Ask(string prompt, Func<string, bool> validationFunc)
@@ -98,49 +62,14 @@ static bool IsEmptyNullOrValidString(string input, Func<string, bool> validation
     return validationFunc(input);
 }
 
-bool IsValidVehicleInitialPositionOrCoordinates(string inputString)
-{
-    if (!positionStringConverter.IsValidPositionString(inputString))
-    {
-        return IsValidVehicleInitialCoordinates(inputString);
-    }
-
-    Position position = positionStringConverter.ToPosition(inputString);
-    if (!plateau.IsCoordinateValidInPlateau(position.Coordinates))
-    {
-        Console.WriteLine($"Cannot add new vehicle at [{inputString}] on plateau");
-        return false;
-    }
-
-    return true;
-}
-
-bool IsValidVehicleInitialCoordinates(string inputString)
-{
-    if (!positionStringConverter.IsValidCoordinateString(inputString))
-    {
-        Console.WriteLine($"[{inputString}] is neither Position nor Coordinates");
-        return false;
-    }
-
-    Coordinates coordinates = positionStringConverter.ToCoordinates(inputString);
-    if (plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates) is null)
-    {
-        Console.WriteLine($"No Vehicle at coordinates [{inputString}]");
-        return false;
-    }
-
-    return true;
-}
-
-void ClearScreenAndPrintMap()
+static void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
 {
     Console.Clear();
     Console.WriteLine("ctrl-C to exit");
 
     try
     {
-        plateau.PrintMap(commandHandler.RecentPath);
+        plateau.PrintMap(recentPath);
     }
     catch
     { }
@@ -162,13 +91,89 @@ static RectangularPlateau AskUserToMakePlateau(IPositionStringConverter position
             Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
             plateau = new(maximumCoordinates);
             commandHandler.ConnectPlateau(plateau);
-            break;
+
+            ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+            return plateau;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
+}
 
-    return plateau;
+static void AskUserToMakeObstacles(IPositionStringConverter positionStringConverter, CommandHandler commandHandler, RectangularPlateau plateau)
+{
+    while (true)
+    {
+        try
+        {
+            string obstacleCoordinates = Ask($"Enter Obstacle Coordinate " +
+                $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
+                (s) => IsEmptyNullOrValidString(s, positionStringConverter.IsValidCoordinateString));
+
+            if (string.IsNullOrEmpty(obstacleCoordinates))
+                break;
+
+            plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
+            ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
+
+static void AskUserForMovementInstructionAndSendToVehicle(IInstructionReader instructionReader, CommandHandler commandHandler, RectangularPlateau plateau)
+{
+    string instructionString = Ask($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ", 
+        instructionReader.IsValidInstruction);
+
+    (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
+
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+    Console.WriteLine(message);
+}
+
+static void AskUserToCreateNewVehicleOrConnectToExistingVehicle(IPositionStringConverter positionStringConverter, CommandHandler commandHandler, RectangularPlateau plateau)
+{
+    bool isConnectedToVehicle;
+    string message;
+    while (true)
+    {
+        string positionOrCoordinatesString = AskForPositionOrCoordinateasString(positionStringConverter);
+
+        if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
+        {
+            // create new vehicle at position 
+            Position initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
+            VehicleBase vehicle = new Rover(initialPosition);
+            (isConnectedToVehicle, message) = commandHandler.AddVehicleToPlateau(vehicle);
+        }
+        else
+        {
+            // connect to existing vehicle at coordinates
+            Coordinates initialCoordinates = positionStringConverter.ToCoordinates(positionOrCoordinatesString);
+            (isConnectedToVehicle, message) = commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
+        }
+
+        if (!isConnectedToVehicle)
+        {
+            Console.WriteLine(message);
+            continue;
+        }
+
+        break;
+    }
+    ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+    Console.WriteLine(message);
+
+    static string AskForPositionOrCoordinateasString(IPositionStringConverter positionStringConverter)
+    {
+        return Ask(
+                    $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
+                    $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
+                    (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
+    }
 }
