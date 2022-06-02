@@ -1,6 +1,6 @@
-﻿using MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.Tests.Models.Positions;
+namespace MarsRover.Tests.Models.Positions.Elementals;
 
 internal class PositionTests
 {
@@ -26,8 +26,8 @@ internal class PositionTests
     [Test]
     public void Coordinates_Should_Return_Constructor_Input_Coordinates()
     {
-        Coordinates coordinates = new Coordinates(1, 2);
-        Position position = new Position(coordinates, Direction.North);
+        var coordinates = new Coordinates(1, 2);
+        var position = new Position(coordinates, Direction.North);
 
         position.Coordinates.Should().Be(coordinates);
     }
@@ -35,8 +35,8 @@ internal class PositionTests
     [Test]
     public void Direction_Should_Return_Constructor_Input_Direction()
     {
-        Direction direction = Direction.North;
-        Position position = new Position(new Coordinates(1, 2), direction);
+        var direction = Direction.North;
+        var position = new Position(new Coordinates(1, 2), direction);
 
         position.Direction.Should().Be(direction);
     }
@@ -44,8 +44,8 @@ internal class PositionTests
     [Test]
     public void Equals_Of_Two_Instances_With_Different_Value_Should_Be_True()
     {
-        Position positionA = new Position(new Coordinates(1, 2), Direction.North);
-        Position positionB = new Position(new Coordinates(1, 2), Direction.North);
+        var positionA = new Position(new Coordinates(1, 2), Direction.North);
+        var positionB = new Position(new Coordinates(1, 2), Direction.North);
 
         positionA.Equals(positionB).Should().Be(true);
     }
@@ -53,8 +53,8 @@ internal class PositionTests
     [Test]
     public void Equals_Of_Two_Instances_With_Different_Value_Should_Be_False()
     {
-        Position positionA = new Position(new Coordinates(1, 2), Direction.North);
-        Position positionB = new Position(new Coordinates(5, -1), Direction.East);
+        var positionA = new Position(new Coordinates(1, 2), Direction.North);
+        var positionB = new Position(new Coordinates(5, -1), Direction.East);
 
         positionA.Equals(positionB).Should().Be(false);
     }

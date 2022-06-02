@@ -1,4 +1,4 @@
-﻿using MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
 
 namespace MarsRover.Models.Plateaus;
 

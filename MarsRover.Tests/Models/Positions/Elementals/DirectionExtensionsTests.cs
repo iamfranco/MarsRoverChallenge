@@ -1,29 +1,29 @@
-﻿using MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.Tests.Models.Positions;
+namespace MarsRover.Tests.Models.Positions.Elementals;
 
 internal class DirectionExtensionsTests
 {
     [Test]
     public void GetMovementVector_Should_Return_Correct_Movement_Vector()
     {
-        Direction north = Direction.North;
+        var north = Direction.North;
         north.GetMovementVector().Should().Be(new Coordinates(0, 1));
 
-        Direction south = Direction.South;
+        var south = Direction.South;
         south.GetMovementVector().Should().Be(new Coordinates(0, -1));
 
-        Direction east = Direction.East;
+        var east = Direction.East;
         east.GetMovementVector().Should().Be(new Coordinates(1, 0));
 
-        Direction west = Direction.West;
+        var west = Direction.West;
         west.GetMovementVector().Should().Be(new Coordinates(-1, 0));
     }
 
     [Test]
     public void GetLeftTurn_Should_Modify_Direction_To_CounterClockwise_Direction()
     {
-        Direction direction = Direction.North;
+        var direction = Direction.North;
 
         direction = direction.GetLeftTurn();
         direction.Should().Be(Direction.West);
@@ -41,7 +41,7 @@ internal class DirectionExtensionsTests
     [Test]
     public void GetRightTurn_Should_Modify_Direction_To_CounterClockwise_Direction()
     {
-        Direction direction = Direction.North;
+        var direction = Direction.North;
 
         direction = direction.GetRightTurn();
         direction.Should().Be(Direction.East);

@@ -1,4 +1,4 @@
-﻿namespace MarsRover.Models.Positions;
+﻿namespace MarsRover.Models.Positions.Elementals;
 
 public struct Coordinates
 {

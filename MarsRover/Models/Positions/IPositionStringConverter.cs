@@ -1,4 +1,6 @@
-﻿namespace MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
+
+namespace MarsRover.Models.Positions;
 
 public interface IPositionStringConverter
 {

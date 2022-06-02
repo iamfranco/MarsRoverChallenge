@@ -1,6 +1,6 @@
-﻿using MarsRover.Models.Positions;
+﻿using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.Tests.Models.Positions;
+namespace MarsRover.Tests.Models.Positions.Elementals;
 
 internal class CoordinatesTests
 {
@@ -54,7 +54,7 @@ internal class CoordinatesTests
         Coordinates coordinatesB = new(5, -3);
 
         Coordinates expectedResult = new(8, -1);
-        Coordinates actualResult = coordinatesA + coordinatesB;
+        var actualResult = coordinatesA + coordinatesB;
 
         actualResult.Should().Be(expectedResult);
     }

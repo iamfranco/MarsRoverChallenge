@@ -1,4 +1,4 @@
-﻿namespace MarsRover.Models.Positions;
+﻿namespace MarsRover.Models.Positions.Elementals;
 
 public enum Direction
 {
@@ -28,7 +28,7 @@ public static class DirectionExtensions
     {
         const int directionCount = 4;
 
-        int index = (int)direction;
+        var index = (int)direction;
         index = (index + directionCount + amount) % directionCount;
 
         return (Direction)index;
