@@ -11,12 +11,12 @@ CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 RectangularPlateau plateau;
 
 plateau = AskUserToMakePlateau(positionStringConverter, commandHandler);
+ClearScreenAndPrintMap();
 
 while (true)
 {
     try
     {
-        ClearScreenAndPrintMap();
         string obstacleCoordinates = Ask($"Enter Obstacle Coordinate " +
             $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
             (s) => IsEmptyNullOrValidString(s, positionStringConverter.IsValidCoordinateString));
@@ -25,6 +25,7 @@ while (true)
             break;
 
         plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
+        ClearScreenAndPrintMap();
     }
     catch (Exception ex)
     {
