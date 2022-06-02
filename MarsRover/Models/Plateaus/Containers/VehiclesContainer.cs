@@ -2,7 +2,7 @@
 using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.Models.Plateaus;
+namespace MarsRover.Models.Plateaus.Containers;
 
 public class VehiclesContainer
 {

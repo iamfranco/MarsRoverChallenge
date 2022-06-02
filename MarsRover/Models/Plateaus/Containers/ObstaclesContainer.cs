@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using MarsRover.Models.Positions;
 
-namespace MarsRover.Models.Plateaus;
+namespace MarsRover.Models.Plateaus.Containers;
 
 public class ObstaclesContainer
 {

@@ -1,8 +1,8 @@
-﻿using MarsRover.Models.Plateaus;
+﻿using MarsRover.Models.Plateaus.Containers;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.Tests.Models.Plateaus;
+namespace MarsRover.Tests.Models.Plateaus.Containers;
 
 internal class VehiclesContainerTests
 {
@@ -12,7 +12,7 @@ internal class VehiclesContainerTests
     public void Setup()
     {
         // simulate PlateauBase's coordinate validation method
-        coordinateValidateFunc = (Coordinates coordinates) => coordinates.X >= 0 && coordinates.Y >= 0;
+        coordinateValidateFunc = (coordinates) => coordinates.X >= 0 && coordinates.Y >= 0;
 
         vehiclesContainer = new VehiclesContainer(coordinateValidateFunc);
     }
@@ -45,7 +45,7 @@ internal class VehiclesContainerTests
             vehiclesContainer.AddVehicle(rover);
         }
 
-        List<VehicleBase> vehicleList = vehiclesContainer.Vehicles.ToList();
+        var vehicleList = vehiclesContainer.Vehicles.ToList();
         vehicleList.Count.Should().Be(2);
         vehicleList.Should().BeEquivalentTo(roverList);
     }
@@ -68,7 +68,7 @@ internal class VehiclesContainerTests
         vehiclesContainer.AddVehicle(rover1);
         vehiclesContainer.AddVehicle(rover2);
 
-        VehicleBase? vehicle = vehiclesContainer.GetVehicleAtCoordinates(new Coordinates(4, 4));
+        var vehicle = vehiclesContainer.GetVehicleAtCoordinates(new Coordinates(4, 4));
         vehicle.Should().Be(null);
     }
 
@@ -79,7 +79,7 @@ internal class VehiclesContainerTests
         Rover roverClone = new(new(new(1, 1), Direction.North));
         vehiclesContainer.AddVehicle(rover);
 
-        VehicleBase? vehicle = vehiclesContainer.GetVehicleAtCoordinates(new(1, 1));
+        var vehicle = vehiclesContainer.GetVehicleAtCoordinates(new(1, 1));
         vehicle.Should().Be(rover);
         vehicle.Should().NotBe(roverClone);
     }
@@ -93,7 +93,7 @@ internal class VehiclesContainerTests
         vehiclesContainer.AddVehicle(rover1);
         vehiclesContainer.AddVehicle(rover2);
         vehiclesContainer.RemoveVehicle(rover1);
-        List<VehicleBase> vehicleList = vehiclesContainer.Vehicles.ToList();
+        var vehicleList = vehiclesContainer.Vehicles.ToList();
 
         vehicleList.Count.Should().Be(1);
         vehicleList.Should().NotContain(rover1);
@@ -108,11 +108,11 @@ internal class VehiclesContainerTests
 
         vehiclesContainer.AddVehicle(rover1);
         vehiclesContainer.AddVehicle(rover2);
-        List<VehicleBase> originalVehicleList = vehiclesContainer.Vehicles.ToList();
+        var originalVehicleList = vehiclesContainer.Vehicles.ToList();
 
         Rover rover3 = new(new(new(1, 4), Direction.East));
         vehiclesContainer.RemoveVehicle(rover3);
-        List<VehicleBase> vehicleList = vehiclesContainer.Vehicles.ToList();
+        var vehicleList = vehiclesContainer.Vehicles.ToList();
 
         vehicleList.Count.Should().Be(originalVehicleList.Count);
         vehicleList.Should().BeEquivalentTo(originalVehicleList);

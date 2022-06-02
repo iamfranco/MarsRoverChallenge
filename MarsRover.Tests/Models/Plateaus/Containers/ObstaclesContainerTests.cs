@@ -1,7 +1,7 @@
-﻿using MarsRover.Models.Plateaus;
+﻿using MarsRover.Models.Plateaus.Containers;
 using MarsRover.Models.Positions;
 
-namespace MarsRover.Tests.Models.Plateaus;
+namespace MarsRover.Tests.Models.Plateaus.Containers;
 
 internal class ObstaclesContainerTests
 {
@@ -11,7 +11,7 @@ internal class ObstaclesContainerTests
     public void Setup()
     {
         // simulate PlateauBase's coordinate validation method
-        coordinateValidateFunc = (Coordinates coordinates) => coordinates.X >= 0 && coordinates.Y >= 0;
+        coordinateValidateFunc = (coordinates) => coordinates.X >= 0 && coordinates.Y >= 0;
 
         obstaclesContainer = new ObstaclesContainer(coordinateValidateFunc);
     }
@@ -40,13 +40,13 @@ internal class ObstaclesContainerTests
             new(3, 4)
         };
 
-        foreach (Coordinates obstacle in obstacleCoordinates)
+        foreach (var obstacle in obstacleCoordinates)
         {
             obstaclesContainer.AddObstacle(obstacle);
         }
 
         obstaclesContainer.ObstacleCoordinates.Count.Should().Be(3);
-        for (int i = 0; i < obstaclesContainer.ObstacleCoordinates.Count; i++)
+        for (var i = 0; i < obstaclesContainer.ObstacleCoordinates.Count; i++)
         {
             obstaclesContainer.ObstacleCoordinates[i].Should().Be(obstacleCoordinates[i]);
         }
