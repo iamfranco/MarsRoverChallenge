@@ -9,8 +9,8 @@ namespace MarsRover.AppUI
     {
         private readonly IInstructionReader _instructionReader;
         private readonly IPositionStringConverter _positionStringConverter;
-        private VehicleBase? _vehicle;
         private PlateauBase? _plateau;
+        private VehicleBase? _vehicle;
 
         public List<Position> RecentPath { get; private set; } = new();
 

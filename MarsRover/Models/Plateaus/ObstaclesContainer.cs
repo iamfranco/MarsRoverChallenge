@@ -5,16 +5,16 @@ namespace MarsRover.Models.Plateaus
 {
     public class ObstaclesContainer
     {
-        private readonly Func<Coordinates, bool> _coordinateValidateFunc;
         private readonly List<Coordinates> _obstacleCoordinates;
+        private readonly Func<Coordinates, bool> _coordinateValidateFunc;
 
         public ObstaclesContainer(Func<Coordinates, bool> coordinateValidateFunc)
         {
             if (coordinateValidateFunc is null)
                 throw new ArgumentNullException(nameof(coordinateValidateFunc));
 
-            _coordinateValidateFunc = coordinateValidateFunc;
             _obstacleCoordinates = new();
+            _coordinateValidateFunc = coordinateValidateFunc;
         }
 
         public ReadOnlyCollection<Coordinates> ObstacleCoordinates => _obstacleCoordinates.AsReadOnly();
