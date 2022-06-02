@@ -138,7 +138,7 @@ namespace MarsRover.Models.Plateaus
             if (coordinates.X < 0 || coordinates.X > _maximumCoordinates.X)
                 return false;
 
-            if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.X)
+            if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.Y)
                 return false;
 
             return true;
