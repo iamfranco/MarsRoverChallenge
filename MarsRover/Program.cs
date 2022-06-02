@@ -3,12 +3,13 @@ using MarsRover.AppUI;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
+using MarsRover.Models.Vehicles;
 
 IPositionStringConverter positionStringConverter = new PositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter);
 
-Dictionary<string, Func<PlateauBase>> plateauMaker = new()
+Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
     {
         "Rectangular Plateau", 
@@ -36,14 +37,18 @@ Dictionary<string, Func<PlateauBase>> plateauMaker = new()
     },
 };
 
+Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
+{
+    { "Rover", position => new Rover(position) },
+    { "Tesla", position => new Rover(position) }
+};
 
-
-PlateauBase plateau = AskUser.AskUserToMakePlateau(commandHandler, plateauMaker);
+PlateauBase plateau = AskUser.AskUserToMakePlateau(commandHandler, plateauMakers);
 AskUser.AskUserToMakeObstacles(positionStringConverter, commandHandler, plateau);
 
 while (true)
 {
-    AskUser.AskUserToCreateNewVehicleOrConnectToExistingVehicle(positionStringConverter, commandHandler, plateau);
+    AskUser.AskUserToCreateNewVehicleOrConnectToExistingVehicle(positionStringConverter, commandHandler, plateau, vehicleMakers);
     AskUser.AskUserForMovementInstructionAndSendToVehicle(instructionReader, commandHandler, plateau);
 
     Console.WriteLine();

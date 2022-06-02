@@ -7,42 +7,20 @@ namespace MarsRover.AppUI
 {
     public static class AskUser
     {
-        public static PlateauBase AskUserToMakePlateau(CommandHandler commandHandler, Dictionary<string, Func<PlateauBase>> plateauMaker)
+        public static PlateauBase AskUserToMakePlateau(CommandHandler commandHandler, Dictionary<string, Func<PlateauBase>> plateauMakers)
         {
-            List<string> plateauNames = plateauMaker.Keys.ToList();
-            
             return ExecuteUntilNoException(func);
 
             PlateauBase func()
             {
-                Func<PlateauBase> selectedPlateauMaker = plateauMaker[plateauNames[0]];
-                if (plateauNames.Count > 1)
-                {
-                    PrintAllAvailablePlateauTypes(plateauNames);
-                    selectedPlateauMaker = AskUserToSelectPlateau(plateauMaker, plateauNames);
-                }
+                Func<PlateauBase> selectedPlateauMaker = AskUserToSelectMaker(
+                    groupName: "plateau",
+                    makers: plateauMakers);
 
                 PlateauBase plateau = ExecuteUntilNoException(selectedPlateauMaker);
                 commandHandler.ConnectPlateau(plateau);
                 ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
                 return plateau;
-            }
-
-            static void PrintAllAvailablePlateauTypes(List<string> plateauNames)
-            {
-                Console.WriteLine("Available Plateau Shapes: ");
-                for (int i = 0; i < plateauNames.Count; i++)
-                    Console.WriteLine($"  {i + 1} - {plateauNames[i]}");
-            }
-
-            static Func<PlateauBase> AskUserToSelectPlateau(Dictionary<string, Func<PlateauBase>> plateauMaker, List<string> plateauNames)
-            {
-                int selectedNum = AskUntilValidIntInput(
-                                        $"\nEnter a number to select the plateau shape (number between 1 and {plateauNames.Count}): ",
-                                        minValue: 1, maxValue: plateauNames.Count);
-
-                string selectedPlateauName = plateauNames[selectedNum - 1];
-                return plateauMaker[selectedPlateauName];
             }
         }
 
@@ -69,7 +47,9 @@ namespace MarsRover.AppUI
             }
         }
 
-        public static void AskUserToCreateNewVehicleOrConnectToExistingVehicle(IPositionStringConverter positionStringConverter, CommandHandler commandHandler, PlateauBase plateau)
+        public static void AskUserToCreateNewVehicleOrConnectToExistingVehicle(
+            IPositionStringConverter positionStringConverter, CommandHandler commandHandler, PlateauBase plateau,
+            Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
         {
             commandHandler.ResetRecentPath();
             ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
@@ -84,7 +64,13 @@ namespace MarsRover.AppUI
                 {
                     // create new vehicle at position 
                     Position initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
-                    VehicleBase vehicle = new Rover(initialPosition);
+                    Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers = GetVehicleWithKnownPositionMakers(vehicleMakers, initialPosition);
+
+                    Func<VehicleBase> selectedVehicleMaker = AskUserToSelectMaker(
+                        groupName: "vehicle",
+                        makers: vehicleWithKnownPositionMakers);
+
+                    VehicleBase vehicle = ExecuteUntilNoException(selectedVehicleMaker);
                     (isConnectedToVehicle, message) = commandHandler.AddVehicleToPlateau(vehicle);
                 }
                 else
@@ -104,6 +90,23 @@ namespace MarsRover.AppUI
             }
             ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
             Console.WriteLine(message);
+
+            static Dictionary<string, Func<VehicleBase>> GetVehicleWithKnownPositionMakers(
+                Dictionary<string, Func<Position, VehicleBase>> vehicleMakers,
+                Position initialPosition)
+            {
+                Dictionary<string, Func<VehicleBase>> vehicleMakersWithKnownPosition = new();
+
+                var keyValueCollection = vehicleMakers
+                    .Select(item => new KeyValuePair<string, Func<VehicleBase>>(item.Key, () => item.Value(initialPosition)));
+
+                foreach (var keyValue in keyValueCollection)
+                {
+                    vehicleMakersWithKnownPosition[keyValue.Key] = keyValue.Value;
+                }
+
+                return vehicleMakersWithKnownPosition;
+            }
         }
 
         public static void AskUserForMovementInstructionAndSendToVehicle(IInstructionReader instructionReader, CommandHandler commandHandler, PlateauBase plateau)
@@ -181,9 +184,9 @@ namespace MarsRover.AppUI
         private static string AskForPositionOrCoordinateasString(IPositionStringConverter positionStringConverter)
         {
             return AskUntilValidStringInput(
-                        $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
-                        $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
-                        (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
+                $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
+                $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
+                (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
         }
 
         private static void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
@@ -199,6 +202,36 @@ namespace MarsRover.AppUI
             { }
 
             Console.WriteLine();
+        }
+
+        private static Func<MakerReturnerType> AskUserToSelectMaker<MakerReturnerType>(string groupName, Dictionary<string, Func<MakerReturnerType>> makers)
+        {
+            List<string> names = makers.Keys.ToList();
+            Func<MakerReturnerType> selectedMaker = makers[names[0]];
+            if (names.Count > 1)
+            {
+                PrintAllAvailableNames(names, groupName);
+                selectedMaker = AskUserToSelectTypeToMake(makers, names, groupName);
+            }
+
+            return selectedMaker;
+
+            static void PrintAllAvailableNames(List<string> names, string groupName)
+            {
+                Console.WriteLine($"All available {groupName} types: ");
+                for (int i = 0; i < names.Count; i++)
+                    Console.WriteLine($"  {i + 1} - {names[i]}");
+            }
+
+            static Func<MakerReturnerType> AskUserToSelectTypeToMake(Dictionary<string, Func<MakerReturnerType>> makerFunc, List<string> names, string groupName)
+            {
+                int selectedNum = AskUntilValidIntInput(
+                    $"Enter a number to select a {groupName} (number between 1 and {names.Count}): ",
+                    minValue: 1, maxValue: names.Count);
+
+                string selectedName = names[selectedNum - 1];
+                return makerFunc[selectedName];
+            }
         }
     }
 }
