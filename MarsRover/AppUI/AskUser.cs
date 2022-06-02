@@ -7,24 +7,42 @@ namespace MarsRover.AppUI
 {
     public static class AskUser
     {
-        public static RectangularPlateau AskUserToMakePlateau(IPositionStringConverter positionStringConverter, CommandHandler commandHandler)
+        public static PlateauBase AskUserToMakePlateau(CommandHandler commandHandler, Dictionary<string, Func<PlateauBase>> plateauMaker)
         {
+            List<string> plateauNames = plateauMaker.Keys.ToList();
+            
             return ExecuteUntilNoException(func);
 
-            RectangularPlateau func()
+            PlateauBase func()
             {
-                RectangularPlateau plateau;
+                Func<PlateauBase> selectedPlateauMaker = plateauMaker[plateauNames[0]];
+                if (plateauNames.Count > 1)
+                {
+                    PrintAllAvailablePlateauTypes(plateauNames);
+                    selectedPlateauMaker = AskUserToSelectPlateau(plateauMaker, plateauNames);
+                }
 
-                string maximumCoordinatesString = AskUntilValidInput($"Enter Maximum Coordinates " +
-                        $"(eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
-                        positionStringConverter.IsValidCoordinateString);
-
-                Coordinates maximumCoordinates = positionStringConverter.ToCoordinates(maximumCoordinatesString);
-                plateau = new(maximumCoordinates);
+                PlateauBase plateau = ExecuteUntilNoException(selectedPlateauMaker);
                 commandHandler.ConnectPlateau(plateau);
-
                 ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
                 return plateau;
+            }
+
+            static void PrintAllAvailablePlateauTypes(List<string> plateauNames)
+            {
+                Console.WriteLine("Available Plateau Shapes: ");
+                for (int i = 0; i < plateauNames.Count; i++)
+                    Console.WriteLine($"  {i + 1} - {plateauNames[i]}");
+            }
+
+            static Func<PlateauBase> AskUserToSelectPlateau(Dictionary<string, Func<PlateauBase>> plateauMaker, List<string> plateauNames)
+            {
+                int selectedNum = AskUntilValidIntInput(
+                                        $"\nEnter a number to select the plateau shape (number between 1 and {plateauNames.Count}): ",
+                                        minValue: 1, maxValue: plateauNames.Count);
+
+                string selectedPlateauName = plateauNames[selectedNum - 1];
+                return plateauMaker[selectedPlateauName];
             }
         }
 
@@ -34,7 +52,7 @@ namespace MarsRover.AppUI
             {
                 try
                 {
-                    string obstacleCoordinates = AskUntilValidInput($"Enter Obstacle Coordinate " +
+                    string obstacleCoordinates = AskUntilValidStringInput($"Enter Obstacle Coordinate " +
                         $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
                         (s) => string.IsNullOrEmpty(s) || positionStringConverter.IsValidCoordinateString(s));
 
@@ -90,7 +108,7 @@ namespace MarsRover.AppUI
 
         public static void AskUserForMovementInstructionAndSendToVehicle(IInstructionReader instructionReader, CommandHandler commandHandler, PlateauBase plateau)
         {
-            string instructionString = AskUntilValidInput($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
+            string instructionString = AskUntilValidStringInput($"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
                 instructionReader.IsValidInstruction);
 
             (bool status, string message) = commandHandler.SendMoveInstruction(instructionString);
@@ -99,22 +117,7 @@ namespace MarsRover.AppUI
             Console.WriteLine(message);
         }
 
-        private static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
-        {
-            while (true)
-            {
-                try
-                {
-                    func();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        private static string AskUntilValidInput(string prompt, Func<string, bool> validationFunc)
+        public static string AskUntilValidStringInput(string prompt, Func<string, bool> validationFunc)
         {
             return ExecuteUntilNoException(func);
 
@@ -134,9 +137,50 @@ namespace MarsRover.AppUI
             }
         }
 
+        private static int AskUntilValidIntInput(string prompt, int minValue, int maxValue)
+        {
+            return ExecuteUntilNoException(func);
+
+            int func()
+            {
+                Console.WriteLine();
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+
+                if (input is null)
+                    throw new Exception($"Input cannot be null");
+
+                if (!int.TryParse(input, out int num))
+                    throw new Exception($"Input [{input}] needs to be integer");
+
+                if (num < minValue)
+                    throw new Exception($"Input [{input}] cannot be below {minValue}");
+
+                if (num > maxValue)
+                    throw new Exception($"Input [{input}] cannot be above {maxValue}");
+
+                return num;
+            }
+        }
+
+        private static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
+        {
+            while (true)
+            {
+                try
+                {
+                    return func();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         private static string AskForPositionOrCoordinateasString(IPositionStringConverter positionStringConverter)
         {
-            return AskUntilValidInput(
+            return AskUntilValidStringInput(
                         $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
                         $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
                         (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
