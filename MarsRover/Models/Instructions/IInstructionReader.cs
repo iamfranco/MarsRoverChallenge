@@ -1,4 +1,6 @@
-﻿namespace MarsRover.Models.Instructions;
+﻿using MarsRover.Models.Instructions.Elementals;
+
+namespace MarsRover.Models.Instructions;
 
 public interface IInstructionReader
 {

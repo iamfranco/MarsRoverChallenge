@@ -1,4 +1,4 @@
-﻿namespace MarsRover.Models.Instructions;
+﻿namespace MarsRover.Models.Instructions.Elementals;
 
 public enum SingularInstruction
 {
