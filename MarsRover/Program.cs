@@ -23,17 +23,6 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
         }
     },
     {
-        "Square Plateau", () =>
-        {
-            string squareLength = AskUser.AskUntilValidStringInput(
-                $"Enter Maximum X Coordinate of square (eg \"5\"): ",
-                s => int.TryParse(s, out _));
-
-            Coordinates maximumCoordinates = positionStringConverter.ToCoordinates($"{squareLength} {squareLength}");
-            return new RectangularPlateau(maximumCoordinates);
-        }
-    },
-    {
         "Circular Plateau", () =>
         {
             string radiusString = AskUser.AskUntilValidStringInput(
