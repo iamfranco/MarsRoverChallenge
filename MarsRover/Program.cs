@@ -76,10 +76,10 @@ static string Ask(string prompt, Func<string, bool> validationFunc)
             string? input = Console.ReadLine();
 
             if (input is null)
-                continue;
+                throw new Exception($"Input cannot be null");
 
             if (!validationFunc(input))
-                continue;
+                throw new Exception($"Input [{input}] is not in correct format");
 
             return input;
         }
