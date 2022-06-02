@@ -1,6 +1,38 @@
 @startuml "Mars Rover Challenge"
 skinparam classAttributeIconSize 0
 
+class AskUser <<static>>
+{
+  + AskUserToMakePlateau(\n\
+      commandHandler : CommandHandler, \n\
+      plateauMakers : Dictionary<string, Func<PlateauBase>> \n\
+    ) : PlateauBase
+  
+  + AskUserToMakeObstacles(\n\
+      positionStringConverter : IPositionStringConverter, \n\
+      commandHandler : CommandHandler, \n\
+      plateau : PlateauBase \n\
+    ) : void
+  
+  + AskUserToCreateNewVehicleOrConnectToExistingVehicle( \n\
+      positionStringConverter : IPositionStringConverter, \n\
+      commandHandler : CommandHandler, \n\
+      plateau : PlateauBase, \n\
+      vehicleMakers : Dictionary<string, Func<Position, VehicleBase>> \n\
+    ) : void
+
+  + AskUserForMovementInstructionAndSendToVehicle( \n\
+      instructionReader : IInstructionReader, \n\
+      commandHandler : CommandHandler, \n\
+      plateau : PlateauBase \n\
+    ) : void
+  
+  + AskUntilValidStringInput(\n\
+      prompt : string, \n\
+      validationFunc : Func<string, bool> \n\
+    ) : string
+}
+
 class CommandHandler
 {
   - instructionReader : IInstructionReader
@@ -25,9 +57,9 @@ class CommandHandler
 
 interface IInstructionReader <<interface>>
 {
+  + GetExampleInstructionString() : string
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
-  + GetExampleInstructionString() : string
 }
 
 enum SingularInstruction
@@ -39,9 +71,21 @@ enum SingularInstruction
 
 class StandardInstructionReader
 {
+  + GetExampleInstructionString() : string
   + IsValidInstruction(instruction : string) : bool
   + EvaluateInstruction(instruction : string) : List<SingularInstruction>
-  + GetExampleInstructionString() : string
+}
+
+class ObstaclesContainer
+{
+  - obstacleCoordinates : List<Coordinates>
+  - coordinateValidateFunc : Func<Coordinates, bool>
+
+  + ObstaclesContainer(coordinateValidateFunc : Func<Coordinates, bool>)
+
+  + GetObstacleCoordinates() : List<Coordinates>
+  + AddObstacle(obstacleCoordinate: Coordinates) : void
+  + RemoveObstacle(obstaclecoordinate : Coordinates) : void
 }
 
 abstract PlateauBase <<abstract>>
@@ -57,39 +101,27 @@ abstract PlateauBase <<abstract>>
   {abstract} # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
-class ObstaclesContainer
+class RectangularPlateau
 {
-  - obstacleCoordinates : List<Coordinates>
-  - isCoordinateValidInPlateau : Func<Coordinates, bool>
+  - maximumCoordinates : Coordinates
 
-  + ObstaclesContainer(isCoordinateValidInPlateau : Func<Coordinates, bool>)
+  + RectangularPlateau(maximumCoordinates : Coordinates)
 
-  + GetObstacleCoordinates() : List<Coordinates>
-  + AddObstacle(obstacleCoordinate: Coordinates) : void
-  + RemoveObstacle(obstaclecoordinate : Coordinates) : void
+  + PrintMap(recentPath : List<Position>) : void
+  # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
 class VehiclesContainer
 {
   - vehicles : List<VehicleBase>
-  - isCoordinateValidInPlateau : Func<Coordinates, bool>
+  - coordinateValidateFunc : Func<Coordinates, bool>
 
-  + VehiclesContainer(isCoordinateValidInPlateau : Func<Coordinates, bool>)
+  + VehiclesContainer(coordinateValidateFunc : Func<Coordinates, bool>)
 
   + GetVehicles() : List<VehicleBase>
   + GetVehicleAtCoordinates(coordinates : Coordinates) : VehicleBase?
   + AddVehicle(vehicle : VehicleBase) : void
   + RemoveVehicle(vehicle : VehicleBase) : void
-}
-
-class RectangularPlateau
-{
-  - plateauSize : Coordinates
-
-  + RectangularPlateau(plateauSize : Coordinates)
-
-  + PrintMap(recentPath : List<Position>) : void
-  # IsCoordinateWithinPlateauBoundary(coordinates : Coordinates) : bool
 }
 
 class Coordinates <<struct>>
@@ -117,11 +149,11 @@ enum Direction
 
 interface IPositionStringConverter <<interface>>
 {
-  + IsValidPositionString(positionString : string) : bool
-  + IsValidCoordinateString(coordinateString : string) : bool
-
   + GetExamplePositionString() : string
   + GetExampleCoordinateString() : string
+
+  + IsValidPositionString(positionString : string) : bool
+  + IsValidCoordinateString(coordinateString : string) : bool
 
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
@@ -140,11 +172,11 @@ class Position <<struct>>
 
 class PositionStringConverter
 {
-  + IsValidPositionString(positionString : string) : bool
-  + IsValidCoordinateString(coordinateString : string) : bool
-
   + GetExamplePositionString() : string
   + GetExampleCoordinateString() : string
+
+  + IsValidPositionString(positionString : string) : bool
+  + IsValidCoordinateString(coordinateString : string) : bool
 
   + ToPosition(positionString : string) : Position
   + ToCoordinates(coordinateString : string) : Coordinates
@@ -168,8 +200,15 @@ abstract VehicleBase <<abstract>>
 
   + GetPosition() : Position
   + ApplyMoveInstruction(instruction : List<SingularInstruction>, \n\
-                                     plateau : PlateauBase) : List<Position>
+    plateau : PlateauBase \n\
+    ) : (List<Position>, bool)
 }
+
+AskUser --> CommandHandler
+AskUser --[norank]--> PlateauBase
+AskUser --[norank]--> IPositionStringConverter
+AskUser --l[norank]--> IInstructionReader
+AskUser --l[norank]--> VehicleBase
 
 CommandHandler o-- IInstructionReader
 CommandHandler o-- IPositionStringConverter

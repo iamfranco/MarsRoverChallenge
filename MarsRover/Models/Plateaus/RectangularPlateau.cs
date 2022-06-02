@@ -69,6 +69,17 @@ namespace MarsRover.Models.Plateaus
             Console.WriteLine("  X");
         }
 
+        protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
+        {
+            if (coordinates.X < 0 || coordinates.X > _maximumCoordinates.X)
+                return false;
+
+            if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.Y)
+                return false;
+
+            return true;
+        }
+
         private (string symbol, ConsoleColor bgColor)[,] GetMatrixToPrint(
             List<Position> recentPath, 
             ConsoleColor validGroundColor, 
@@ -132,16 +143,5 @@ namespace MarsRover.Models.Plateaus
         }
 
         private static bool IsValidMaximumCoordinates(Coordinates maximumCoordinates) => maximumCoordinates.X >= 0 && maximumCoordinates.Y >= 0;
-
-        protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
-        {
-            if (coordinates.X < 0 || coordinates.X > _maximumCoordinates.X)
-                return false;
-
-            if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.Y)
-                return false;
-
-            return true;
-        }
     }
 }
