@@ -2,7 +2,7 @@
 using MarsRover.Models.Instructions.Elementals;
 
 namespace MarsRover.Models.Instructions;
-internal class StepCountInstructionReader : IInstructionReader
+public class StepCountInstructionReader : IInstructionReader
 {
     private readonly Regex _instructionRegex = new(@"^((L|R|M)\d*\s*)*$");
 

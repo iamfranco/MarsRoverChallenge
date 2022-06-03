@@ -3,7 +3,7 @@ using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Helpers;
 
-internal static class AppUIHelpers
+public static class AppUIHelpers
 {
     public static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
     {
@@ -64,7 +64,7 @@ internal static class AppUIHelpers
         Console.WriteLine();
     }
 
-    private static string GetUserInput(string prompt)
+    public static string GetUserInput(string prompt)
     {
         Console.WriteLine();
         Console.Write(prompt);

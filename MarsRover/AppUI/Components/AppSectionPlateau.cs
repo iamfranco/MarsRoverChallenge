@@ -4,7 +4,7 @@ using MarsRover.Models.Plateaus;
 
 namespace MarsRover.AppUI.Components;
 
-internal static class AppSectionPlateau
+public static class AppSectionPlateau
 {
     public static void AskForPlateau(
         AppController appController, Dictionary<string, Func<PlateauBase>> plateauMakers)
