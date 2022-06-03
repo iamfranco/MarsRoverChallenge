@@ -1,6 +1,5 @@
 ﻿using MarsRover.AppUI.Helpers;
 using MarsRover.Controllers;
-using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 
 namespace MarsRover.AppUI.Components;

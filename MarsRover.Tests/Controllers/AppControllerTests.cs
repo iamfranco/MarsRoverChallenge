@@ -89,7 +89,7 @@ internal class AppControllerTests
         appController.ConnectPlateau(plateau);
 
         appController.AddObstacleToPlateau(obstacle);
-        
+
         plateau.ObstaclesContainer.ObstacleCoordinates.Should().Contain(obstacle);
     }
 
