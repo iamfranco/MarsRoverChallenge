@@ -12,20 +12,13 @@ class AppUIHandler
   - appController : AppController
   - mapPrinter : MapPrinter
 
-  + AppUIHandler( \n\
-      positionStringConverter : IPositionStringConverter \n\
-      appController : AppController \n\
-      mapPrinter : MapPrinter \n\
-    )
+  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : MapPrinter)
 
   + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : void
   
   + AskUserToMakeObstacles() : void
 
-  + AskUserToCreateNewVehicleOrConnectToExistingVehicle( \n\
-      plateau : PlateauBase, \n\
-      vehicleMakers : Dictionary<string, Func<Position, VehicleBase>> \n\
-    ) : void
+  + AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers : Dictionary<string, Func<Position, VehicleBase>>) : void
 
   + AskUserForMovementInstructionAndSendToVehicle() : void
 }
