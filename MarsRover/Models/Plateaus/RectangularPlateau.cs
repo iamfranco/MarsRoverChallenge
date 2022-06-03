@@ -27,5 +27,6 @@ public class RectangularPlateau : PlateauBase
         return true;
     }
 
-    private static bool IsValidMaximumCoordinates(Coordinates maximumCoordinates) => maximumCoordinates.X >= 0 && maximumCoordinates.Y >= 0;
+    private static bool IsValidMaximumCoordinates(Coordinates maximumCoordinates) => 
+        maximumCoordinates.X >= 0 && maximumCoordinates.Y >= 0;
 }

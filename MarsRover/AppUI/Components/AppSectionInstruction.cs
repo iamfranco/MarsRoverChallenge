@@ -9,7 +9,8 @@ namespace MarsRover.AppUI.Components;
 
 internal static class AppSectionInstruction
 {
-    public static string AskForInstructionAndSendToVehicle(IPositionStringConverter positionStringConverter, AppController appController)
+    public static string AskForInstructionAndSendToVehicle(
+        IPositionStringConverter positionStringConverter, AppController appController)
     {
         IInstructionReader instructionReader = appController.InstructionReader;
 
