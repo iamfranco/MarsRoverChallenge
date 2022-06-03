@@ -57,7 +57,7 @@ internal class StepCountInstructionReader : IInstructionReader
             char symbol = item[0];
             int quantity = int.Parse(item[1..]);
 
-            for (int i=0; i< quantity; i++)
+            for (int i = 0; i < quantity; i++)
             {
                 result.Add(_singularInstructions[symbol]);
             }

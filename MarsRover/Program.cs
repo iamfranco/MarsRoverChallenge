@@ -1,4 +1,7 @@
 ﻿using MarsRover.AppUI;
+using MarsRover.AppUI.Components;
+using MarsRover.AppUI.Helpers;
+using MarsRover.Controllers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
@@ -7,14 +10,16 @@ using MarsRover.Models.Vehicles;
 
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
-CommandHandler commandHandler = new(instructionReader, positionStringConverter);
+MapPrinter mapPrinter = new MapPrinter();
+AppController appController = new(instructionReader);
+AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
     {
         "Rectangular Plateau", () =>
         {
-            string maximumCoordinatesString = AskUser.AskUntilValidStringInput(
+            string maximumCoordinatesString = AppUIHelpers.AskUntilValidStringInput(
                 $"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
                 positionStringConverter.IsValidCoordinateString);
 
@@ -25,7 +30,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
     {
         "Circular Plateau", () =>
         {
-            string radiusString = AskUser.AskUntilValidStringInput(
+            string radiusString = AppUIHelpers.AskUntilValidStringInput(
                 $"Enter Radius (eg \"5\"): ",
                 s => int.TryParse(s, out _));
 
@@ -40,13 +45,13 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
     { "Wall E", position => new WallE(position) }
 };
 
-PlateauBase plateau = AskUser.AskUserToMakePlateau(commandHandler, plateauMakers);
-AskUser.AskUserToMakeObstacles(positionStringConverter, commandHandler, plateau);
+PlateauBase plateau = appUIHandler.AskUserToMakePlateau(plateauMakers);
+appUIHandler.AskUserToMakeObstacles(plateau);
 
 while (true)
 {
-    AskUser.AskUserToCreateNewVehicleOrConnectToExistingVehicle(positionStringConverter, commandHandler, plateau, vehicleMakers);
-    AskUser.AskUserForMovementInstructionAndSendToVehicle(instructionReader, commandHandler, plateau);
+    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(plateau, vehicleMakers);
+    appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
     Console.WriteLine();
     Console.Write("Press any key to continue.. ");
