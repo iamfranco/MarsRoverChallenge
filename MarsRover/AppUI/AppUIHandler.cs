@@ -14,26 +14,32 @@ public class AppUIHandler
     private readonly IPositionStringConverter _positionStringConverter;
     private readonly IInstructionReader _instructionReader;
     private readonly AppController _appController;
+    private readonly MapPrinter _mapPrinter;
 
     public AppUIHandler(
         IPositionStringConverter positionStringConverter,
         IInstructionReader instructionReader,
-        AppController appController)
+        AppController appController,
+        MapPrinter mapPrinter)
     {
         _positionStringConverter = positionStringConverter;
         _instructionReader = instructionReader;
         _appController = appController;
+        _mapPrinter = mapPrinter;
     }
 
     public PlateauBase AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
-        return AskUserHelpers.ExecuteUntilNoException(
+        PlateauBase plateau = AskUserHelpers.ExecuteUntilNoException(
             () => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
+
+        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
+        return plateau;
     }
 
     public void AskUserToMakeObstacles(PlateauBase plateau)
     {
-        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, plateau);
+        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, _mapPrinter, plateau);
     }
 
     public void AskUserToCreateNewVehicleOrConnectToExistingVehicle(
@@ -41,22 +47,22 @@ public class AppUIHandler
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         _appController.ResetRecentPath();
-        AskUserHelpers.ClearScreenAndPrintMap(_appController);
+        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
 
         AskUserHelpers.ExecuteUntilNoException(
             () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
                 _positionStringConverter, _appController, plateau, vehicleMakers));
 
-        AskUserHelpers.ClearScreenAndPrintMap(_appController);
+        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine($"Connected to [{_appController.GetVehicle()!.GetType().Name}] " +
-            $"at [{_appController.GetPositionString()}]");
+            $"at [{_positionStringConverter.ToPositionString(_appController.GetVehicle()!.Position)}]");
     }
 
     public void AskUserForMovementInstructionAndSendToVehicle()
     {
         var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_instructionReader, _appController);
 
-        AskUserHelpers.ClearScreenAndPrintMap(_appController);
+        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine(message);
     }
 }

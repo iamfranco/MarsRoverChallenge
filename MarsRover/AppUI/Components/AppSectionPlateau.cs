@@ -15,7 +15,6 @@ internal static class AppSectionPlateau
 
         PlateauBase plateau = AskUserHelpers.ExecuteUntilNoException(selectedPlateauMaker);
         appController.ConnectPlateau(plateau);
-        AskUserHelpers.ClearScreenAndPrintMap(appController);
         return plateau;
     }
 }

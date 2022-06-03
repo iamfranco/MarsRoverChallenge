@@ -14,12 +14,9 @@ public class AppController
     private PlateauBase? _plateau;
     private VehicleBase? _vehicle;
 
-    public MapPrinter MapPrinter { get; }
-
     public List<Position> RecentPath { get; private set; } = new();
 
-    public AppController(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter,
-        MapPrinter mapPrinter)
+    public AppController(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
     {
         if (instructionReader is null)
             throw new ArgumentNullException(nameof(instructionReader));
@@ -27,12 +24,8 @@ public class AppController
         if (positionStringConverter is null)
             throw new ArgumentNullException(nameof(positionStringConverter));
 
-        if (mapPrinter is null)
-            throw new ArgumentNullException(nameof(mapPrinter));
-
         _instructionReader = instructionReader;
         _positionStringConverter = positionStringConverter;
-        MapPrinter = mapPrinter;
     }
 
     public PlateauBase? GetPlateau() => _plateau;

@@ -8,21 +8,21 @@ namespace MarsRover.AppUI.Components;
 internal static class AppSectionObstacles
 {
     public static void AskForObstaclesUntilEmptyInput(
-        IPositionStringConverter positionStringConverter, AppController appController, PlateauBase plateau)
+        IPositionStringConverter positionStringConverter, AppController appController, MapPrinter mapPrinter, PlateauBase plateau)
     {
         while (true)
         {
             try
             {
-                var obstacleCoordinates = AskUserHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
+                var obstacleCoordinatesString = AskUserHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
                     $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
                     (s) => string.IsNullOrEmpty(s) || positionStringConverter.IsValidCoordinateString(s));
 
-                if (string.IsNullOrEmpty(obstacleCoordinates))
+                if (string.IsNullOrEmpty(obstacleCoordinatesString))
                     break;
 
-                plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
-                AskUserHelpers.ClearScreenAndPrintMap(appController);
+                plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinatesString));
+                AskUserHelpers.ClearScreenAndPrintMap(appController, mapPrinter);
             }
             catch (Exception ex)
             {

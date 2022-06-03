@@ -1,4 +1,5 @@
-﻿using MarsRover.Controllers;
+﻿using MarsRover.AppUI.Components;
+using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Helpers;
 
@@ -51,12 +52,12 @@ internal static class AskUserHelpers
         });
     }
 
-    public static void ClearScreenAndPrintMap(AppController commandHandler)
+    public static void ClearScreenAndPrintMap(AppController commandHandler, MapPrinter mapPrinter)
     {
         Console.Clear();
         Console.WriteLine("ctrl-C to exit");
 
-        commandHandler.MapPrinter.PrintMap(commandHandler);
+        mapPrinter.PrintMap(commandHandler);
 
         Console.WriteLine();
     }
