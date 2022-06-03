@@ -1,6 +1,7 @@
 ﻿using MarsRover.AppUI;
 using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.Controllers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
@@ -10,8 +11,8 @@ using MarsRover.Models.Vehicles;
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 MapPrinter mapPrinter = new MapPrinter();
-CommandHandler commandHandler = new(instructionReader, positionStringConverter, mapPrinter);
-AppUIHandler appUIHandler = new(positionStringConverter, instructionReader, commandHandler);
+AppController appController = new(instructionReader, positionStringConverter, mapPrinter);
+AppUIHandler appUIHandler = new(positionStringConverter, instructionReader, appController);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {

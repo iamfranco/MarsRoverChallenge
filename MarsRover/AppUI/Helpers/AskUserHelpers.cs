@@ -1,4 +1,6 @@
-﻿namespace MarsRover.AppUI.Helpers;
+﻿using MarsRover.Controllers;
+
+namespace MarsRover.AppUI.Helpers;
 
 internal static class AskUserHelpers
 {
@@ -49,7 +51,7 @@ internal static class AskUserHelpers
         });
     }
 
-    public static void ClearScreenAndPrintMap(CommandHandler commandHandler)
+    public static void ClearScreenAndPrintMap(AppController commandHandler)
     {
         Console.Clear();
         Console.WriteLine("ctrl-C to exit");

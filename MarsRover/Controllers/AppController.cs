@@ -6,9 +6,9 @@ using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.AppUI;
+namespace MarsRover.Controllers;
 
-public class CommandHandler
+public class AppController
 {
     private readonly IInstructionReader _instructionReader;
     private readonly IPositionStringConverter _positionStringConverter;
@@ -19,7 +19,7 @@ public class CommandHandler
 
     public List<Position> RecentPath { get; private set; } = new();
 
-    public CommandHandler(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter, 
+    public AppController(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter,
         MapPrinter mapPrinter)
     {
         if (instructionReader is null)
@@ -73,7 +73,7 @@ public class CommandHandler
         if (_plateau.VehiclesContainer.Vehicles.Count == 0)
             throw new Exception("Plateau has no vehicles, please create a vehicle first");
 
-        VehicleBase? vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
+        var vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
         if (vehicle is null)
             throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
@@ -94,9 +94,9 @@ public class CommandHandler
         if (!_instructionReader.IsValidInstruction(instructionString))
             throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
 
-        List<SingularInstruction> instruction = _instructionReader.EvaluateInstruction(instructionString);
+        var instruction = _instructionReader.EvaluateInstruction(instructionString);
 
-        (RecentPath, bool isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
+        (RecentPath, var isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
         if (isEmergencyStopUsed)
             return $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]";
 
@@ -111,7 +111,7 @@ public class CommandHandler
         return _positionStringConverter.ToPositionString(_vehicle.Position);
     }
 
-    public void ResetRecentPath() => RecentPath = (_vehicle is null) ? new() : new() { _vehicle.Position };
+    public void ResetRecentPath() => RecentPath = _vehicle is null ? new() : new() { _vehicle.Position };
 
     private void SetVehicle(VehicleBase vehicle)
     {

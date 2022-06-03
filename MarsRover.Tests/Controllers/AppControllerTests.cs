@@ -1,113 +1,113 @@
-﻿using MarsRover.AppUI;
-using MarsRover.AppUI.Components;
+﻿using MarsRover.AppUI.Components;
+using MarsRover.Controllers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.Tests.AppUI;
+namespace MarsRover.Tests.Controllers;
 
-internal class CommandHandlerTests
+internal class AppControllerTests
 {
     private IInstructionReader instructionReader = new StandardInstructionReader();
     private IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
     private MapPrinter mapPrinter = new MapPrinter();
-    private CommandHandler commandHandler;
+    private AppController appController;
     private PlateauBase plateau;
 
     [SetUp]
     public void Setup()
     {
-        commandHandler = new CommandHandler(instructionReader, positionStringConverter, mapPrinter);
+        appController = new AppController(instructionReader, positionStringConverter, mapPrinter);
         plateau = new RectangularPlateau(new(5, 5));
     }
 
     [Test]
     public void Constructor_With_Null_InstructionReader_Should_Throw_Exception()
     {
-        Action act = () => commandHandler = new CommandHandler(null, positionStringConverter, mapPrinter);
+        Action act = () => appController = new AppController(null, positionStringConverter, mapPrinter);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void Constructor_With_Null_PositionStringConverter_Should_Throw_Exception()
     {
-        Action act = () => commandHandler = new CommandHandler(instructionReader, null, mapPrinter);
+        Action act = () => appController = new AppController(instructionReader, null, mapPrinter);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void Constructor_With_Null_MapPrinter_Should_Throw_Exception()
     {
-        Action act = () => commandHandler = new CommandHandler(instructionReader, positionStringConverter, null);
+        Action act = () => appController = new AppController(instructionReader, positionStringConverter, null);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void MapPrinter_Should_Return_Constructor_Input_MapPrinter()
     {
-        commandHandler = new CommandHandler(instructionReader, positionStringConverter, mapPrinter);
-        commandHandler.MapPrinter.Should().Be(mapPrinter);
+        appController = new AppController(instructionReader, positionStringConverter, mapPrinter);
+        appController.MapPrinter.Should().Be(mapPrinter);
     }
 
     [Test]
     public void ConnectPlateau_With_Null_Plateau_Should_Throw_Exception()
     {
-        Action act = () => commandHandler.ConnectPlateau(null);
+        Action act = () => appController.ConnectPlateau(null);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void ConnectPlateau_With_Valid_Plateau_Should_Succeed()
     {
-        Action act = () => commandHandler.ConnectPlateau(plateau);
+        Action act = () => appController.ConnectPlateau(plateau);
         act.Should().NotThrow();
     }
 
     [Test]
     public void GetPlateau_Should_Return_Null_By_Default()
     {
-        PlateauBase? plateau = commandHandler.GetPlateau();
+        var plateau = appController.GetPlateau();
         plateau.Should().Be(null);
     }
 
     [Test]
     public void GetPlateau_After_Successful_ConnectPlateau_Should_Return_Plateau()
     {
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.GetPlateau().Should().Be(plateau);
+        appController.ConnectPlateau(plateau);
+        appController.GetPlateau().Should().Be(plateau);
     }
 
     [Test]
     public void ConnectPlateau_Then_AddVehicleToPlateau_Then_ConnectPlateau_Then_GetVehicle_Should_Return_Null()
     {
-        commandHandler.ConnectPlateau(plateau);
-        Rover rover = new Rover(new Position(new(1, 2), Direction.North));
-        commandHandler.AddVehicleToPlateau(rover);
+        appController.ConnectPlateau(plateau);
+        var rover = new Rover(new Position(new(1, 2), Direction.North));
+        appController.AddVehicleToPlateau(rover);
 
-        commandHandler.GetVehicle()!.Should().Be(rover);
+        appController.GetVehicle()!.Should().Be(rover);
 
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
 
-        commandHandler.GetVehicle().Should().Be(null);
+        appController.GetVehicle().Should().Be(null);
     }
 
     [Test]
     public void GetVehicle_Should_Return_Null_By_Default()
     {
-        VehicleBase? vehicle = commandHandler.GetVehicle();
+        var vehicle = appController.GetVehicle();
         vehicle.Should().Be(null);
     }
 
     [Test]
     public void GetVehicle_After_Successful_AddVehicleToPlateau_Should_Return_Vehicle()
     {
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
         Rover rover = new(new(new(1, 2), Direction.North));
 
-        commandHandler.AddVehicleToPlateau(rover);
-        VehicleBase? vehicle = commandHandler.GetVehicle();
+        appController.AddVehicleToPlateau(rover);
+        var vehicle = appController.GetVehicle();
 
         vehicle.Should().Be(rover);
     }
@@ -115,16 +115,16 @@ internal class CommandHandlerTests
     [Test]
     public void GetVehicle_After_Successful_ConnectToVehicleAtCoordinates_Should_Return_Vehicle()
     {
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
         Coordinates coordinates = new(1, 2);
-        Position position = new Position(coordinates, Direction.North);
-        Rover rover = new Rover(position);
+        var position = new Position(coordinates, Direction.North);
+        var rover = new Rover(position);
 
         plateau.VehiclesContainer.AddVehicle(rover);
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
 
-        commandHandler.ConnectToVehicleAtCoordinates(coordinates);
-        VehicleBase? vehicle = commandHandler.GetVehicle();
+        appController.ConnectToVehicleAtCoordinates(coordinates);
+        var vehicle = appController.GetVehicle();
 
         vehicle.Should().Be(rover);
     }
@@ -132,7 +132,7 @@ internal class CommandHandlerTests
     [Test]
     public void AddVehicleToPlateau_With_Null_Vehicle_Should_Throw_Exception()
     {
-        Action act = () => commandHandler.AddVehicleToPlateau(null);
+        Action act = () => appController.AddVehicleToPlateau(null);
 
         act.Should().Throw<ArgumentNullException>();
     }
@@ -140,9 +140,9 @@ internal class CommandHandlerTests
     [Test]
     public void AddVehicleToPlateau_Before_ConnectPlateau_Should_Throw_Exception()
     {
-        Rover rover = new Rover(new Position(new(1, 2), Direction.North));
+        var rover = new Rover(new Position(new(1, 2), Direction.North));
 
-        Action act = () => commandHandler.AddVehicleToPlateau(rover);
+        Action act = () => appController.AddVehicleToPlateau(rover);
 
         act.Should().Throw<Exception>();
     }
@@ -150,10 +150,10 @@ internal class CommandHandlerTests
     [Test]
     public void AddVehicleToPlateau_With_Vehicle_On_Invalid_Coordinates_For_Plateau_Should_Return_False_For_Status()
     {
-        Rover rover = new Rover(new Position(new(100, 200), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
+        var rover = new Rover(new Position(new(100, 200), Direction.North));
+        appController.ConnectPlateau(plateau);
 
-        Action act = () => commandHandler.AddVehicleToPlateau(rover);
+        Action act = () => appController.AddVehicleToPlateau(rover);
 
         act.Should().Throw<ArgumentException>();
     }
@@ -161,10 +161,10 @@ internal class CommandHandlerTests
     [Test]
     public void AddVehicleToPlateau_With_Vehicle_On_Valid_Coordinates_For_Plateau_Then_Plateau_Should_Have_New_Vehicle()
     {
-        Rover rover = new Rover(new Position(new(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
+        var rover = new Rover(new Position(new(1, 2), Direction.North));
+        appController.ConnectPlateau(plateau);
 
-        commandHandler.AddVehicleToPlateau(rover);
+        appController.AddVehicleToPlateau(rover);
 
         plateau.VehiclesContainer.Vehicles.Should().Contain(rover);
     }
@@ -174,7 +174,7 @@ internal class CommandHandlerTests
     {
         Coordinates coordinates = new(1, 2);
 
-        Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+        Action act = () => appController.ConnectToVehicleAtCoordinates(coordinates);
 
         act.Should().Throw<Exception>();
     }
@@ -183,8 +183,8 @@ internal class CommandHandlerTests
     public void ConnectToVehicleAtCoordinates_On_Plateau_With_No_Vehicle_Should_Throw_Exception()
     {
         Coordinates coordinates = new(1, 2);
-        commandHandler.ConnectPlateau(plateau);
-        Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+        appController.ConnectPlateau(plateau);
+        Action act = () => appController.ConnectToVehicleAtCoordinates(coordinates);
 
         act.Should().Throw<Exception>();
     }
@@ -193,11 +193,11 @@ internal class CommandHandlerTests
     public void ConnectToVehicleAtCoordinates_With_Position_That_Does_Not_Match_Any_Vehicle_On_Plateau_Should_Throw_Exception()
     {
         Coordinates coordinates = new(1, 2);
-        Rover rover = new Rover(new(new(4, 3), Direction.South));
+        var rover = new Rover(new(new(4, 3), Direction.South));
         plateau.VehiclesContainer.AddVehicle(rover);
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
 
-        Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+        Action act = () => appController.ConnectToVehicleAtCoordinates(coordinates);
 
         act.Should().Throw<ArgumentException>();
     }
@@ -206,26 +206,26 @@ internal class CommandHandlerTests
     public void ConnectToVehicleAtCoordinates_With_Position_That_Matches_With_Vehicle_On_Plateau_Should_Succeed_And_GetVehicle_Should_Return_Vehicle()
     {
         Coordinates coordinates = new(1, 2);
-        Rover rover = new Rover(new(new(4, 3), Direction.South));
-        Rover rover2 = new Rover(new(coordinates, Direction.North));
-        Rover rover3 = new Rover(new(new(3, 3), Direction.West));
+        var rover = new Rover(new(new(4, 3), Direction.South));
+        var rover2 = new Rover(new(coordinates, Direction.North));
+        var rover3 = new Rover(new(new(3, 3), Direction.West));
         plateau.VehiclesContainer.AddVehicle(rover);
         plateau.VehiclesContainer.AddVehicle(rover2);
         plateau.VehiclesContainer.AddVehicle(rover3);
-        commandHandler.ConnectPlateau(plateau);
+        appController.ConnectPlateau(plateau);
 
-        Action act = () => commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+        Action act = () => appController.ConnectToVehicleAtCoordinates(coordinates);
         act.Should().NotThrow();
 
-        commandHandler.GetVehicle().Should().Be(rover2);
+        appController.GetVehicle().Should().Be(rover2);
     }
 
     [Test]
     public void SendMoveInstruction_Without_ConnectPlateau_Should_Throw_Exception()
     {
-        string instruction = "RMMLM";
+        var instruction = "RMMLM";
 
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().Throw<Exception>();
     }
@@ -233,10 +233,10 @@ internal class CommandHandlerTests
     [Test]
     public void SendMoveInstruction_Without_Connecting_Vehicle_Should_Throw_Exception()
     {
-        string instruction = "RMMLM";
-        commandHandler.ConnectPlateau(plateau);
+        var instruction = "RMMLM";
+        appController.ConnectPlateau(plateau);
 
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().Throw<Exception>();
     }
@@ -245,46 +245,46 @@ internal class CommandHandlerTests
     public void SendMoveInstruction_With_Null_Instruction_Should_Succeed_And_Not_Modify_Vehicle_Position()
     {
         string instruction = null;
-        Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
+        var originalPosition = new Position(new Coordinates(1, 2), Direction.North);
         VehicleBase vehicle = new Rover(originalPosition);
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
 
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
     public void SendMoveInstruction_With_Empty_Instruction_String_Should_Succeed_And_Not_Modify_Vehicle_Position()
     {
-        string instruction = "";
-        Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
+        var instruction = "";
+        var originalPosition = new Position(new Coordinates(1, 2), Direction.North);
         VehicleBase vehicle = new Rover(originalPosition);
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
     public void SendMoveInstruction_With_Invalidly_Formatted_Instruction_String_Should_Throw_Exception_And_Not_Modify_Vehicle_Position()
     {
-        string instruction = "LM!LM";
-        Position originalPosition = new Position(new Coordinates(1, 2), Direction.North);
+        var instruction = "LM!LM";
+        var originalPosition = new Position(new Coordinates(1, 2), Direction.North);
         VehicleBase vehicle = new Rover(originalPosition);
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().Throw<ArgumentException>();
-        commandHandler.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
@@ -293,68 +293,68 @@ internal class CommandHandlerTests
         PlateauBase plateauWithOneObstacle = new RectangularPlateau(new(5, 5));
         plateauWithOneObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
 
-        string instruction = "RMLMMM";
+        var instruction = "RMLMMM";
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        Position expectedPosition = new Position(new Coordinates(2, 3), Direction.North);
+        var expectedPosition = new Position(new Coordinates(2, 3), Direction.North);
 
-        commandHandler.ConnectPlateau(plateauWithOneObstacle);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        appController.ConnectPlateau(plateauWithOneObstacle);
+        appController.AddVehicleToPlateau(vehicle);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
+        appController.GetVehicle()!.Position.Should().Be(expectedPosition);
     }
 
     [Test]
     public void SendMoveInstruction_With_Valid_Instruction_String_Should_Succeed_And_Modify_Vehicle_Position()
     {
-        string instruction = "MRM";
+        var instruction = "MRM";
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        Position expectedPosition = new Position(new Coordinates(2, 3), Direction.East);
+        var expectedPosition = new Position(new Coordinates(2, 3), Direction.East);
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        Action act = () => commandHandler.SendMoveInstruction(instruction);
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        commandHandler.GetVehicle()!.Position.Should().Be(expectedPosition);
+        appController.GetVehicle()!.Position.Should().Be(expectedPosition);
     }
 
     [Test]
     public void GetPositionString_Before_Connecting_Vehicle_Should_Return_Vehicle_Not_Connected()
     {
-        commandHandler.GetPositionString().Should().Be("Vehicle not connected");
+        appController.GetPositionString().Should().Be("Vehicle not connected");
     }
 
     [Test]
     public void GetPositionString_Should_Return_Vehicle_Position()
     {
-        Rover rover = new Rover(new(new(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(rover);
+        var rover = new Rover(new(new(1, 2), Direction.North));
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(rover);
 
-        commandHandler.GetPositionString().Should().Be("1 2 N");
+        appController.GetPositionString().Should().Be("1 2 N");
     }
 
     [Test]
     public void RecentPath_Should_Return_Empty_List_By_Default()
     {
-        commandHandler.RecentPath.Count.Should().Be(0);
+        appController.RecentPath.Count.Should().Be(0);
     }
 
     [Test]
     public void RecentPath_After_ConnectPlateau_Should_Return_Empty_List()
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.RecentPath.Count.Should().Be(0);
+        appController.ConnectPlateau(plateau);
+        appController.RecentPath.Count.Should().Be(0);
 
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MML");
-        commandHandler.SendMoveInstruction("RRMM");
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MML");
+        appController.SendMoveInstruction("RRMM");
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.RecentPath.Count.Should().Be(0);
+        appController.ConnectPlateau(plateau);
+        appController.RecentPath.Count.Should().Be(0);
     }
 
     [Test]
@@ -362,26 +362,26 @@ internal class CommandHandlerTests
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
 
-        commandHandler.RecentPath.Count.Should().Be(1);
-        commandHandler.RecentPath[0].Should().Be(vehicle.Position);
+        appController.RecentPath.Count.Should().Be(1);
+        appController.RecentPath[0].Should().Be(vehicle.Position);
     }
 
     [Test]
     public void RecentPath_After_ConnectToVehicleAtCoordinates_Should_Return_List_Of_Just_One_Vehicle_Position()
     {
-        Coordinates coordinates = new Coordinates(1, 2);
-        Position position = new Position(coordinates, Direction.North);
+        var coordinates = new Coordinates(1, 2);
+        var position = new Position(coordinates, Direction.North);
         VehicleBase vehicle = new Rover(position);
         plateau.VehiclesContainer.AddVehicle(vehicle);
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.ConnectToVehicleAtCoordinates(coordinates);
+        appController.ConnectPlateau(plateau);
+        appController.ConnectToVehicleAtCoordinates(coordinates);
 
-        commandHandler.RecentPath.Count.Should().Be(1);
-        commandHandler.RecentPath[0].Should().Be(vehicle.Position);
+        appController.RecentPath.Count.Should().Be(1);
+        appController.RecentPath[0].Should().Be(vehicle.Position);
     }
 
     [Test]
@@ -389,9 +389,9 @@ internal class CommandHandlerTests
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
 
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MRM");
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MRM");
 
         List<Position> expectedResult = new()
         {
@@ -401,7 +401,7 @@ internal class CommandHandlerTests
             new(new(2, 3), Direction.East)
         };
 
-        List<Position> actualResult = commandHandler.RecentPath;
+        var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
         actualResult.Should().BeEquivalentTo(expectedResult);
@@ -411,11 +411,11 @@ internal class CommandHandlerTests
     public void RecentPath_After_Multiple_Successful_SendMoveInstruction_Should_Return_Last_Instructions_Travel_Path()
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MMLL");
-        commandHandler.SendMoveInstruction("MMLL");
-        commandHandler.SendMoveInstruction("MRMR");
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MMLL");
+        appController.SendMoveInstruction("MMLL");
+        appController.SendMoveInstruction("MRMR");
 
         List<Position> expectedResult = new()
         {
@@ -426,7 +426,7 @@ internal class CommandHandlerTests
             new(new(2, 3), Direction.South)
         };
 
-        List<Position> actualResult = commandHandler.RecentPath;
+        var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
         actualResult.Should().BeEquivalentTo(expectedResult);
@@ -437,12 +437,12 @@ internal class CommandHandlerTests
     {
         Action act;
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MMLL");
-        commandHandler.SendMoveInstruction("MMLL");
-        commandHandler.SendMoveInstruction("MRMR");
-        act = () => commandHandler.SendMoveInstruction("ML!!?");
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MMLL");
+        appController.SendMoveInstruction("MMLL");
+        appController.SendMoveInstruction("MRMR");
+        act = () => appController.SendMoveInstruction("ML!!?");
         act.Should().Throw<ArgumentException>();
 
         List<Position> expectedResult = new()
@@ -454,7 +454,7 @@ internal class CommandHandlerTests
             new(new(2, 3), Direction.South)
         };
 
-        List<Position> actualResult = commandHandler.RecentPath;
+        var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
         actualResult.Should().BeEquivalentTo(expectedResult);
@@ -467,10 +467,10 @@ internal class CommandHandlerTests
         plateauWithObstacle.ObstaclesContainer.AddObstacle(new(2, 4));
 
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateauWithObstacle);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MML");
-        commandHandler.SendMoveInstruction("RRMM");
+        appController.ConnectPlateau(plateauWithObstacle);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MML");
+        appController.SendMoveInstruction("RRMM");
 
         List<Position> expectedResult = new()
         {
@@ -479,7 +479,7 @@ internal class CommandHandlerTests
             new(new(1, 4), Direction.East)
         };
 
-        List<Position> actualResult = commandHandler.RecentPath;
+        var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
         actualResult.Should().BeEquivalentTo(expectedResult);
@@ -490,38 +490,38 @@ internal class CommandHandlerTests
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
         VehicleBase vehicle2 = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MML");
-        commandHandler.SendMoveInstruction("RRMM");
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MML");
+        appController.SendMoveInstruction("RRMM");
 
-        commandHandler.AddVehicleToPlateau(vehicle2);
+        appController.AddVehicleToPlateau(vehicle2);
 
-        commandHandler.RecentPath.Count.Should().Be(1);
-        commandHandler.RecentPath[0].Should().Be(vehicle2.Position);
+        appController.RecentPath.Count.Should().Be(1);
+        appController.RecentPath[0].Should().Be(vehicle2.Position);
     }
 
     [Test]
     public void ResetRecentPath_Before_ConnectingVehicle_Should_Set_RecentPath_To_Empty_List()
     {
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.ResetRecentPath();
+        appController.ConnectPlateau(plateau);
+        appController.ResetRecentPath();
 
-        commandHandler.RecentPath.Count.Should().Be(0);
+        appController.RecentPath.Count.Should().Be(0);
     }
 
     [Test]
     public void ResetRecentPath_With_Vehicle_Connected_Should_Set_ReachPath_To_List_Containing_Just_Vehicle_Position()
     {
         VehicleBase vehicle = new Rover(new Position(new Coordinates(1, 2), Direction.North));
-        commandHandler.ConnectPlateau(plateau);
-        commandHandler.AddVehicleToPlateau(vehicle);
-        commandHandler.SendMoveInstruction("MML");
-        commandHandler.SendMoveInstruction("RRMM");
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(vehicle);
+        appController.SendMoveInstruction("MML");
+        appController.SendMoveInstruction("RRMM");
 
-        commandHandler.ResetRecentPath();
+        appController.ResetRecentPath();
 
-        commandHandler.RecentPath.Count.Should().Be(1);
-        commandHandler.RecentPath[0].Should().Be(vehicle.Position);
+        appController.RecentPath.Count.Should().Be(1);
+        appController.RecentPath[0].Should().Be(vehicle.Position);
     }
 }

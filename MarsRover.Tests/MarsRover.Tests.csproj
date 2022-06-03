@@ -21,4 +21,8 @@
     <ProjectReference Include="..\MarsRover\MarsRover.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AppUI\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using MarsRover.AppUI.Helpers;
+using MarsRover.Controllers;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 
@@ -7,7 +8,7 @@ namespace MarsRover.AppUI.Components;
 internal static class AppSectionObstacles
 {
     public static void AskForObstaclesUntilEmptyInput(
-        IPositionStringConverter positionStringConverter, CommandHandler commandHandler, PlateauBase plateau)
+        IPositionStringConverter positionStringConverter, AppController appController, PlateauBase plateau)
     {
         while (true)
         {
@@ -21,7 +22,7 @@ internal static class AppSectionObstacles
                     break;
 
                 plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
-                AskUserHelpers.ClearScreenAndPrintMap(commandHandler);
+                AskUserHelpers.ClearScreenAndPrintMap(appController);
             }
             catch (Exception ex)
             {

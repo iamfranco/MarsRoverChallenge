@@ -1,4 +1,5 @@
 ﻿using MarsRover.AppUI.Helpers;
+using MarsRover.Controllers;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
@@ -10,7 +11,7 @@ internal static class AppSectionVehicle
 {
     public static bool AskForPositionOrCoordinatesToCreateOrConnectVehicle(
         IPositionStringConverter positionStringConverter, 
-        CommandHandler commandHandler, 
+        AppController appController, 
         PlateauBase plateau, 
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
@@ -19,18 +20,18 @@ internal static class AppSectionVehicle
         if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
         {
             CreateVehicleAndConnectToIt(positionStringConverter, 
-                commandHandler, plateau, vehicleMakers, positionOrCoordinatesString);
+                appController, plateau, vehicleMakers, positionOrCoordinatesString);
         }
         else
         {
             var initialCoordinates = positionStringConverter.ToCoordinates(positionOrCoordinatesString);
-            commandHandler.ConnectToVehicleAtCoordinates(initialCoordinates);
+            appController.ConnectToVehicleAtCoordinates(initialCoordinates);
         }
         return true;
     }
 
     private static void CreateVehicleAndConnectToIt(IPositionStringConverter positionStringConverter, 
-        CommandHandler commandHandler, 
+        AppController appController, 
         PlateauBase plateau, 
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers, 
         string positionOrCoordinatesString)
@@ -50,7 +51,7 @@ internal static class AppSectionVehicle
             makers: vehicleWithKnownPositionMakers);
 
         var vehicle = AskUserHelpers.ExecuteUntilNoException(selectedVehicleMaker);
-        commandHandler.AddVehicleToPlateau(vehicle);
+        appController.AddVehicleToPlateau(vehicle);
     }
 
     private static string AskForPositionOrCoordinatesString(IPositionStringConverter positionStringConverter)

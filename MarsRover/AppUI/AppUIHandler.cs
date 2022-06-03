@@ -1,5 +1,6 @@
 ﻿using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.Controllers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
@@ -12,50 +13,50 @@ public class AppUIHandler
 {
     private readonly IPositionStringConverter _positionStringConverter;
     private readonly IInstructionReader _instructionReader;
-    private readonly CommandHandler _commandHandler;
+    private readonly AppController _appController;
 
     public AppUIHandler(
         IPositionStringConverter positionStringConverter,
         IInstructionReader instructionReader,
-        CommandHandler commandHandler)
+        AppController appController)
     {
         _positionStringConverter = positionStringConverter;
         _instructionReader = instructionReader;
-        _commandHandler = commandHandler;
+        _appController = appController;
     }
 
     public PlateauBase AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
         return AskUserHelpers.ExecuteUntilNoException(
-            () => AppSectionPlateau.AskForPlateau(_commandHandler, plateauMakers));
+            () => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
     }
 
     public void AskUserToMakeObstacles(PlateauBase plateau)
     {
-        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _commandHandler, plateau);
+        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, plateau);
     }
 
     public void AskUserToCreateNewVehicleOrConnectToExistingVehicle(
         PlateauBase plateau,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
-        _commandHandler.ResetRecentPath();
-        AskUserHelpers.ClearScreenAndPrintMap(_commandHandler);
+        _appController.ResetRecentPath();
+        AskUserHelpers.ClearScreenAndPrintMap(_appController);
 
         AskUserHelpers.ExecuteUntilNoException(
             () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-                _positionStringConverter, _commandHandler, plateau, vehicleMakers));
+                _positionStringConverter, _appController, plateau, vehicleMakers));
 
-        AskUserHelpers.ClearScreenAndPrintMap(_commandHandler);
-        Console.WriteLine($"Connected to [{_commandHandler.GetVehicle()!.GetType().Name}] " +
-            $"at [{_commandHandler.GetPositionString()}]");
+        AskUserHelpers.ClearScreenAndPrintMap(_appController);
+        Console.WriteLine($"Connected to [{_appController.GetVehicle()!.GetType().Name}] " +
+            $"at [{_appController.GetPositionString()}]");
     }
 
     public void AskUserForMovementInstructionAndSendToVehicle()
     {
-        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_instructionReader, _commandHandler);
+        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_instructionReader, _appController);
 
-        AskUserHelpers.ClearScreenAndPrintMap(_commandHandler);
+        AskUserHelpers.ClearScreenAndPrintMap(_appController);
         Console.WriteLine(message);
     }
 }

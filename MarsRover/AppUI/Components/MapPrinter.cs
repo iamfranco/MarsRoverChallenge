@@ -1,16 +1,17 @@
-﻿using MarsRover.Models.Plateaus;
+﻿using MarsRover.Controllers;
+using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions.Elementals;
 
 namespace MarsRover.AppUI.Components;
 public class MapPrinter
 {
-    public void PrintMap(CommandHandler commandHandler)
+    public void PrintMap(AppController appController)
     {
-        var plateau = commandHandler.GetPlateau();
+        var plateau = appController.GetPlateau();
         if (plateau is null)
             throw new Exception("Plateau not connected");
 
-        var recentPath = commandHandler.RecentPath;
+        var recentPath = appController.RecentPath;
 
         var maxX = plateau.MaximumCoordinates.X;
         var maxY = plateau.MaximumCoordinates.Y;
