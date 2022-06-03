@@ -8,13 +8,13 @@ using MarsRover.Models.Vehicles;
 
 namespace MarsRover.AppUI;
 
-public class AppSections
+public class AppUIHandler
 {
     private readonly IPositionStringConverter _positionStringConverter;
     private readonly IInstructionReader _instructionReader;
     private readonly CommandHandler _commandHandler;
 
-    public AppSections(
+    public AppUIHandler(
         IPositionStringConverter positionStringConverter,
         IInstructionReader instructionReader,
         CommandHandler commandHandler)
