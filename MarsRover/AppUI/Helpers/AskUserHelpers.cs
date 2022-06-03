@@ -49,6 +49,16 @@ internal static class AskUserHelpers
         });
     }
 
+    public static void ClearScreenAndPrintMap(CommandHandler commandHandler)
+    {
+        Console.Clear();
+        Console.WriteLine("ctrl-C to exit");
+
+        commandHandler.MapPrinter.PrintMap(commandHandler);
+
+        Console.WriteLine();
+    }
+
     private static string GetUserInput(string prompt)
     {
         Console.WriteLine();
