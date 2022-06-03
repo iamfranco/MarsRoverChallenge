@@ -1,6 +1,6 @@
 ﻿using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
-using MarsRover.Models.Positions;
 
 namespace MarsRover.AppUI.Components;
 
