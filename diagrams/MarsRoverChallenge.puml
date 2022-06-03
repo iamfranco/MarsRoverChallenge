@@ -14,14 +14,13 @@ class AppUIHandler
 
   + AppUIHandler( \n\
       positionStringConverter : IPositionStringConverter \n\
-      instructionReader : IInstructionReader \n\
       appController : AppController \n\
       mapPrinter : MapPrinter \n\
     )
 
-  + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : PlateauBase
+  + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : void
   
-  + AskUserToMakeObstacles(plateau : PlateauBase) : void
+  + AskUserToMakeObstacles() : void
 
   + AskUserToCreateNewVehicleOrConnectToExistingVehicle( \n\
       plateau : PlateauBase, \n\
@@ -53,6 +52,8 @@ class AppController
   + GetRecentPath() : List<Position>
 
   + ConnectPlateau(plateau : PlateauBase) : void
+  + AddObstacleToPlateau(obstacle : Coordinates) : void
+  + IsCoordinateValidInPlateau(coordinates : Coordinates) : void
 
   + AddVehicleToPlateau(vehicle : VehicleBase) : void
   + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : void
