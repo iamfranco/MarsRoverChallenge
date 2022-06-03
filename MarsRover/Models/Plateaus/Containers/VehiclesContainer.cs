@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.Models.Plateaus.Containers;

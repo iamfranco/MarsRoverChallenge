@@ -1,5 +1,5 @@
-﻿using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.Models.Elementals;
+using MarsRover.Models.Plateaus;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.Tests.Models.Plateaus;

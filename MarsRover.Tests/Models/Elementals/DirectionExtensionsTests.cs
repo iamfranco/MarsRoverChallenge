@@ -1,6 +1,6 @@
-﻿using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.Models.Elementals;
 
-namespace MarsRover.Tests.Models.Positions.Elementals;
+namespace MarsRover.Tests.Models.Elementals;
 
 internal class DirectionExtensionsTests
 {

@@ -1,4 +1,4 @@
-﻿using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.Models.Elementals;
 
 namespace MarsRover.Models.Vehicles;
 

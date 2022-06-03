@@ -1,5 +1,5 @@
 ﻿using MarsRover.AppUI.PositionStringFormat;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 
 namespace MarsRover.Tests.AppUI.PositionStringFormat;
 

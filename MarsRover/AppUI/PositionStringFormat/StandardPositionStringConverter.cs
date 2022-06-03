@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 
 namespace MarsRover.AppUI.PositionStringFormat;
 
