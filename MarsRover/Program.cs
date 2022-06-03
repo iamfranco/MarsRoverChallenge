@@ -11,6 +11,7 @@ IPositionStringConverter positionStringConverter = new StandardPositionStringCon
 IInstructionReader instructionReader = new StandardInstructionReader();
 MapPrinter mapPrinter = new MapPrinter();
 CommandHandler commandHandler = new(instructionReader, positionStringConverter, mapPrinter);
+AppUIHandler appUIHandler = new(positionStringConverter, instructionReader, commandHandler);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
@@ -43,13 +44,13 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
     { "Wall E", position => new WallE(position) }
 };
 
-PlateauBase plateau = AskUser.AskUserToMakePlateau(commandHandler, plateauMakers);
-AskUser.AskUserToMakeObstacles(positionStringConverter, commandHandler, plateau);
+PlateauBase plateau = appUIHandler.AskUserToMakePlateau(plateauMakers);
+appUIHandler.AskUserToMakeObstacles(plateau);
 
 while (true)
 {
-    AskUser.AskUserToCreateNewVehicleOrConnectToExistingVehicle(positionStringConverter, commandHandler, plateau, vehicleMakers);
-    AskUser.AskUserForMovementInstructionAndSendToVehicle(instructionReader, commandHandler, plateau);
+    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(plateau, vehicleMakers);
+    appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
     Console.WriteLine();
     Console.Write("Press any key to continue.. ");
