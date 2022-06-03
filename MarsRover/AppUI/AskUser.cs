@@ -59,7 +59,7 @@ public static class AskUser
 
         AskUserHelpers.ExecuteUntilNoException(() =>
         {
-            string positionOrCoordinatesString = AskForPositionOrCoordinateasString(positionStringConverter);
+            string positionOrCoordinatesString = AskForPositionOrCoordinatesString(positionStringConverter);
 
             if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
             {
@@ -111,7 +111,7 @@ public static class AskUser
         Console.WriteLine(message);
     }
 
-    private static string AskForPositionOrCoordinateasString(IPositionStringConverter positionStringConverter)
+    private static string AskForPositionOrCoordinatesString(IPositionStringConverter positionStringConverter)
     {
         return AskUserHelpers.AskUntilValidStringInput(
             $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
