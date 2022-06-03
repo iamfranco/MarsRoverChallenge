@@ -196,6 +196,34 @@ internal class AppControllerTests
     }
 
     [Test]
+    public void DisconnectVehicle_Then_Vehicle_Should_Return_Null()
+    {
+        var rover = new Rover(new Position(new(1, 2), Direction.North));
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(rover);
+
+        appController.DisconnectVehicle();
+
+        appController.Vehicle.Should().Be(null);
+
+        appController.DisconnectVehicle();
+
+        appController.Vehicle.Should().Be(null);
+    }
+
+    [Test]
+    public void DisconnectVehicle_Then_RecentPath_Should_Return_Empty_List()
+    {
+        var rover = new Rover(new Position(new(1, 2), Direction.North));
+        appController.ConnectPlateau(plateau);
+        appController.AddVehicleToPlateau(rover);
+
+        appController.DisconnectVehicle();
+
+        appController.RecentPath.Count.Should().Be(0);
+    }
+
+    [Test]
     public void SendMoveInstruction_Without_ConnectPlateau_Should_Throw_Exception()
     {
         var instruction = "RMMLM";

@@ -62,6 +62,12 @@ public class AppController
         SetVehicle(vehicle);
     }
 
+    public void DisconnectVehicle()
+    {
+        Vehicle = null;
+        ResetRecentPath();
+    }
+
     public VehicleMovementStatus SendMoveInstruction(string instructionString)
     {
         if (Plateau is null)
