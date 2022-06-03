@@ -46,7 +46,7 @@ public class AppUIHandler
         PlateauBase plateau,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
-        _appController.ResetRecentPath();
+        _appController.DisconnectVehicle();
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
 
         AppUIHelpers.ExecuteUntilNoException(

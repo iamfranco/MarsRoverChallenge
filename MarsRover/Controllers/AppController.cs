@@ -11,7 +11,6 @@ public class AppController
     private readonly IInstructionReader _instructionReader;
     public PlateauBase? Plateau { get; private set; }
     public VehicleBase? Vehicle { get; private set; }
-
     public List<Position> RecentPath { get; private set; } = new();
 
     public AppController(IInstructionReader instructionReader)
@@ -91,7 +90,7 @@ public class AppController
         return VehicleMovementStatus.ReachedDestination;
     }
 
-    public void ResetRecentPath() => RecentPath = Vehicle is null ? new() : new() { Vehicle.Position };
+    private void ResetRecentPath() => RecentPath = Vehicle is null ? new() : new() { Vehicle.Position };
 
     private void SetVehicle(VehicleBase vehicle)
     {

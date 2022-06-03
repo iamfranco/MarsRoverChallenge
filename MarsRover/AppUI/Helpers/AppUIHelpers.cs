@@ -52,12 +52,12 @@ internal static class AppUIHelpers
         });
     }
 
-    public static void ClearScreenAndPrintMap(AppController commandHandler, MapPrinter mapPrinter)
+    public static void ClearScreenAndPrintMap(AppController appController, MapPrinter mapPrinter)
     {
         Console.Clear();
         Console.WriteLine("ctrl-C to exit");
 
-        mapPrinter.PrintMap(commandHandler);
+        mapPrinter.PrintMap(appController);
 
         Console.WriteLine();
     }
