@@ -12,18 +12,15 @@ namespace MarsRover.AppUI;
 public class AppUIHandler
 {
     private readonly IPositionStringConverter _positionStringConverter;
-    private readonly IInstructionReader _instructionReader;
     private readonly AppController _appController;
     private readonly MapPrinter _mapPrinter;
 
     public AppUIHandler(
         IPositionStringConverter positionStringConverter,
-        IInstructionReader instructionReader,
         AppController appController,
         MapPrinter mapPrinter)
     {
         _positionStringConverter = positionStringConverter;
-        _instructionReader = instructionReader;
         _appController = appController;
         _mapPrinter = mapPrinter;
     }
@@ -60,8 +57,7 @@ public class AppUIHandler
 
     public void AskUserForMovementInstructionAndSendToVehicle()
     {
-        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(
-            _instructionReader, _positionStringConverter, _appController);
+        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_positionStringConverter, _appController);
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine(message);

@@ -12,7 +12,7 @@ IPositionStringConverter positionStringConverter = new StandardPositionStringCon
 IInstructionReader instructionReader = new StandardInstructionReader();
 MapPrinter mapPrinter = new MapPrinter();
 AppController appController = new(instructionReader);
-AppUIHandler appUIHandler = new(positionStringConverter, instructionReader, appController, mapPrinter);
+AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {

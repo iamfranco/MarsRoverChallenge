@@ -9,9 +9,10 @@ namespace MarsRover.AppUI.Components;
 
 internal static class AppSectionInstruction
 {
-    public static string AskForInstructionAndSendToVehicle(IInstructionReader instructionReader,
-        IPositionStringConverter positionStringConverter, AppController appController)
+    public static string AskForInstructionAndSendToVehicle(IPositionStringConverter positionStringConverter, AppController appController)
     {
+        IInstructionReader instructionReader = appController.InstructionReader;
+
         string instructionString = AppUIHelpers.AskUntilValidStringInput(
             $"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
             instructionReader.IsValidInstruction);
