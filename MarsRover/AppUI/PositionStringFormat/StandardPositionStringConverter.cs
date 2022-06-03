@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 
-namespace MarsRover.Models.Positions;
+namespace MarsRover.AppUI.PositionStringFormat;
 
 public class StandardPositionStringConverter : IPositionStringConverter
 {
@@ -28,9 +28,9 @@ public class StandardPositionStringConverter : IPositionStringConverter
         if (!IsValidPositionString(positionString))
             throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"{ExamplePositionString}\")");
 
-        (string coordinateString, string directionString) = SplitPositionString(positionString!);
+        (var coordinateString, var directionString) = SplitPositionString(positionString!);
 
-        Direction direction = _directionSymbolEnum
+        var direction = _directionSymbolEnum
             .FirstOrDefault(item => item.directionSymbol == directionString)
             .direction;
 
@@ -42,16 +42,16 @@ public class StandardPositionStringConverter : IPositionStringConverter
         if (!IsValidCoordinateString(coordinateString))
             throw new ArgumentException($"Input {coordinateString} is not in correct format for coordianteString (eg \"{ExampleCoordinateString}\")");
 
-        string[] coordinateStringArray = coordinateString!.Split(" ");
-        int x = int.Parse(coordinateStringArray[0]);
-        int y = int.Parse(coordinateStringArray[1]);
+        var coordinateStringArray = coordinateString!.Split(" ");
+        var x = int.Parse(coordinateStringArray[0]);
+        var y = int.Parse(coordinateStringArray[1]);
 
         return new Coordinates(x, y);
     }
 
     public string ToPositionString(Position position)
     {
-        string directionSymbol = _directionSymbolEnum
+        var directionSymbol = _directionSymbolEnum
             .FirstOrDefault(x => x.direction == position.Direction)
             .directionSymbol;
 
@@ -62,10 +62,10 @@ public class StandardPositionStringConverter : IPositionStringConverter
 
     private static (string coordinateString, string directionString) SplitPositionString(string positionString)
     {
-        int lastSpaceIndex = positionString.LastIndexOf(" ");
+        var lastSpaceIndex = positionString.LastIndexOf(" ");
 
-        string coordinateString = positionString[..lastSpaceIndex];
-        string directionString = positionString[(lastSpaceIndex + 1)..];
+        var coordinateString = positionString[..lastSpaceIndex];
+        var directionString = positionString[(lastSpaceIndex + 1)..];
 
         return (coordinateString, directionString);
     }

@@ -1,7 +1,7 @@
-﻿using MarsRover.Models.Positions;
-using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.AppUI.PositionStringFormat;
+using MarsRover.Models.Elementals;
 
-namespace MarsRover.Tests.Models.Positions;
+namespace MarsRover.Tests.AppUI.PositionStringFormat;
 
 internal class StandardPositionStringConverterTests
 {
@@ -36,7 +36,7 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void IsValidPositionString_Should_Return_False_For_Invalid_PositionString()
     {
-        foreach (string invalidPositionString in invalidPositionStrings)
+        foreach (var invalidPositionString in invalidPositionStrings)
         {
             positionStringConverter.IsValidPositionString(invalidPositionString)
                 .Should().Be(false);
@@ -46,7 +46,7 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void IsValidPositionString_Should_Return_True_For_Valid_PositionString()
     {
-        foreach (string validPositionString in validPositionStrings)
+        foreach (var validPositionString in validPositionStrings)
         {
             positionStringConverter.IsValidPositionString(validPositionString)
                 .Should().Be(true);
@@ -70,7 +70,7 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void IsValidCoordinateString_Should_Return_False_For_Invalid_CoordinateString()
     {
-        foreach (string invalidCoordinateString in invalidCoordinateStrings)
+        foreach (var invalidCoordinateString in invalidCoordinateStrings)
         {
             positionStringConverter.IsValidCoordinateString(invalidCoordinateString)
                 .Should().Be(false);
@@ -80,7 +80,7 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void IsValidCoordinateString_Should_Return_True_For_Valid_CoordinateString()
     {
-        foreach (string validCoordinateString in validCoordinateStrings)
+        foreach (var validCoordinateString in validCoordinateStrings)
         {
             positionStringConverter.IsValidCoordinateString(validCoordinateString)
                 .Should().Be(true);
@@ -101,7 +101,7 @@ internal class StandardPositionStringConverterTests
     {
         Action act;
 
-        foreach (string invalidPositionString in invalidPositionStrings)
+        foreach (var invalidPositionString in invalidPositionStrings)
         {
             act = () => positionStringConverter.ToPosition(invalidPositionString);
             act.Should().Throw<ArgumentException>();
@@ -111,12 +111,12 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void ToPosition_Should_Return_Correct_Position_For_valid_PositionString()
     {
-        for (int i = 0; i < validPositionStrings.Count; i++)
+        for (var i = 0; i < validPositionStrings.Count; i++)
         {
-            string positionString = validPositionStrings[i];
-            Position expectedCoordinates = positionForValidStrings[i];
+            var positionString = validPositionStrings[i];
+            var expectedCoordinates = positionForValidStrings[i];
 
-            Position actualPosition = positionStringConverter.ToPosition(positionString);
+            var actualPosition = positionStringConverter.ToPosition(positionString);
 
             actualPosition.Should().Be(expectedCoordinates);
         }
@@ -136,7 +136,7 @@ internal class StandardPositionStringConverterTests
     {
         Action act;
 
-        foreach (string invalidCoordinateString in invalidCoordinateStrings)
+        foreach (var invalidCoordinateString in invalidCoordinateStrings)
         {
             act = () => positionStringConverter.ToCoordinates(invalidCoordinateString);
             act.Should().Throw<ArgumentException>();
@@ -146,12 +146,12 @@ internal class StandardPositionStringConverterTests
     [Test]
     public void ToCoordinates_Should_Return_Correct_Coordinates_For_valid_CoordinateString()
     {
-        for (int i = 0; i < validCoordinateStrings.Count; i++)
+        for (var i = 0; i < validCoordinateStrings.Count; i++)
         {
-            string coordinateString = validCoordinateStrings[i];
-            Coordinates expectedCoordinates = coordinatesForValidStrings[i];
+            var coordinateString = validCoordinateStrings[i];
+            var expectedCoordinates = coordinatesForValidStrings[i];
 
-            Coordinates actualCoordinates = positionStringConverter.ToCoordinates(coordinateString);
+            var actualCoordinates = positionStringConverter.ToCoordinates(coordinateString);
 
             actualCoordinates.Should().Be(expectedCoordinates);
         }

@@ -1,7 +1,7 @@
 ﻿using MarsRover.Controllers;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.Tests.Controllers;
@@ -59,6 +59,64 @@ internal class AppControllerTests
     {
         appController.ConnectPlateau(plateau);
         appController.Plateau.Should().Be(plateau);
+    }
+
+    [Test]
+    public void AddObstacleToPlateau_Before_ConnectPlateau_Should_Throw_Exception()
+    {
+        Coordinates obstacle = new Coordinates(2, 3);
+
+        Action act = () => appController.AddObstacleToPlateau(obstacle);
+
+        act.Should().Throw<Exception>();
+    }
+
+    [Test]
+    public void AddObstacleToPlateau_After_Successful_ConnectPlateau_On_Invalid_Coordinates_Should_Throw_Exception()
+    {
+        Coordinates obstacle = new Coordinates(-100, -100);
+        appController.ConnectPlateau(plateau);
+
+        Action act = () => appController.AddObstacleToPlateau(obstacle);
+
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Test]
+    public void AddObstacleToPlateau_After_Successful_ConnectPlateau_Should_Add_Obstacle_To_Plateau()
+    {
+        Coordinates obstacle = new Coordinates(2, 3);
+        appController.ConnectPlateau(plateau);
+
+        appController.AddObstacleToPlateau(obstacle);
+
+        plateau.ObstaclesContainer.ObstacleCoordinates.Should().Contain(obstacle);
+    }
+
+    [Test]
+    public void IsCoordinateValidInPlateau_Before_ConnectPlateau_Should_Throw_Exception()
+    {
+        Action act = () => appController.IsCoordinateValidInPlateau(new Coordinates(2, 3));
+
+        act.Should().Throw<Exception>();
+    }
+
+    [Test]
+    public void IsCoordinateValidInPlateau_On_Invalid_Coordinates_Should_Return_False()
+    {
+        appController.ConnectPlateau(plateau);
+        bool actualResult = appController.IsCoordinateValidInPlateau(new Coordinates(-100, 3));
+
+        actualResult.Should().Be(false);
+    }
+
+    [Test]
+    public void IsCoordinateValidInPlateau_On_valid_Coordinates_Should_Return_True()
+    {
+        appController.ConnectPlateau(plateau);
+        bool actualResult = appController.IsCoordinateValidInPlateau(new Coordinates(2, 3));
+
+        actualResult.Should().Be(true);
     }
 
     [Test]

@@ -1,6 +1,6 @@
-﻿using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.Models.Elementals;
 
-namespace MarsRover.Models.Positions;
+namespace MarsRover.AppUI.PositionStringFormat;
 
 public interface IPositionStringConverter
 {

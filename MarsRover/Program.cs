@@ -1,11 +1,11 @@
 ﻿using MarsRover.AppUI;
 using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions;
-using MarsRover.Models.Positions.Elementals;
 using MarsRover.Models.Vehicles;
 
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
@@ -45,12 +45,12 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
     { "Wall E", position => new WallE(position) }
 };
 
-PlateauBase plateau = appUIHandler.AskUserToMakePlateau(plateauMakers);
-appUIHandler.AskUserToMakeObstacles(plateau);
+appUIHandler.AskUserToMakePlateau(plateauMakers);
+appUIHandler.AskUserToMakeObstacles();
 
 while (true)
 {
-    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(plateau, vehicleMakers);
+    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
     appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
     Console.WriteLine();

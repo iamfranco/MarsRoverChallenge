@@ -1,5 +1,5 @@
 ﻿using MarsRover.AppUI.Helpers;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 
 namespace MarsRover.AppUI.Components;
 public static class MakerMenu

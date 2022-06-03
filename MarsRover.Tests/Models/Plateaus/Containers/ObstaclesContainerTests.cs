@@ -1,5 +1,5 @@
-﻿using MarsRover.Models.Plateaus.Containers;
-using MarsRover.Models.Positions.Elementals;
+﻿using MarsRover.Models.Elementals;
+using MarsRover.Models.Plateaus.Containers;
 
 namespace MarsRover.Tests.Models.Plateaus.Containers;
 

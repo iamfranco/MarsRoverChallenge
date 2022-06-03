@@ -1,15 +1,16 @@
 ﻿using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
-using MarsRover.Controllers.Elementals;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Instructions;
-using MarsRover.Models.Positions;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.AppUI.Components;
 
 internal static class AppSectionInstruction
 {
-    public static string AskForInstructionAndSendToVehicle(IPositionStringConverter positionStringConverter, AppController appController)
+    public static string AskForInstructionAndSendToVehicle(
+        IPositionStringConverter positionStringConverter, AppController appController)
     {
         IInstructionReader instructionReader = appController.InstructionReader;
 

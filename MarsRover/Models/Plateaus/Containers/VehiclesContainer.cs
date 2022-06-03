@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using MarsRover.Models.Positions.Elementals;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.Models.Plateaus.Containers;
@@ -28,7 +28,8 @@ public class VehiclesContainer
     public void AddVehicle(VehicleBase vehicle)
     {
         if (!_coordinateValidateFunc(vehicle.Position.Coordinates))
-            throw new ArgumentException($"Vehicle ({vehicle.GetType()}) has invalid coordinates {vehicle.Position.Coordinates} for plateau");
+            throw new ArgumentException($"Vehicle ({vehicle.GetType()}) has invalid " +
+                $"coordinates {vehicle.Position.Coordinates} for plateau");
 
         _vehicles.Add(vehicle);
     }

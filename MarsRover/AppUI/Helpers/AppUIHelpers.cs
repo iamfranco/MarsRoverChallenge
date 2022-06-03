@@ -20,6 +20,8 @@ internal static class AppUIHelpers
         }
     }
 
+    public static void ExecuteUntilNoException(Action act) => ExecuteUntilNoException(() => { act(); return true; });
+
     public static string AskUntilValidStringInput(string prompt, Func<string, bool> validationFunc)
     {
         return ExecuteUntilNoException(() =>

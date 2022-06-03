@@ -6,7 +6,7 @@ namespace MarsRover.AppUI.Components;
 
 internal static class AppSectionPlateau
 {
-    public static PlateauBase AskForPlateau(
+    public static void AskForPlateau(
         AppController appController, Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
         Func<PlateauBase> selectedPlateauMaker = MakerMenu.AskUserToSelectMaker(
@@ -15,6 +15,5 @@ internal static class AppSectionPlateau
 
         PlateauBase plateau = AppUIHelpers.ExecuteUntilNoException(selectedPlateauMaker);
         appController.ConnectPlateau(plateau);
-        return plateau;
     }
 }

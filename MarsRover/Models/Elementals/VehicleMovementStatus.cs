@@ -1,4 +1,4 @@
-﻿namespace MarsRover.Controllers.Elementals;
+﻿namespace MarsRover.Models.Elementals;
 public enum VehicleMovementStatus
 {
     NoMovement,

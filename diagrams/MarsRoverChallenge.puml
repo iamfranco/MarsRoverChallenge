@@ -12,21 +12,13 @@ class AppUIHandler
   - appController : AppController
   - mapPrinter : MapPrinter
 
-  + AppUIHandler( \n\
-      positionStringConverter : IPositionStringConverter \n\
-      instructionReader : IInstructionReader \n\
-      appController : AppController \n\
-      mapPrinter : MapPrinter \n\
-    )
+  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : MapPrinter)
 
-  + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : PlateauBase
+  + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : void
   
-  + AskUserToMakeObstacles(plateau : PlateauBase) : void
+  + AskUserToMakeObstacles() : void
 
-  + AskUserToCreateNewVehicleOrConnectToExistingVehicle( \n\
-      plateau : PlateauBase, \n\
-      vehicleMakers : Dictionary<string, Func<Position, VehicleBase>> \n\
-    ) : void
+  + AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers : Dictionary<string, Func<Position, VehicleBase>>) : void
 
   + AskUserForMovementInstructionAndSendToVehicle() : void
 }
@@ -53,6 +45,8 @@ class AppController
   + GetRecentPath() : List<Position>
 
   + ConnectPlateau(plateau : PlateauBase) : void
+  + AddObstacleToPlateau(obstacle : Coordinates) : void
+  + IsCoordinateValidInPlateau(coordinates : Coordinates) : void
 
   + AddVehicleToPlateau(vehicle : VehicleBase) : void
   + ConnectToVehicleAtCoordinates(coordinates : Coordinates) : void

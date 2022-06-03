@@ -1,6 +1,6 @@
 ﻿using MarsRover.Controllers;
+using MarsRover.Models.Elementals;
 using MarsRover.Models.Plateaus;
-using MarsRover.Models.Positions.Elementals;
 
 namespace MarsRover.AppUI.Components;
 public class MapPrinter
