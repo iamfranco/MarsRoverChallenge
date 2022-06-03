@@ -47,7 +47,7 @@ class AppController
 
   + AppController(instructionReader : IInstructionReader)
   
-  + GetInstructionReader : IInstructionReader
+  + GetInstructionReader() : IInstructionReader
   + GetPlateau() : PlateauBase?
   + GetVehicle() : VehicleBase?
   + GetRecentPath() : List<Position>
