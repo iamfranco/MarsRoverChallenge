@@ -1,4 +1,5 @@
-﻿using MarsRover.Models.Instructions;
+﻿using MarsRover.Controllers.Elementals;
+using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
@@ -9,22 +10,17 @@ namespace MarsRover.Controllers;
 public class AppController
 {
     private readonly IInstructionReader _instructionReader;
-    private readonly IPositionStringConverter _positionStringConverter;
     private PlateauBase? _plateau;
     private VehicleBase? _vehicle;
 
     public List<Position> RecentPath { get; private set; } = new();
 
-    public AppController(IInstructionReader instructionReader, IPositionStringConverter positionStringConverter)
+    public AppController(IInstructionReader instructionReader)
     {
         if (instructionReader is null)
             throw new ArgumentNullException(nameof(instructionReader));
 
-        if (positionStringConverter is null)
-            throw new ArgumentNullException(nameof(positionStringConverter));
-
         _instructionReader = instructionReader;
-        _positionStringConverter = positionStringConverter;
     }
 
     public PlateauBase? GetPlateau() => _plateau;
@@ -71,7 +67,7 @@ public class AppController
         SetVehicle(vehicle);
     }
 
-    public string SendMoveInstruction(string instructionString)
+    public VehicleMovementStatus SendMoveInstruction(string instructionString)
     {
         if (_plateau is null)
             throw new Exception("Plateau not connected, cannot send instruction");
@@ -80,7 +76,7 @@ public class AppController
             throw new Exception("Vehicle not connected, cannot send instruction");
 
         if (string.IsNullOrEmpty(instructionString))
-            return $"Instruction is empty, vehicle is in the same Position: [{GetPositionString()}]";
+            return VehicleMovementStatus.NoMovement;
 
         if (!_instructionReader.IsValidInstruction(instructionString))
             throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
@@ -89,17 +85,9 @@ public class AppController
 
         (RecentPath, var isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
         if (isEmergencyStopUsed)
-            return $"Vehicle sensed danger ahead, so stopped at [{GetPositionString()}] instead of applying full instruction [{instructionString}]";
+            return VehicleMovementStatus.DangerAhead;
 
-        return $"Instruction [{instructionString}] lead to Position: [{GetPositionString()}]";
-    }
-
-    public string GetPositionString()
-    {
-        if (_vehicle is null)
-            return "Vehicle not connected";
-
-        return _positionStringConverter.ToPositionString(_vehicle.Position);
+        return VehicleMovementStatus.ReachedDestination;
     }
 
     public void ResetRecentPath() => RecentPath = _vehicle is null ? new() : new() { _vehicle.Position };

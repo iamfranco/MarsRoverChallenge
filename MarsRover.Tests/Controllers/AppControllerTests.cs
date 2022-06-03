@@ -9,29 +9,21 @@ namespace MarsRover.Tests.Controllers;
 
 internal class AppControllerTests
 {
-    private IInstructionReader instructionReader = new StandardInstructionReader();
-    private IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
+    private readonly IInstructionReader instructionReader = new StandardInstructionReader();
     private AppController appController;
     private PlateauBase plateau;
 
     [SetUp]
     public void Setup()
     {
-        appController = new AppController(instructionReader, positionStringConverter);
+        appController = new AppController(instructionReader);
         plateau = new RectangularPlateau(new(5, 5));
     }
 
     [Test]
     public void Constructor_With_Null_InstructionReader_Should_Throw_Exception()
     {
-        Action act = () => appController = new AppController(null, positionStringConverter);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void Constructor_With_Null_PositionStringConverter_Should_Throw_Exception()
-    {
-        Action act = () => appController = new AppController(instructionReader, null);
+        Action act = () => appController = new AppController(null);
         act.Should().Throw<ArgumentNullException>();
     }
 
@@ -302,22 +294,6 @@ internal class AppControllerTests
 
         act.Should().NotThrow();
         appController.GetVehicle()!.Position.Should().Be(expectedPosition);
-    }
-
-    [Test]
-    public void GetPositionString_Before_Connecting_Vehicle_Should_Return_Vehicle_Not_Connected()
-    {
-        appController.GetPositionString().Should().Be("Vehicle not connected");
-    }
-
-    [Test]
-    public void GetPositionString_Should_Return_Vehicle_Position()
-    {
-        var rover = new Rover(new(new(1, 2), Direction.North));
-        appController.ConnectPlateau(plateau);
-        appController.AddVehicleToPlateau(rover);
-
-        appController.GetPositionString().Should().Be("1 2 N");
     }
 
     [Test]

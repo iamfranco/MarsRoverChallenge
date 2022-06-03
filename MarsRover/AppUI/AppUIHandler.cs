@@ -60,7 +60,8 @@ public class AppUIHandler
 
     public void AskUserForMovementInstructionAndSendToVehicle()
     {
-        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_instructionReader, _appController);
+        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(
+            _instructionReader, _positionStringConverter, _appController);
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine(message);

@@ -11,7 +11,7 @@ using MarsRover.Models.Vehicles;
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 MapPrinter mapPrinter = new MapPrinter();
-AppController appController = new(instructionReader, positionStringConverter);
+AppController appController = new(instructionReader);
 AppUIHandler appUIHandler = new(positionStringConverter, instructionReader, appController, mapPrinter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
