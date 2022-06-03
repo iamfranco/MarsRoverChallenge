@@ -1,24 +1,24 @@
 ﻿using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions.Elementals;
 
-namespace MarsRover.AppUI;
+namespace MarsRover.AppUI.Components;
 public class MapPrinter
 {
     public void PrintMap(CommandHandler commandHandler)
     {
-        PlateauBase? plateau = commandHandler.GetPlateau();
+        var plateau = commandHandler.GetPlateau();
         if (plateau is null)
             throw new Exception("Plateau not connected");
 
-        List<Position> recentPath = commandHandler.RecentPath;
+        var recentPath = commandHandler.RecentPath;
 
-        int maxX = plateau.MaximumCoordinates.X;
-        int maxY = plateau.MaximumCoordinates.Y;
-        int minX = plateau.MinimumCoordinates.X;
-        int minY = plateau.MinimumCoordinates.Y;
+        var maxX = plateau.MaximumCoordinates.X;
+        var maxY = plateau.MaximumCoordinates.Y;
+        var minX = plateau.MinimumCoordinates.X;
+        var minY = plateau.MinimumCoordinates.Y;
 
-        int width = maxX - minX + 1;
-        int height = maxY - minY + 1;
+        var width = maxX - minX + 1;
+        var height = maxY - minY + 1;
 
         var obstacles = plateau.ObstaclesContainer.ObstacleCoordinates;
         var vehicles = plateau.VehiclesContainer.Vehicles;
@@ -47,9 +47,9 @@ public class MapPrinter
             return;
         }
 
-        ConsoleColor defaultBGColor = Console.BackgroundColor;
+        var defaultBGColor = Console.BackgroundColor;
 
-        (string symbol, ConsoleColor bgColor)[,] matrixToPrint = GetMatrixToPrint(recentPath, plateau, width, height,
+        var matrixToPrint = GetMatrixToPrint(recentPath, plateau, width, height,
             defaultGroundColor: defaultBGColor,
             validGroundColor: ConsoleColor.Blue,
             visitedGroundColor: ConsoleColor.DarkBlue,
@@ -58,12 +58,12 @@ public class MapPrinter
             availableVehicleColor: ConsoleColor.DarkYellow);
 
         Console.WriteLine($"  Y");
-        for (int y = maxY; y >= 0; y--)
+        for (var y = maxY; y >= 0; y--)
         {
             Console.Write($"{y,3} ");
-            for (int x = 0; x <= maxX; x++)
+            for (var x = 0; x <= maxX; x++)
             {
-                (string symbol, ConsoleColor bgColor) = matrixToPrint[x, y];
+                (var symbol, var bgColor) = matrixToPrint[x, y];
 
                 Console.BackgroundColor = bgColor;
                 Console.Write($" {symbol} ");
@@ -73,7 +73,7 @@ public class MapPrinter
             Console.WriteLine();
         }
         Console.Write("   ");
-        for (int x = 0; x <= maxX; x++)
+        for (var x = 0; x <= maxX; x++)
         {
             Console.Write($"{x,3} ");
         }
@@ -95,9 +95,9 @@ public class MapPrinter
         (string symbol, ConsoleColor bgColor)[,] matrixToPrint =
             new (string, ConsoleColor)[width, height];
 
-        for (int i = 0; i < matrixToPrint.GetLength(0); i++)
+        for (var i = 0; i < matrixToPrint.GetLength(0); i++)
         {
-            for (int j = 0; j < matrixToPrint.GetLength(1); j++)
+            for (var j = 0; j < matrixToPrint.GetLength(1); j++)
             {
                 if (plateau.IsCoordinateWithinPlateauBoundary(new(i, j)))
                     matrixToPrint[i, j] = (" ", validGroundColor);
@@ -123,20 +123,20 @@ public class MapPrinter
 
         if (recentPath.Count > 0)
         {
-            int lastX = recentPath.Last().Coordinates.X;
-            int lastY = recentPath.Last().Coordinates.Y;
+            var lastX = recentPath.Last().Coordinates.X;
+            var lastY = recentPath.Last().Coordinates.Y;
             matrixToPrint[lastX, lastY].bgColor = lastVisitedGroundColor;
         }
 
         return matrixToPrint;
     }
 
-    private static void PopulateMatrixToPrint((string symbol, ConsoleColor bgColor)[,] matrixToPrint, 
+    private static void PopulateMatrixToPrint((string symbol, ConsoleColor bgColor)[,] matrixToPrint,
         Position position, ConsoleColor color)
     {
-        int x = position.Coordinates.X;
-        int y = position.Coordinates.Y;
-        string symbol = position.Direction switch
+        var x = position.Coordinates.X;
+        var y = position.Coordinates.Y;
+        var symbol = position.Direction switch
         {
             Direction.North => "\u2191",
             Direction.East => ">",

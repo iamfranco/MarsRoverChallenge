@@ -1,4 +1,6 @@
 ﻿using MarsRover.AppUI;
+using MarsRover.AppUI.Components;
+using MarsRover.AppUI.Helpers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
@@ -15,7 +17,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
     {
         "Rectangular Plateau", () =>
         {
-            string maximumCoordinatesString = AskUser.AskUntilValidStringInput(
+            string maximumCoordinatesString = AskUserHelpers.AskUntilValidStringInput(
                 $"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
                 positionStringConverter.IsValidCoordinateString);
 
@@ -26,7 +28,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
     {
         "Circular Plateau", () =>
         {
-            string radiusString = AskUser.AskUntilValidStringInput(
+            string radiusString = AskUserHelpers.AskUntilValidStringInput(
                 $"Enter Radius (eg \"5\"): ",
                 s => int.TryParse(s, out _));
 

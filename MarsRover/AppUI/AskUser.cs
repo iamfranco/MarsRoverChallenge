@@ -1,4 +1,6 @@
-﻿using MarsRover.Models.Instructions;
+﻿using MarsRover.AppUI.Components;
+using MarsRover.AppUI.Helpers;
+using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Positions;
 using MarsRover.Models.Positions.Elementals;
@@ -11,11 +13,13 @@ public static class AskUser
     public static PlateauBase AskUserToMakePlateau(CommandHandler commandHandler,
         Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
-        return ExecuteUntilNoException(() =>
+        return AskUserHelpers.ExecuteUntilNoException(() =>
         {
-            Func<PlateauBase> selectedPlateauMaker = AskUserToSelectMaker(groupName: "plateau", makers: plateauMakers);
+            Func<PlateauBase> selectedPlateauMaker = MakerMenu.AskUserToSelectMaker(
+                groupName: "plateau", 
+                makers: plateauMakers);
 
-            PlateauBase plateau = ExecuteUntilNoException(selectedPlateauMaker);
+            PlateauBase plateau = AskUserHelpers.ExecuteUntilNoException(selectedPlateauMaker);
             commandHandler.ConnectPlateau(plateau);
             ClearScreenAndPrintMap(commandHandler);
             return plateau;
@@ -29,7 +33,7 @@ public static class AskUser
         {
             try
             {
-                string obstacleCoordinates = AskUntilValidStringInput($"Enter Obstacle Coordinate " +
+                string obstacleCoordinates = AskUserHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
                     $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
                     (s) => string.IsNullOrEmpty(s) || positionStringConverter.IsValidCoordinateString(s));
 
@@ -53,7 +57,7 @@ public static class AskUser
         commandHandler.ResetRecentPath();
         ClearScreenAndPrintMap(commandHandler);
 
-        ExecuteUntilNoException(() =>
+        AskUserHelpers.ExecuteUntilNoException(() =>
         {
             string positionOrCoordinatesString = AskForPositionOrCoordinateasString(positionStringConverter);
 
@@ -83,13 +87,13 @@ public static class AskUser
                     $"Coordinates {initialPosition.Coordinates}, which is not valid on Plateau");
             }
 
-            var vehicleWithKnownPositionMakers = GetVehicleWithKnownPositionMakers(vehicleMakers, initialPosition);
+            var vehicleWithKnownPositionMakers = MakerMenu.GetMakersWithKnownPosition(vehicleMakers, initialPosition);
 
-            Func<VehicleBase> selectedVehicleMaker = AskUserToSelectMaker(
+            Func<VehicleBase> selectedVehicleMaker = MakerMenu.AskUserToSelectMaker(
                 groupName: "vehicle",
                 makers: vehicleWithKnownPositionMakers);
 
-            VehicleBase vehicle = ExecuteUntilNoException(selectedVehicleMaker);
+            VehicleBase vehicle = AskUserHelpers.ExecuteUntilNoException(selectedVehicleMaker);
             commandHandler.AddVehicleToPlateau(vehicle);
         }
     }
@@ -97,7 +101,7 @@ public static class AskUser
     public static void AskUserForMovementInstructionAndSendToVehicle(
         IInstructionReader instructionReader, CommandHandler commandHandler, PlateauBase plateau)
     {
-        string instructionString = AskUntilValidStringInput(
+        string instructionString = AskUserHelpers.AskUntilValidStringInput(
             $"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
             instructionReader.IsValidInstruction);
 
@@ -107,70 +111,9 @@ public static class AskUser
         Console.WriteLine(message);
     }
 
-    public static string AskUntilValidStringInput(string prompt, Func<string, bool> validationFunc)
-    {
-        return ExecuteUntilNoException(func);
-
-        string func()
-        {
-            Console.WriteLine();
-            Console.Write(prompt);
-            string? input = Console.ReadLine();
-
-            if (input is null)
-                throw new Exception($"Input cannot be null");
-
-            if (!validationFunc(input))
-                throw new Exception($"Input [{input}] is not in correct format");
-
-            return input;
-        }
-    }
-
-    private static int AskUntilValidIntInput(string prompt, int minValue, int maxValue)
-    {
-        return ExecuteUntilNoException(func);
-
-        int func()
-        {
-            Console.WriteLine();
-            Console.Write(prompt);
-            string? input = Console.ReadLine();
-
-            if (input is null)
-                throw new Exception($"Input cannot be null");
-
-            if (!int.TryParse(input, out int num))
-                throw new Exception($"Input [{input}] needs to be integer");
-
-            if (num < minValue)
-                throw new Exception($"Input [{input}] cannot be below {minValue}");
-
-            if (num > maxValue)
-                throw new Exception($"Input [{input}] cannot be above {maxValue}");
-
-            return num;
-        }
-    }
-
-    private static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
-    {
-        while (true)
-        {
-            try
-            {
-                return func();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"\n  WARNING: {ex.Message}");
-            }
-        }
-    }
-
     private static string AskForPositionOrCoordinateasString(IPositionStringConverter positionStringConverter)
     {
-        return AskUntilValidStringInput(
+        return AskUserHelpers.AskUntilValidStringInput(
             $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
             $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
             (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
@@ -184,52 +127,5 @@ public static class AskUser
         commandHandler.MapPrinter.PrintMap(commandHandler);
 
         Console.WriteLine();
-    }
-
-    private static Func<MakerReturnerType> AskUserToSelectMaker<MakerReturnerType>(string groupName,
-        Dictionary<string, Func<MakerReturnerType>> makers)
-    {
-        List<string> names = makers.Keys.ToList();
-        Func<MakerReturnerType> selectedMaker = makers[names[0]];
-        if (names.Count > 1)
-        {
-            PrintAllAvailableNames(names, groupName);
-            selectedMaker = AskUserToSelectTypeToMake(makers, names, groupName);
-        }
-        return selectedMaker;
-
-        static void PrintAllAvailableNames(List<string> names, string groupName)
-        {
-            Console.WriteLine($"All available {groupName} types: ");
-            for (int i = 0; i < names.Count; i++)
-                Console.WriteLine($"  {i + 1} - {names[i]}");
-        }
-
-        static Func<MakerReturnerType> AskUserToSelectTypeToMake(Dictionary<string,
-            Func<MakerReturnerType>> makerFunc, List<string> names, string groupName)
-        {
-            int selectedNum = AskUntilValidIntInput(
-                $"Enter a number to select a {groupName} (number between 1 and {names.Count}): ",
-                minValue: 1, maxValue: names.Count);
-
-            string selectedName = names[selectedNum - 1];
-            return makerFunc[selectedName];
-        }
-    }
-
-    private static Dictionary<string, Func<VehicleBase>> GetVehicleWithKnownPositionMakers(
-        Dictionary<string, Func<Position, VehicleBase>> vehicleMakers, Position initialPosition)
-    {
-        Dictionary<string, Func<VehicleBase>> vehicleMakersWithKnownPosition = new();
-
-        var keyValueCollection = vehicleMakers
-            .Select(item => new KeyValuePair<string, Func<VehicleBase>>(item.Key, () => item.Value(initialPosition)));
-
-        foreach (var keyValue in keyValueCollection)
-        {
-            vehicleMakersWithKnownPosition[keyValue.Key] = keyValue.Value;
-        }
-
-        return vehicleMakersWithKnownPosition;
     }
 }
