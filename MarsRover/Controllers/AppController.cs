@@ -8,7 +8,7 @@ namespace MarsRover.Controllers;
 
 public class AppController
 {
-    private readonly IInstructionReader _instructionReader;
+    public IInstructionReader InstructionReader { get; }
     public PlateauBase? Plateau { get; private set; }
     public VehicleBase? Vehicle { get; private set; }
     public List<Position> RecentPath { get; private set; } = new();
@@ -18,7 +18,7 @@ public class AppController
         if (instructionReader is null)
             throw new ArgumentNullException(nameof(instructionReader));
 
-        _instructionReader = instructionReader;
+        InstructionReader = instructionReader;
     }
 
     public void ConnectPlateau(PlateauBase plateau)
@@ -78,10 +78,10 @@ public class AppController
         if (string.IsNullOrEmpty(instructionString))
             return VehicleMovementStatus.NoMovement;
 
-        if (!_instructionReader.IsValidInstruction(instructionString))
+        if (!InstructionReader.IsValidInstruction(instructionString))
             throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
 
-        var instruction = _instructionReader.EvaluateInstruction(instructionString);
+        var instruction = InstructionReader.EvaluateInstruction(instructionString);
 
         (RecentPath, var isEmergencyStopUsed) = Vehicle.ApplyMoveInstruction(instruction, Plateau);
         if (isEmergencyStopUsed)

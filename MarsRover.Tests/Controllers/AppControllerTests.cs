@@ -27,6 +27,13 @@ internal class AppControllerTests
     }
 
     [Test]
+    public void InstructionReader_After_Successful_Construction_Should_Return_InstructionReader()
+    {
+        appController = new AppController(instructionReader);
+        appController.InstructionReader.Should().Be(instructionReader);
+    }
+
+    [Test]
     public void ConnectPlateau_With_Null_Plateau_Should_Throw_Exception()
     {
         Action act = () => appController.ConnectPlateau(null);
