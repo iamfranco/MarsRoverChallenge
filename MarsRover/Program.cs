@@ -45,12 +45,12 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
     { "Wall E", position => new WallE(position) }
 };
 
-PlateauBase plateau = appUIHandler.AskUserToMakePlateau(plateauMakers);
-appUIHandler.AskUserToMakeObstacles(plateau);
+appUIHandler.AskUserToMakePlateau(plateauMakers);
+appUIHandler.AskUserToMakeObstacles();
 
 while (true)
 {
-    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(plateau, vehicleMakers);
+    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
     appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
     Console.WriteLine();

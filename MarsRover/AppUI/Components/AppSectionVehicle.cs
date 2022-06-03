@@ -12,7 +12,6 @@ internal static class AppSectionVehicle
     public static bool AskForPositionOrCoordinatesToCreateOrConnectVehicle(
         IPositionStringConverter positionStringConverter,
         AppController appController,
-        PlateauBase plateau,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         string positionOrCoordinatesString = AskForPositionOrCoordinatesString(positionStringConverter);
@@ -20,7 +19,7 @@ internal static class AppSectionVehicle
         if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
         {
             CreateVehicleAndConnectToIt(positionStringConverter,
-                appController, plateau, vehicleMakers, positionOrCoordinatesString);
+                appController, vehicleMakers, positionOrCoordinatesString);
         }
         else
         {
@@ -32,13 +31,11 @@ internal static class AppSectionVehicle
 
     private static void CreateVehicleAndConnectToIt(IPositionStringConverter positionStringConverter,
         AppController appController,
-        PlateauBase plateau,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers,
         string positionOrCoordinatesString)
     {
         var initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
-
-        if (!plateau.IsCoordinateValidInPlateau(initialPosition.Coordinates))
+        if (!appController.IsCoordinateValidInPlateau(initialPosition.Coordinates))
         {
             throw new ArgumentException($"{positionOrCoordinatesString} is on " +
                 $"Coordinates {initialPosition.Coordinates}, which is not valid on Plateau");

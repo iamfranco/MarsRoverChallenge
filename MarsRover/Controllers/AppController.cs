@@ -31,6 +31,22 @@ public class AppController
         ResetRecentPath();
     }
 
+    public void AddObstacleToPlateau(Coordinates obstacle)
+    {
+        if (Plateau is null)
+            throw new Exception("Plateau not connected, cannot add obstacle");
+
+        Plateau.ObstaclesContainer.AddObstacle(obstacle);
+    }
+
+    public bool IsCoordinateValidInPlateau(Coordinates coordinates)
+    {
+        if (Plateau is null)
+            throw new Exception("Plateau not connected");
+
+        return Plateau.IsCoordinateValidInPlateau(coordinates);
+    }
+
     public void AddVehicleToPlateau(VehicleBase vehicle)
     {
         if (vehicle is null)
@@ -38,9 +54,6 @@ public class AppController
 
         if (Plateau is null)
             throw new Exception("Plateau not connected, cannot add vehicle");
-
-        if (!Plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
-            throw new ArgumentException($"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
 
         Plateau.VehiclesContainer.AddVehicle(vehicle);
         SetVehicle(vehicle);

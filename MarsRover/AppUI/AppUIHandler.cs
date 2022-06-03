@@ -24,30 +24,27 @@ public class AppUIHandler
         _mapPrinter = mapPrinter;
     }
 
-    public PlateauBase AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
+    public void AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
         PlateauBase plateau = AppUIHelpers.ExecuteUntilNoException(
             () => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
-        return plateau;
     }
 
-    public void AskUserToMakeObstacles(PlateauBase plateau)
+    public void AskUserToMakeObstacles()
     {
-        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, _mapPrinter, plateau);
+        AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, _mapPrinter);
     }
 
-    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle(
-        PlateauBase plateau,
-        Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
+    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle(Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         _appController.DisconnectVehicle();
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
 
         AppUIHelpers.ExecuteUntilNoException(
             () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-                _positionStringConverter, _appController, plateau, vehicleMakers));
+                _positionStringConverter, _appController, vehicleMakers));
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine($"Connected to [{_appController.Vehicle!.GetType().Name}] " +
