@@ -10,16 +10,16 @@ namespace MarsRover.AppUI.Components;
 internal static class AppSectionVehicle
 {
     public static bool AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-        IPositionStringConverter positionStringConverter, 
-        AppController appController, 
-        PlateauBase plateau, 
+        IPositionStringConverter positionStringConverter,
+        AppController appController,
+        PlateauBase plateau,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         string positionOrCoordinatesString = AskForPositionOrCoordinatesString(positionStringConverter);
 
         if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
         {
-            CreateVehicleAndConnectToIt(positionStringConverter, 
+            CreateVehicleAndConnectToIt(positionStringConverter,
                 appController, plateau, vehicleMakers, positionOrCoordinatesString);
         }
         else
@@ -30,10 +30,10 @@ internal static class AppSectionVehicle
         return true;
     }
 
-    private static void CreateVehicleAndConnectToIt(IPositionStringConverter positionStringConverter, 
-        AppController appController, 
-        PlateauBase plateau, 
-        Dictionary<string, Func<Position, VehicleBase>> vehicleMakers, 
+    private static void CreateVehicleAndConnectToIt(IPositionStringConverter positionStringConverter,
+        AppController appController,
+        PlateauBase plateau,
+        Dictionary<string, Func<Position, VehicleBase>> vehicleMakers,
         string positionOrCoordinatesString)
     {
         var initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
@@ -59,7 +59,7 @@ internal static class AppSectionVehicle
         return AskUserHelpers.AskUntilValidStringInput(
             $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
             $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
-            (input) => positionStringConverter.IsValidPositionString(input) || 
+            (input) => positionStringConverter.IsValidPositionString(input) ||
                 positionStringConverter.IsValidCoordinateString(input));
     }
 }
