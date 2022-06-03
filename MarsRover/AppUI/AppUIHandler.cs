@@ -26,8 +26,7 @@ public class AppUIHandler
 
     public void AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
-        PlateauBase plateau = AppUIHelpers.ExecuteUntilNoException(
-            () => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
+        AppUIHelpers.ExecuteUntilNoException(() => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
     }
