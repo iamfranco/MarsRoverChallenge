@@ -17,7 +17,7 @@ public static class AskUser
 
             PlateauBase plateau = ExecuteUntilNoException(selectedPlateauMaker);
             commandHandler.ConnectPlateau(plateau);
-            ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+            ClearScreenAndPrintMap(commandHandler);
             return plateau;
         });
     }
@@ -37,7 +37,7 @@ public static class AskUser
                     break;
 
                 plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinates));
-                ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+                ClearScreenAndPrintMap(commandHandler);
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ public static class AskUser
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         commandHandler.ResetRecentPath();
-        ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+        ClearScreenAndPrintMap(commandHandler);
 
         ExecuteUntilNoException(() =>
         {
@@ -69,7 +69,7 @@ public static class AskUser
             return true;
         });
 
-        ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+        ClearScreenAndPrintMap(commandHandler);
         Console.WriteLine($"Connected to [{commandHandler.GetVehicle()!.GetType().Name}] " +
             $"at [{commandHandler.GetPositionString()}]");
 
@@ -103,7 +103,7 @@ public static class AskUser
 
         string message = commandHandler.SendMoveInstruction(instructionString);
 
-        ClearScreenAndPrintMap(plateau, commandHandler.RecentPath);
+        ClearScreenAndPrintMap(commandHandler);
         Console.WriteLine(message);
     }
 
@@ -176,17 +176,12 @@ public static class AskUser
             (input) => positionStringConverter.IsValidPositionString(input) || positionStringConverter.IsValidCoordinateString(input));
     }
 
-    private static void ClearScreenAndPrintMap(PlateauBase plateau, List<Position> recentPath)
+    private static void ClearScreenAndPrintMap(CommandHandler commandHandler)
     {
         Console.Clear();
         Console.WriteLine("ctrl-C to exit");
 
-        try
-        {
-            plateau.PrintMap(recentPath);
-        }
-        catch
-        { }
+        commandHandler.MapPrinter.PrintMap(commandHandler);
 
         Console.WriteLine();
     }

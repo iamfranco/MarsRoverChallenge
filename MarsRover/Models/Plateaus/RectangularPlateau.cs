@@ -4,24 +4,24 @@ namespace MarsRover.Models.Plateaus;
 
 public class RectangularPlateau : PlateauBase
 {
-    private readonly Coordinates _maximumCoordinates;
+    public override Coordinates MaximumCoordinates { get; }
+
+    public override Coordinates MinimumCoordinates => new(0, 0);
 
     public RectangularPlateau(Coordinates maximumCoordinates)
     {
         if (!IsValidMaximumCoordinates(maximumCoordinates))
             throw new ArgumentException($"Maximum Coordinates {maximumCoordinates} cannot have negative components");
 
-        _maximumCoordinates = maximumCoordinates;
+        MaximumCoordinates = maximumCoordinates;
     }
 
-    public override void PrintMap(List<Position> recentPath) => PrintMap(recentPath, _maximumCoordinates);
-    
-    protected override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
+    public override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
     {
-        if (coordinates.X < 0 || coordinates.X > _maximumCoordinates.X)
+        if (coordinates.X < MinimumCoordinates.X || coordinates.X > MaximumCoordinates.X)
             return false;
 
-        if (coordinates.Y < 0 || coordinates.Y > _maximumCoordinates.Y)
+        if (coordinates.Y < MinimumCoordinates.Y || coordinates.Y > MaximumCoordinates.Y)
             return false;
 
         return true;

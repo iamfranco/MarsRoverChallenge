@@ -11,30 +11,43 @@ internal class CommandHandlerTests
 {
     private IInstructionReader instructionReader = new StandardInstructionReader();
     private IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
+    private MapPrinter mapPrinter = new MapPrinter();
     private CommandHandler commandHandler;
     private PlateauBase plateau;
 
     [SetUp]
     public void Setup()
     {
-        commandHandler = new CommandHandler(instructionReader, positionStringConverter);
+        commandHandler = new CommandHandler(instructionReader, positionStringConverter, mapPrinter);
         plateau = new RectangularPlateau(new(5, 5));
     }
 
     [Test]
     public void Constructor_With_Null_InstructionReader_Should_Throw_Exception()
     {
-        CommandHandler commandHandler2;
-        Action act = () => commandHandler2 = new CommandHandler(null, positionStringConverter);
+        Action act = () => commandHandler = new CommandHandler(null, positionStringConverter, mapPrinter);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void Constructor_With_Null_PositionStringConverter_Should_Throw_Exception()
     {
-        CommandHandler commandHandler2;
-        Action act = () => commandHandler2 = new CommandHandler(instructionReader, null);
+        Action act = () => commandHandler = new CommandHandler(instructionReader, null, mapPrinter);
         act.Should().Throw<ArgumentNullException>();
+    }
+
+    [Test]
+    public void Constructor_With_Null_MapPrinter_Should_Throw_Exception()
+    {
+        Action act = () => commandHandler = new CommandHandler(instructionReader, positionStringConverter, null);
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [Test]
+    public void MapPrinter_Should_Return_Constructor_Input_MapPrinter()
+    {
+        commandHandler = new CommandHandler(instructionReader, positionStringConverter, mapPrinter);
+        commandHandler.MapPrinter.Should().Be(mapPrinter);
     }
 
     [Test]
@@ -49,6 +62,20 @@ internal class CommandHandlerTests
     {
         Action act = () => commandHandler.ConnectPlateau(plateau);
         act.Should().NotThrow();
+    }
+
+    [Test]
+    public void GetPlateau_Should_Return_Null_By_Default()
+    {
+        PlateauBase? plateau = commandHandler.GetPlateau();
+        plateau.Should().Be(null);
+    }
+
+    [Test]
+    public void GetPlateau_After_Successful_ConnectPlateau_Should_Return_Plateau()
+    {
+        commandHandler.ConnectPlateau(plateau);
+        commandHandler.GetPlateau().Should().Be(plateau);
     }
 
     [Test]

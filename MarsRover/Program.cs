@@ -7,7 +7,8 @@ using MarsRover.Models.Vehicles;
 
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
-CommandHandler commandHandler = new(instructionReader, positionStringConverter);
+MapPrinter mapPrinter = new MapPrinter();
+CommandHandler commandHandler = new(instructionReader, positionStringConverter, mapPrinter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
