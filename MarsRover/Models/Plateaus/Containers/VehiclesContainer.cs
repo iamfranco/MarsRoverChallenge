@@ -33,8 +33,5 @@ public class VehiclesContainer
         _vehicles.Add(vehicle);
     }
 
-    public void RemoveVehicle(VehicleBase vehicle)
-    {
-        _vehicles.Remove(vehicle);
-    }
+    public void RemoveVehicle(VehicleBase vehicle) => _vehicles.Remove(vehicle);
 }

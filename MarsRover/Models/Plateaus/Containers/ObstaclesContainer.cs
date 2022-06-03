@@ -27,8 +27,5 @@ public class ObstaclesContainer
         _obstacleCoordinates.Add(obstacle);
     }
 
-    public void RemoveObstacle(Coordinates obstacle)
-    {
-        _obstacleCoordinates.Remove(obstacle);
-    }
+    public void RemoveObstacle(Coordinates obstacle) => _obstacleCoordinates.Remove(obstacle);
 }
