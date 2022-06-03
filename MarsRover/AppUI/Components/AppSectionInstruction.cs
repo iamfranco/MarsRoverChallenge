@@ -9,7 +9,7 @@ namespace MarsRover.AppUI.Components;
 
 internal static class AppSectionInstruction
 {
-    public static string AskForInstructionAndSendToVehicle(IInstructionReader instructionReader, 
+    public static string AskForInstructionAndSendToVehicle(IInstructionReader instructionReader,
         IPositionStringConverter positionStringConverter, AppController appController)
     {
         string instructionString = AppUIHelpers.AskUntilValidStringInput(
@@ -26,8 +26,8 @@ internal static class AppSectionInstruction
     }
 
     private static string GetMessageStringToPrint(
-        VehicleMovementStatus vehicleMovementStatus, 
-        string instructionString, 
+        VehicleMovementStatus vehicleMovementStatus,
+        string instructionString,
         string vehicleTypeName, string positionString)
     {
         string message = "";
