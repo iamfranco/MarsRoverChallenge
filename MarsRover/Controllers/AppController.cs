@@ -9,8 +9,8 @@ namespace MarsRover.Controllers;
 public class AppController
 {
     private readonly IInstructionReader _instructionReader;
-    private PlateauBase? _plateau;
-    private VehicleBase? _vehicle;
+    public PlateauBase? Plateau { get; private set; }
+    public VehicleBase? Vehicle { get; private set; }
 
     public List<Position> RecentPath { get; private set; } = new();
 
@@ -22,44 +22,40 @@ public class AppController
         _instructionReader = instructionReader;
     }
 
-    public PlateauBase? GetPlateau() => _plateau;
-
     public void ConnectPlateau(PlateauBase plateau)
     {
         if (plateau is null)
             throw new ArgumentNullException(nameof(plateau));
 
-        _plateau = plateau;
-        _vehicle = null;
+        Plateau = plateau;
+        Vehicle = null;
         ResetRecentPath();
     }
-
-    public VehicleBase? GetVehicle() => _vehicle;
 
     public void AddVehicleToPlateau(VehicleBase vehicle)
     {
         if (vehicle is null)
             throw new ArgumentNullException(nameof(vehicle));
 
-        if (_plateau is null)
+        if (Plateau is null)
             throw new Exception("Plateau not connected, cannot add vehicle");
 
-        if (!_plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
+        if (!Plateau.IsCoordinateValidInPlateau(vehicle.Position.Coordinates))
             throw new ArgumentException($"Vehicle Coordinates {vehicle.Position.Coordinates} is not valid in plateau");
 
-        _plateau.VehiclesContainer.AddVehicle(vehicle);
+        Plateau.VehiclesContainer.AddVehicle(vehicle);
         SetVehicle(vehicle);
     }
 
     public void ConnectToVehicleAtCoordinates(Coordinates coordinates)
     {
-        if (_plateau is null)
+        if (Plateau is null)
             throw new Exception("Plateau not connected, cannot add vehicle");
 
-        if (_plateau.VehiclesContainer.Vehicles.Count == 0)
+        if (Plateau.VehiclesContainer.Vehicles.Count == 0)
             throw new Exception("Plateau has no vehicles, please create a vehicle first");
 
-        var vehicle = _plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
+        var vehicle = Plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
         if (vehicle is null)
             throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
@@ -68,10 +64,10 @@ public class AppController
 
     public VehicleMovementStatus SendMoveInstruction(string instructionString)
     {
-        if (_plateau is null)
+        if (Plateau is null)
             throw new Exception("Plateau not connected, cannot send instruction");
 
-        if (_vehicle is null)
+        if (Vehicle is null)
             throw new Exception("Vehicle not connected, cannot send instruction");
 
         if (string.IsNullOrEmpty(instructionString))
@@ -82,18 +78,18 @@ public class AppController
 
         var instruction = _instructionReader.EvaluateInstruction(instructionString);
 
-        (RecentPath, var isEmergencyStopUsed) = _vehicle.ApplyMoveInstruction(instruction, _plateau);
+        (RecentPath, var isEmergencyStopUsed) = Vehicle.ApplyMoveInstruction(instruction, Plateau);
         if (isEmergencyStopUsed)
             return VehicleMovementStatus.DangerAhead;
 
         return VehicleMovementStatus.ReachedDestination;
     }
 
-    public void ResetRecentPath() => RecentPath = _vehicle is null ? new() : new() { _vehicle.Position };
+    public void ResetRecentPath() => RecentPath = Vehicle is null ? new() : new() { Vehicle.Position };
 
     private void SetVehicle(VehicleBase vehicle)
     {
-        _vehicle = vehicle;
+        Vehicle = vehicle;
         ResetRecentPath();
     }
 }

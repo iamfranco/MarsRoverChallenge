@@ -54,8 +54,8 @@ public class AppUIHandler
                 _positionStringConverter, _appController, plateau, vehicleMakers));
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
-        Console.WriteLine($"Connected to [{_appController.GetVehicle()!.GetType().Name}] " +
-            $"at [{_positionStringConverter.ToPositionString(_appController.GetVehicle()!.Position)}]");
+        Console.WriteLine($"Connected to [{_appController.Vehicle!.GetType().Name}] " +
+            $"at [{_positionStringConverter.ToPositionString(_appController.Vehicle!.Position)}]");
     }
 
     public void AskUserForMovementInstructionAndSendToVehicle()

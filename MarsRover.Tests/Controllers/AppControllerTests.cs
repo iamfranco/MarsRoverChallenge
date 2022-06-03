@@ -43,7 +43,7 @@ internal class AppControllerTests
     [Test]
     public void GetPlateau_Should_Return_Null_By_Default()
     {
-        var plateau = appController.GetPlateau();
+        var plateau = appController.Plateau;
         plateau.Should().Be(null);
     }
 
@@ -51,7 +51,7 @@ internal class AppControllerTests
     public void GetPlateau_After_Successful_ConnectPlateau_Should_Return_Plateau()
     {
         appController.ConnectPlateau(plateau);
-        appController.GetPlateau().Should().Be(plateau);
+        appController.Plateau.Should().Be(plateau);
     }
 
     [Test]
@@ -61,17 +61,17 @@ internal class AppControllerTests
         var rover = new Rover(new Position(new(1, 2), Direction.North));
         appController.AddVehicleToPlateau(rover);
 
-        appController.GetVehicle()!.Should().Be(rover);
+        appController.Vehicle!.Should().Be(rover);
 
         appController.ConnectPlateau(plateau);
 
-        appController.GetVehicle().Should().Be(null);
+        appController.Vehicle.Should().Be(null);
     }
 
     [Test]
     public void GetVehicle_Should_Return_Null_By_Default()
     {
-        var vehicle = appController.GetVehicle();
+        var vehicle = appController.Vehicle;
         vehicle.Should().Be(null);
     }
 
@@ -82,7 +82,7 @@ internal class AppControllerTests
         Rover rover = new(new(new(1, 2), Direction.North));
 
         appController.AddVehicleToPlateau(rover);
-        var vehicle = appController.GetVehicle();
+        var vehicle = appController.Vehicle;
 
         vehicle.Should().Be(rover);
     }
@@ -99,7 +99,7 @@ internal class AppControllerTests
         appController.ConnectPlateau(plateau);
 
         appController.ConnectToVehicleAtCoordinates(coordinates);
-        var vehicle = appController.GetVehicle();
+        var vehicle = appController.Vehicle;
 
         vehicle.Should().Be(rover);
     }
@@ -192,7 +192,7 @@ internal class AppControllerTests
         Action act = () => appController.ConnectToVehicleAtCoordinates(coordinates);
         act.Should().NotThrow();
 
-        appController.GetVehicle().Should().Be(rover2);
+        appController.Vehicle.Should().Be(rover2);
     }
 
     [Test]
@@ -229,7 +229,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
@@ -244,7 +244,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
@@ -259,7 +259,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().Throw<ArgumentException>();
-        appController.GetVehicle()!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
     }
 
     [Test]
@@ -277,7 +277,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.GetVehicle()!.Position.Should().Be(expectedPosition);
+        appController.Vehicle!.Position.Should().Be(expectedPosition);
     }
 
     [Test]
@@ -292,7 +292,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.GetVehicle()!.Position.Should().Be(expectedPosition);
+        appController.Vehicle!.Position.Should().Be(expectedPosition);
     }
 
     [Test]

@@ -18,7 +18,7 @@ internal static class AppSectionInstruction
 
         VehicleMovementStatus vehicleMovementStatus = appController.SendMoveInstruction(instructionString);
 
-        VehicleBase vehicle = appController.GetVehicle()!;
+        VehicleBase vehicle = appController.Vehicle!;
         string vehicleTypeName = vehicle.GetType().Name;
         string positionString = positionStringConverter.ToPositionString(vehicle.Position);
 
