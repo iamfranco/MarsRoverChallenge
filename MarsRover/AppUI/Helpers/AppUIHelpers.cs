@@ -3,7 +3,7 @@ using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Helpers;
 
-internal static class AskUserHelpers
+internal static class AppUIHelpers
 {
     public static ReturnType ExecuteUntilNoException<ReturnType>(Func<ReturnType> func)
     {

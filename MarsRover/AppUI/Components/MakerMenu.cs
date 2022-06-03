@@ -43,7 +43,7 @@ public static class MakerMenu
     private static Func<MakerReturnType> AskUserToSelectMakerByNumber<MakerReturnType>(Dictionary<string,
         Func<MakerReturnType>> makerFunc, List<string> names, string groupName)
     {
-        int selectedNum = AskUserHelpers.AskUntilValidIntInput(
+        int selectedNum = AppUIHelpers.AskUntilValidIntInput(
             $"Enter a number to select a {groupName} (number between 1 and {names.Count}): ",
             minValue: 1, maxValue: names.Count);
 

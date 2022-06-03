@@ -19,7 +19,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
     {
         "Rectangular Plateau", () =>
         {
-            string maximumCoordinatesString = AskUserHelpers.AskUntilValidStringInput(
+            string maximumCoordinatesString = AppUIHelpers.AskUntilValidStringInput(
                 $"Enter Maximum Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\"): ",
                 positionStringConverter.IsValidCoordinateString);
 
@@ -30,7 +30,7 @@ Dictionary<string, Func<PlateauBase>> plateauMakers = new()
     {
         "Circular Plateau", () =>
         {
-            string radiusString = AskUserHelpers.AskUntilValidStringInput(
+            string radiusString = AppUIHelpers.AskUntilValidStringInput(
                 $"Enter Radius (eg \"5\"): ",
                 s => int.TryParse(s, out _));
 

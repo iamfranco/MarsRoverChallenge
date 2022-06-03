@@ -50,13 +50,13 @@ internal static class AppSectionVehicle
             groupName: "vehicle",
             makers: vehicleWithKnownPositionMakers);
 
-        var vehicle = AskUserHelpers.ExecuteUntilNoException(selectedVehicleMaker);
+        var vehicle = AppUIHelpers.ExecuteUntilNoException(selectedVehicleMaker);
         appController.AddVehicleToPlateau(vehicle);
     }
 
     private static string AskForPositionOrCoordinatesString(IPositionStringConverter positionStringConverter)
     {
-        return AskUserHelpers.AskUntilValidStringInput(
+        return AppUIHelpers.AskUntilValidStringInput(
             $"Enter Position (eg \"{positionStringConverter.ExamplePositionString}\") to add new Vehicle, or " +
             $"\nEnter Coordinates (eg \"{positionStringConverter.ExampleCoordinateString}\") to connect with existing vehicle: ",
             (input) => positionStringConverter.IsValidPositionString(input) ||

@@ -12,43 +12,28 @@ internal class AppControllerTests
 {
     private IInstructionReader instructionReader = new StandardInstructionReader();
     private IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
-    private MapPrinter mapPrinter = new MapPrinter();
     private AppController appController;
     private PlateauBase plateau;
 
     [SetUp]
     public void Setup()
     {
-        appController = new AppController(instructionReader, positionStringConverter, mapPrinter);
+        appController = new AppController(instructionReader, positionStringConverter);
         plateau = new RectangularPlateau(new(5, 5));
     }
 
     [Test]
     public void Constructor_With_Null_InstructionReader_Should_Throw_Exception()
     {
-        Action act = () => appController = new AppController(null, positionStringConverter, mapPrinter);
+        Action act = () => appController = new AppController(null, positionStringConverter);
         act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
     public void Constructor_With_Null_PositionStringConverter_Should_Throw_Exception()
     {
-        Action act = () => appController = new AppController(instructionReader, null, mapPrinter);
+        Action act = () => appController = new AppController(instructionReader, null);
         act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void Constructor_With_Null_MapPrinter_Should_Throw_Exception()
-    {
-        Action act = () => appController = new AppController(instructionReader, positionStringConverter, null);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void MapPrinter_Should_Return_Constructor_Input_MapPrinter()
-    {
-        appController = new AppController(instructionReader, positionStringConverter, mapPrinter);
-        appController.MapPrinter.Should().Be(mapPrinter);
     }
 
     [Test]

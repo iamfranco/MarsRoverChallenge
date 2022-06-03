@@ -14,7 +14,7 @@ internal static class AppSectionObstacles
         {
             try
             {
-                var obstacleCoordinatesString = AskUserHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
+                var obstacleCoordinatesString = AppUIHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
                     $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
                     (s) => string.IsNullOrEmpty(s) || positionStringConverter.IsValidCoordinateString(s));
 
@@ -22,7 +22,7 @@ internal static class AppSectionObstacles
                     break;
 
                 plateau.ObstaclesContainer.AddObstacle(positionStringConverter.ToCoordinates(obstacleCoordinatesString));
-                AskUserHelpers.ClearScreenAndPrintMap(appController, mapPrinter);
+                AppUIHelpers.ClearScreenAndPrintMap(appController, mapPrinter);
             }
             catch (Exception ex)
             {

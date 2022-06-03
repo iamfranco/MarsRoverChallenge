@@ -30,10 +30,10 @@ public class AppUIHandler
 
     public PlateauBase AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
-        PlateauBase plateau = AskUserHelpers.ExecuteUntilNoException(
+        PlateauBase plateau = AppUIHelpers.ExecuteUntilNoException(
             () => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
 
-        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
+        AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         return plateau;
     }
 
@@ -47,13 +47,13 @@ public class AppUIHandler
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
         _appController.ResetRecentPath();
-        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
+        AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
 
-        AskUserHelpers.ExecuteUntilNoException(
+        AppUIHelpers.ExecuteUntilNoException(
             () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
                 _positionStringConverter, _appController, plateau, vehicleMakers));
 
-        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
+        AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine($"Connected to [{_appController.GetVehicle()!.GetType().Name}] " +
             $"at [{_positionStringConverter.ToPositionString(_appController.GetVehicle()!.Position)}]");
     }
@@ -62,7 +62,7 @@ public class AppUIHandler
     {
         var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_instructionReader, _appController);
 
-        AskUserHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
+        AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine(message);
     }
 }

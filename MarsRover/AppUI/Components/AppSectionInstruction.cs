@@ -8,7 +8,7 @@ internal static class AppSectionInstruction
 {
     public static string AskForInstructionAndSendToVehicle(IInstructionReader instructionReader, AppController appController)
     {
-        string instructionString = AskUserHelpers.AskUntilValidStringInput(
+        string instructionString = AppUIHelpers.AskUntilValidStringInput(
             $"Enter Movement Instruction (eg \"{instructionReader.ExampleInstructionString}\"): ",
             instructionReader.IsValidInstruction);
 

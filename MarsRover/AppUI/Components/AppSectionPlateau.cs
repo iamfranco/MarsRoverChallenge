@@ -13,7 +13,7 @@ internal static class AppSectionPlateau
             groupName: "plateau",
             makers: plateauMakers);
 
-        PlateauBase plateau = AskUserHelpers.ExecuteUntilNoException(selectedPlateauMaker);
+        PlateauBase plateau = AppUIHelpers.ExecuteUntilNoException(selectedPlateauMaker);
         appController.ConnectPlateau(plateau);
         return plateau;
     }
