@@ -10,13 +10,13 @@ namespace MarsRover.AppUI;
 
 public class AppSections
 {
-    private IPositionStringConverter _positionStringConverter;
-    private IInstructionReader _instructionReader;
-    private CommandHandler _commandHandler;
+    private readonly IPositionStringConverter _positionStringConverter;
+    private readonly IInstructionReader _instructionReader;
+    private readonly CommandHandler _commandHandler;
 
     public AppSections(
-        IPositionStringConverter positionStringConverter, 
-        IInstructionReader instructionReader, 
+        IPositionStringConverter positionStringConverter,
+        IInstructionReader instructionReader,
         CommandHandler commandHandler)
     {
         _positionStringConverter = positionStringConverter;
