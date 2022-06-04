@@ -2,7 +2,7 @@
 
 namespace MarsRover.Models.Vehicles;
 
-internal class WallE : VehicleBase
+public class WallE : VehicleBase
 {
     public WallE(Position initialPosition) : base(initialPosition)
     {

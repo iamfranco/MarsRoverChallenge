@@ -1,7 +1,7 @@
 ﻿using MarsRover.Models.Elementals;
 
 namespace MarsRover.Models.Plateaus;
-internal class CircularPlateau : PlateauBase
+public class CircularPlateau : PlateauBase
 {
     private readonly int _radius;
 

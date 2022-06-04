@@ -4,7 +4,7 @@ using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Components;
 
-internal static class AppSectionObstacles
+public static class AppSectionObstacles
 {
     public static void AskForObstaclesUntilEmptyInput(
         IPositionStringConverter positionStringConverter, AppController appController, MapPrinter mapPrinter)

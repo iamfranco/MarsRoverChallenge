@@ -6,7 +6,7 @@ using MarsRover.Models.Vehicles;
 
 namespace MarsRover.AppUI.Components;
 
-internal static class AppSectionVehicle
+public static class AppSectionVehicle
 {
     public static bool AskForPositionOrCoordinatesToCreateOrConnectVehicle(
         IPositionStringConverter positionStringConverter,
