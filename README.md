@@ -337,7 +337,7 @@ Connected to [Rover] at [1 2 North]
 
 The 4 possible directions might be too restrictive for our vehicles. It might be good to use Direction that can be more precise, such as "North West", "South East" etc. Or even to use angular direction.
 
-We assumed that all vehicles treat obstacles the same, such that no vehicle can "overcome" an obstacle. But as said in the assumptions section, helicopter is a vehicle and yet it probably wouldn't see big rocks on the ground as obstacles. So it might be a good idea to differentiate different types of obstacles and let the the vehicle class individually specify whether a particular type of "obstacle" is actually an obstacle for that vehicle class.
+We assumed that all vehicles treat obstacles the same, such that no vehicle can "overcome" an obstacle. But as said in the assumptions section, helicopter is a vehicle and yet it probably wouldn't see big rocks on the ground as obstacles. So it might be a good idea to differentiate different types of obstacles and let the vehicle class individually specify whether a particular type of "obstacle" is actually an obstacle for that vehicle class.
 
 We assumed that all vehicles will perform an emergency stop immediately before it's about to crash. This assumption is to simplify the application so we don't have to deal with the uncertainty of what happens when a vehicle crash, because the outcome of a crash is arguably non-deterministic. But in reality, not every vehicle would have that "danger detection mechanism".
 
