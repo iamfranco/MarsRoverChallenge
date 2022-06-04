@@ -83,25 +83,24 @@ internal class ConsoleAppTests
     [Test]
     public void Run_With_UserInputs_1_Then_5_5_Then_1_2_N_Then_1_Then_LMLMLMLMM_Then_Vehicle_Should_Be_In_1_3_N()
     {
-        Assert.Fail();
-        //List<string> userInputs = new() { "1", "5 5", "", "1 2 N", "1", "LMLMLMLMM" };
-        //List<string> userKeys = new() { "q" };
-        //InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+        List<string> userInputs = new() { "1", "5 5", "", "1 2 N", "1", "LMLMLMLMM" };
+        List<ConsoleKeyInfo> keyInfos = new() { new('q', ConsoleKey.Q, false, false, false) };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs, keyInfos));
 
-        //ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
-        //appController.Vehicle.Position.Should().Be(new Position(new(1, 3), Direction.North));
-        //appController.Vehicle.GetType().Name.Should().Be("Rover");
+        ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+        appController.Vehicle.Position.Should().Be(new Position(new(1, 3), Direction.North));
+        appController.Vehicle.GetType().Name.Should().Be("Rover");
     }
 
     [Test]
     public void Run_With_UserInputs_1_Then_5_5_Then_3_3_E_Then_1_Then_MMRMMRMRRM_Then_Vehicle_Should_Be_In_5_1_E()
     {
-        Assert.Fail();
-        //List<string> userInputs = new() { "1", "5 5", "", "3 3 E", "1", "MMRMMRMRRM" };
-        //InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+        List<string> userInputs = new() { "1", "5 5", "", "3 3 E", "1", "MMRMMRMRRM" };
+        List<ConsoleKeyInfo> keyInfos = new() { new('q', ConsoleKey.Q, false, false, false) };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs, keyInfos));
 
-        //ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
-        //appController.Vehicle.Position.Should().Be(new Position(new(5, 1), Direction.East));
-        //appController.Vehicle.GetType().Name.Should().Be("Rover");
+        ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+        appController.Vehicle.Position.Should().Be(new Position(new(5, 1), Direction.East));
+        appController.Vehicle.GetType().Name.Should().Be("Rover");
     }
 }
