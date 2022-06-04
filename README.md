@@ -195,6 +195,42 @@ Now for `AppUIHandler`, it has methods that:
 2. then delegates to `AppController` to actually perform the user requests,
 3. then displays the **result** back to the user (where the **result** will be formatted using `IPositionStringConvert`)
 
+## "Mocking user input" in tests
+
+At the later stages, I wanted to expand the tests to cover even methods that requires user inputs (for example, methods that uses `Console.ReadLine()` or `Console.ReadKey()`).
+
+To achieve that, I decided to create 2 classes in the "MarsRover" project called `InputReader` and `InputReaderContainer`, and create a class in "MarsRover.Tests" project called `InputReaderForTest`, as shown in UML diagram below:
+![InputReader](/diagrams/InputReader/InputReader.png)
+
+So that in the main **MarsRover** project, I can replace the old code that gets the user input:
+
+```c#
+Console.Write("Enter Radius: ");
+string radius = Console.ReadLine();
+```
+
+with the new code that does the same thing:
+
+```c#
+string radius = InputReaderContainer.GetUserInput("Enter Radius: ");
+```
+
+With the benefit that `InputReader` is substitutable in the unit test.
+
+So in the unit testing **MarsRover.Tests** project, I can simulate the user inputting `10` for the radius by doing:
+
+```c#
+List<string> userInputs = new() { "10" };
+InputReaderForTest inputReader = new(userInputs);
+InputReaderContainer.SetInputReader(inputReader);
+```
+
+so that when the unit test executes the main code that involves user inputs, it will call the `InputReaderContainer` methods and will return `10` to the caller:
+
+```c#
+string radius = InputReaderContainer.GetUserInput("Enter Radius: "); // sets radius as 10
+```
+
 # Open for extension but closed for modification
 
 The user can extend the application in the following ways:
@@ -341,4 +377,4 @@ We assumed that all vehicles treat obstacles the same, such that no vehicle can 
 
 We assumed that all vehicles will perform an emergency stop immediately before it's about to crash. This assumption is to simplify the application so we don't have to deal with the uncertainty of what happens when a vehicle crash, because the outcome of a crash is arguably non-deterministic. But in reality, not every vehicle would have that "danger detection mechanism".
 
-For TDD, it is challenging to test the `AppUIHandler` class since it takes user input and only prints results back to the console. It would be interesting to learn ways to test code that involves user input and output.
+For TDD, it is challenging to unit test the `AppUIHandler` class since it prints the result to the console with the color grids. It would be interesting to learn ways to test methods that only prints stuff to console.

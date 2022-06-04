@@ -1,0 +1,3 @@
+command to run:
+
+java -jar C:/src/plantuml/plantuml.jar -verbose InputReader.puml
