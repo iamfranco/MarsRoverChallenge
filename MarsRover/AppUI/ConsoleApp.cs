@@ -9,6 +9,15 @@ public static class ConsoleApp
         Dictionary<string, Func<PlateauBase>> plateauMakers,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
+        if (appUIHandler is null)
+            throw new ArgumentNullException(nameof(appUIHandler));
+
+        if (plateauMakers is null)
+            throw new ArgumentNullException(nameof(plateauMakers));
+
+        if (vehicleMakers is null)
+            throw new ArgumentNullException(nameof(vehicleMakers));
+
         try
         {
             appUIHandler.AskUserToMakePlateau(plateauMakers);
@@ -20,8 +29,11 @@ public static class ConsoleApp
                 appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
                 Console.WriteLine();
-                Console.Write("Press any key to continue.. ");
-                Console.ReadKey();
+
+                Console.Write("Press [Q] key to quit, any other key to continue.. ");
+                var a = Console.ReadKey();
+                if (a.KeyChar.ToString().ToLower() == "q")
+                    break;
             }
         }
         catch (Exception ex)
