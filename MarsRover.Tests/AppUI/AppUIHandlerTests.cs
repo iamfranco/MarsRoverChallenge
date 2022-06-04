@@ -181,4 +181,35 @@ internal class AppUIHandlerTests
         appController.Vehicle.Position.Should().Be(new Position(new(4, 5), Direction.South));
         appController.Vehicle.GetType().Name.Should().Be("Rover");
     }
+
+    [Test]
+    public void AskUserForMovementInstructionAndSendToVehicle_Before_ConnectingPlateau_Should_Throw_Exception()
+    {
+        Action act = () => appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
+        act.Should().Throw<Exception>().WithMessage("Plateau not connected, cannot send movement instruction");
+    }
+
+    [Test]
+    public void AskUserForMovementInstructionAndSendToVehicle_Before_ConnectingVehicle_Should_Throw_Exception()
+    {
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+
+        Action act = () => appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
+        act.Should().Throw<Exception>().WithMessage("Vehicle not connected, cannot send movement instruction");
+    }
+
+    [Test]
+    public void AskUserForMovementInstructionAndSendToVehicle_With_MMRMM_When_Connected_Vehicle_Is_At_1_2_N_Should_Move_Vehicle()
+    {
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+        appController.AddVehicleToPlateau(new Rover(new Position(new(1, 2), Direction.North)));
+
+        List<string> userInputs = new() { "MMRMM" };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+
+        Action act = () => appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
+        act.Should().NotThrow();
+
+        appController.Vehicle.Position.Should().Be(new Position(new(3, 4), Direction.East));
+    }
 }

@@ -30,20 +30,6 @@ internal class AppSectionInstructionTests
     }
 
     [Test]
-    public void AskForInstructionAndSendToVehicle_With_Null_PositionStringConverter_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionInstruction.AskForInstructionAndSendToVehicle(null, appController);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForInstructionAndSendToVehicle_With_Null_AppController_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionInstruction.AskForInstructionAndSendToVehicle(positionStringConverter, null);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
     public void AskForInstructionAndSendToVehicle_Should_Move_Vehicle_With_First_Valid_UserInput_Instruction()
     {
         string firstValidUserInput = "MMRMM";
