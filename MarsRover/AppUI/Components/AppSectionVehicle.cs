@@ -13,6 +13,15 @@ public static class AppSectionVehicle
         AppController appController,
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
+        if (positionStringConverter is null)
+            throw new ArgumentNullException(nameof(positionStringConverter));
+
+        if (appController is null)
+            throw new ArgumentNullException(nameof(appController));
+
+        if (vehicleMakers is null)
+            throw new ArgumentNullException(nameof(vehicleMakers));
+
         string positionOrCoordinatesString = AskForPositionOrCoordinatesString(positionStringConverter);
 
         if (positionStringConverter.IsValidPositionString(positionOrCoordinatesString))
