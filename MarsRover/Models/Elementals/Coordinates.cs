@@ -12,6 +12,7 @@ public struct Coordinates
     }
 
     public static Coordinates operator +(Coordinates a, Coordinates b) => new(a.X + b.X, a.Y + b.Y);
+    public static Coordinates operator -(Coordinates a, Coordinates b) => new(a.X - b.X, a.Y - b.Y);
 
     public override string ToString() => $"({X}, {Y})";
 }
