@@ -1,12 +1,16 @@
-﻿using MarsRover.AppUI.Helpers;
+﻿using System.Runtime.CompilerServices;
+using MarsRover.AppUI.Helpers;
 using MarsRover.Models.Elementals;
 
 namespace MarsRover.AppUI.Components;
 public static class MakerMenu
 {
     public static Func<MakerReturnType> AskUserToSelectMaker<MakerReturnType>(string groupName,
-        Dictionary<string, Func<MakerReturnType>> makers)
+        Dictionary<string, Func<MakerReturnType>> makers, [CallerArgumentExpression("makers")] string makersCallerName = "")
     {
+        if (!makers.Any())
+            throw new ArgumentException($"{makersCallerName} cannot be empty");
+
         var names = makers.Keys.ToList();
         var selectedMaker = makers[names[0]];
         if (names.Count > 1)
