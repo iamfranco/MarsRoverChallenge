@@ -66,7 +66,7 @@ public class AppController
         if (Plateau.VehiclesContainer.Vehicles.Count == 0)
             throw new Exception("Plateau has no vehicles, please create a vehicle first");
 
-        var vehicle = Plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
+        VehicleBase? vehicle = Plateau.VehiclesContainer.GetVehicleAtCoordinates(coordinates);
         if (vehicle is null)
             throw new ArgumentException($"Coordinates {coordinates} does not match any vehicle's coordinates on plateau");
 
@@ -93,9 +93,9 @@ public class AppController
         if (!InstructionReader.IsValidInstruction(instructionString))
             throw new ArgumentException($"Instruction [{instructionString}] is not in correct format");
 
-        var instruction = InstructionReader.EvaluateInstruction(instructionString);
+        List<SingularInstruction> instruction = InstructionReader.EvaluateInstruction(instructionString);
 
-        (RecentPath, var isEmergencyStopUsed) = Vehicle.ApplyMoveInstruction(instruction, Plateau);
+        (RecentPath, bool isEmergencyStopUsed) = Vehicle.ApplyMoveInstruction(instruction, Plateau);
         if (isEmergencyStopUsed)
             return VehicleMovementStatus.DangerAhead;
 

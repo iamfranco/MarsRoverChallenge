@@ -82,7 +82,7 @@ public class AppUIHandler
         if (_appController.Vehicle is null)
             throw new Exception("Vehicle not connected, cannot send movement instruction");
 
-        var message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_positionStringConverter, _appController);
+        string message = AppSectionInstruction.AskForInstructionAndSendToVehicle(_positionStringConverter, _appController);
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
         Console.WriteLine(message);

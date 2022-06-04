@@ -19,22 +19,22 @@ public class MapPrinter
         if (appController is null)
             throw new ArgumentNullException(nameof(appController));
 
-        var plateau = appController.Plateau;
+        PlateauBase? plateau = appController.Plateau;
         if (plateau is null)
             throw new Exception("Plateau not connected");
 
-        var recentPath = appController.RecentPath;
+        List<Position> recentPath = appController.RecentPath;
 
-        var maxX = plateau.MaximumCoordinates.X;
-        var maxY = plateau.MaximumCoordinates.Y;
-        var minX = plateau.MinimumCoordinates.X;
-        var minY = plateau.MinimumCoordinates.Y;
+        int maxX = plateau.MaximumCoordinates.X;
+        int maxY = plateau.MaximumCoordinates.Y;
+        int minX = plateau.MinimumCoordinates.X;
+        int minY = plateau.MinimumCoordinates.Y;
 
-        var width = maxX - minX + 1;
-        var height = maxY - minY + 1;
+        int width = maxX - minX + 1;
+        int height = maxY - minY + 1;
 
-        var obstacles = plateau.ObstaclesContainer.ObstacleCoordinates;
-        var vehicles = plateau.VehiclesContainer.Vehicles;
+        List<Coordinates> obstacles = plateau.ObstaclesContainer.ObstacleCoordinates.ToList();
+        List<VehicleBase> vehicles = plateau.VehiclesContainer.Vehicles.ToList();
 
         if (width > 40 || height > 40)
         {
@@ -42,41 +42,38 @@ public class MapPrinter
             return;
         }
 
-        var defaultBGColor = Console.BackgroundColor;
-
-        var matrixToPrint = GetMatrixToPrint(recentPath, plateau);
+        (string symbol, ConsoleColor bgColor)[,] matrixToPrint = GetMatrixToPrint(recentPath, plateau);
 
         Console.WriteLine($"  Y");
-        for (var y = height - 1; y >= 0; y--)
+        for (int y = height - 1; y >= 0; y--)
         {
             Console.Write($"{y + minY,3} ");
-            for (var x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
-                (var symbol, var bgColor) = matrixToPrint[x, y];
+                (string symbol, ConsoleColor bgColor) = matrixToPrint[x, y];
 
                 Console.BackgroundColor = bgColor;
                 Console.Write($" {symbol} ");
-                Console.BackgroundColor = defaultBGColor;
+                Console.BackgroundColor = _defaultGroundColor;
                 Console.Write(" ");
             }
             Console.WriteLine();
         }
         Console.Write("   ");
-        for (var x = minX; x <= maxX; x++)
+        for (int x = minX; x <= maxX; x++)
         {
             Console.Write($"{x,3} ");
         }
         Console.WriteLine("  X");
     }
 
-    private void PrintTextDescriptionOfMap(PlateauBase? plateau, ReadOnlyCollection<Coordinates> obstacles,
-        ReadOnlyCollection<VehicleBase> vehicles)
+    private void PrintTextDescriptionOfMap(PlateauBase plateau, List<Coordinates> obstacles, List<VehicleBase> vehicles)
     {
         Console.WriteLine($"{GetType().Name}: between {plateau.MinimumCoordinates} and {plateau.MaximumCoordinates}");
         if (obstacles.Count > 0)
         {
             Console.WriteLine($"\nObstacles (count = {obstacles.Count}) at Coordinates:");
-            foreach (var obstacle in obstacles)
+            foreach (Coordinates obstacle in obstacles)
             {
                 Console.WriteLine($"   {obstacle}");
             }
@@ -85,7 +82,7 @@ public class MapPrinter
         if (vehicles.Count > 0)
         {
             Console.WriteLine($"\nVehicles (count = {vehicles.Count}): ");
-            foreach (var vehicle in vehicles)
+            foreach (VehicleBase vehicle in vehicles)
             {
                 Console.WriteLine($"   [{vehicle.GetType().Name}] at {vehicle.Position.Coordinates}");
             }
@@ -101,9 +98,9 @@ public class MapPrinter
 
         (string symbol, ConsoleColor bgColor)[,] matrixToPrint = new (string, ConsoleColor)[width, height];
 
-        for (var i = 0; i < width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (var j = 0; j < height; j++)
+            for (int j = 0; j < height; j++)
             {
                 Coordinates coordinates = new Coordinates(i, j) + plateau.MinimumCoordinates;
                 if (plateau.IsCoordinateWithinPlateauBoundary(coordinates))
@@ -113,7 +110,7 @@ public class MapPrinter
             }
         }
 
-        foreach (var obstacleCoordinate in plateau.ObstaclesContainer.ObstacleCoordinates)
+        foreach (Coordinates obstacleCoordinate in plateau.ObstaclesContainer.ObstacleCoordinates)
         {
             Coordinates indices = obstacleCoordinate - plateau.MinimumCoordinates;
             matrixToPrint[indices.X, indices.Y] = ("X", _invalidGroundColor);
@@ -142,7 +139,7 @@ public class MapPrinter
         Position position, Coordinates minimumCoordinates, ConsoleColor color)
     {
         Coordinates indices = position.Coordinates - minimumCoordinates;
-        var symbol = position.Direction switch
+        string symbol = position.Direction switch
         {
             Direction.North => "\u2191",
             Direction.East => ">",

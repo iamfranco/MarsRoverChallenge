@@ -13,7 +13,7 @@ public static class AppSectionObstacles
         {
             try
             {
-                var obstacleCoordinatesString = AppUIHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
+                string obstacleCoordinatesString = AppUIHelpers.AskUntilValidStringInput($"Enter Obstacle Coordinate " +
                     $"(eg \"{positionStringConverter.ExampleCoordinateString}\", or empty if no more obstacle): ",
                     (s) => string.IsNullOrEmpty(s) || positionStringConverter.IsValidCoordinateString(s));
 

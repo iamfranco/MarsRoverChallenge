@@ -34,7 +34,7 @@ public static class ConsoleApp
                 Console.WriteLine();
 
                 Console.Write("Press [q] key to quit, press any other key to continue.. ");
-                var keyInfo = InputReaderContainer.ReadKey();
+                ConsoleKeyInfo keyInfo = InputReaderContainer.ReadKey();
                 if (keyInfo == _qKeyInfo)
                     break;
             }

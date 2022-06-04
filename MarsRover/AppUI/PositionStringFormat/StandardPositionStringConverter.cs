@@ -28,9 +28,9 @@ public class StandardPositionStringConverter : IPositionStringConverter
         if (!IsValidPositionString(positionString))
             throw new ArgumentException($"Input {positionString} is not in correct format for positionString (eg \"{ExamplePositionString}\")");
 
-        (var coordinateString, var directionString) = SplitPositionString(positionString!);
+        (string coordinateString, string directionString) = SplitPositionString(positionString!);
 
-        var direction = _directionSymbolEnum
+        Direction direction = _directionSymbolEnum
             .FirstOrDefault(item => item.directionSymbol == directionString)
             .direction;
 
@@ -43,15 +43,15 @@ public class StandardPositionStringConverter : IPositionStringConverter
             throw new ArgumentException($"Input {coordinateString} is not in correct format for coordianteString (eg \"{ExampleCoordinateString}\")");
 
         var coordinateStringArray = coordinateString!.Split(" ");
-        var x = int.Parse(coordinateStringArray[0]);
-        var y = int.Parse(coordinateStringArray[1]);
+        int x = int.Parse(coordinateStringArray[0]);
+        int y = int.Parse(coordinateStringArray[1]);
 
         return new Coordinates(x, y);
     }
 
     public string ToPositionString(Position position)
     {
-        var directionSymbol = _directionSymbolEnum
+        string directionSymbol = _directionSymbolEnum
             .FirstOrDefault(x => x.direction == position.Direction)
             .directionSymbol;
 
@@ -62,10 +62,10 @@ public class StandardPositionStringConverter : IPositionStringConverter
 
     private static (string coordinateString, string directionString) SplitPositionString(string positionString)
     {
-        var lastSpaceIndex = positionString.LastIndexOf(" ");
+        int lastSpaceIndex = positionString.LastIndexOf(" ");
 
-        var coordinateString = positionString[..lastSpaceIndex];
-        var directionString = positionString[(lastSpaceIndex + 1)..];
+        string coordinateString = positionString[..lastSpaceIndex];
+        string directionString = positionString[(lastSpaceIndex + 1)..];
 
         return (coordinateString, directionString);
     }

@@ -26,7 +26,7 @@ public static class AppUIHelpers
     {
         return ExecuteUntilNoException(() =>
         {
-            var input = InputReaderContainer.GetUserInput(prompt);
+            string input = InputReaderContainer.GetUserInput(prompt);
 
             if (!validationFunc(input))
                 throw new Exception($"Input [{input}] is not in correct format");
@@ -39,9 +39,9 @@ public static class AppUIHelpers
     {
         return ExecuteUntilNoException(() =>
         {
-            var input = InputReaderContainer.GetUserInput(prompt);
+            string input = InputReaderContainer.GetUserInput(prompt);
 
-            if (!int.TryParse(input, out var num))
+            if (!int.TryParse(input, out int num))
                 throw new Exception($"Input [{input}] needs to be integer");
 
             if (num < minValue)
