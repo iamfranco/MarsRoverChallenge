@@ -25,20 +25,6 @@ internal class AppSectionPlateauTests
     }
 
     [Test]
-    public void AskForPlateau_With_Null_AppController_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionPlateau.AskForPlateau(null, plateauMakers);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForPlateau_With_Null_PlateauMakers_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionPlateau.AskForPlateau(appController, null);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
     public void AskForPlateau_With_PlateaMakers_Of_One_Item_Should_Connect_AppController_To_The_One_Plateau_Type()
     {
         plateauMakers = new()

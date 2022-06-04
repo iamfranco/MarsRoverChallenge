@@ -19,6 +19,15 @@ public class AppUIHandler
         AppController appController,
         MapPrinter mapPrinter)
     {
+        if (positionStringConverter is null)
+            throw new ArgumentNullException(nameof(positionStringConverter));
+
+        if (appController is null)
+            throw new ArgumentNullException(nameof(appController));
+
+        if (mapPrinter is null)
+            throw new ArgumentNullException(nameof(mapPrinter));
+
         _positionStringConverter = positionStringConverter;
         _appController = appController;
         _mapPrinter = mapPrinter;
@@ -26,6 +35,12 @@ public class AppUIHandler
 
     public void AskUserToMakePlateau(Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
+        if (plateauMakers is null)
+            throw new ArgumentException($"{nameof(plateauMakers)} cannot be null");
+
+        if (plateauMakers.Count == 0)
+            throw new ArgumentException($"{nameof(plateauMakers)} cannot be empty");
+
         AppUIHelpers.ExecuteUntilNoException(() => AppSectionPlateau.AskForPlateau(_appController, plateauMakers));
 
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);

@@ -9,12 +9,6 @@ public static class AppSectionPlateau
     public static void AskForPlateau(
         AppController appController, Dictionary<string, Func<PlateauBase>> plateauMakers)
     {
-        if (appController is null)
-            throw new ArgumentNullException(nameof(appController));
-
-        if (plateauMakers is null)
-            throw new ArgumentNullException(nameof(plateauMakers));
-
         Func<PlateauBase> selectedPlateauMaker = MakerMenu.AskUserToSelectMaker(
             groupName: "plateau",
             makers: plateauMakers);
