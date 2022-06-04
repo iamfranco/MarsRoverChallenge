@@ -22,7 +22,7 @@ public static class AppSectionVehicle
         }
         else
         {
-            var initialCoordinates = positionStringConverter.ToCoordinates(positionOrCoordinatesString);
+            Coordinates initialCoordinates = positionStringConverter.ToCoordinates(positionOrCoordinatesString);
             appController.ConnectToVehicleAtCoordinates(initialCoordinates);
         }
         return true;
@@ -33,20 +33,21 @@ public static class AppSectionVehicle
         Dictionary<string, Func<Position, VehicleBase>> vehicleMakers,
         string positionOrCoordinatesString)
     {
-        var initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
+        Position initialPosition = positionStringConverter.ToPosition(positionOrCoordinatesString);
         if (!appController.IsCoordinateValidInPlateau(initialPosition.Coordinates))
         {
             throw new ArgumentException($"{positionOrCoordinatesString} is on " +
                 $"Coordinates {initialPosition.Coordinates}, which is not valid on Plateau");
         }
 
-        var vehicleWithKnownPositionMakers = MakerMenu.GetMakersWithKnownPosition(vehicleMakers, initialPosition);
+        Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers = 
+            MakerMenu.GetMakersWithKnownPosition(vehicleMakers, initialPosition);
 
-        var selectedVehicleMaker = MakerMenu.AskUserToSelectMaker(
+        Func<VehicleBase> selectedVehicleMaker = MakerMenu.AskUserToSelectMaker(
             groupName: "vehicle",
             makers: vehicleWithKnownPositionMakers);
 
-        var vehicle = AppUIHelpers.ExecuteUntilNoException(selectedVehicleMaker);
+        VehicleBase vehicle = AppUIHelpers.ExecuteUntilNoException(selectedVehicleMaker);
         appController.AddVehicleToPlateau(vehicle);
     }
 

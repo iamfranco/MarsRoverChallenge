@@ -135,6 +135,7 @@ class Coordinates <<struct>>
   + GetY() : int
 
   + operator+(a : Coordinates, b : Coordinates) : Coordinates
+  + operator-(a : Coordinates, b : Coordinates) : Coordinates
 }
 
 enum Direction

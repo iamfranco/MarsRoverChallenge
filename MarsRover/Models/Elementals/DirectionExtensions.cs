@@ -28,7 +28,7 @@ public static class DirectionExtensions
     {
         const int directionCount = 4;
 
-        var index = (int)direction;
+        int index = (int)direction;
         index = (index + directionCount + amount) % directionCount;
 
         return (Direction)index;

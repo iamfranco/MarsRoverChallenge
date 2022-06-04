@@ -5,7 +5,7 @@ public class InputReader
     {
         Console.WriteLine();
         Console.Write(prompt);
-        var input = Console.ReadLine();
+        string? input = Console.ReadLine();
 
         if (input is null)
             throw new Exception($"Input cannot be null");

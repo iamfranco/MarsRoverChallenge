@@ -11,8 +11,8 @@ public static class MakerMenu
         if (!makers.Any())
             throw new ArgumentException($"{makersCallerName} cannot be empty");
 
-        var names = makers.Keys.ToList();
-        var selectedMaker = makers[names[0]];
+        List<string> names = makers.Keys.ToList();
+        Func<MakerReturnType> selectedMaker = makers[names[0]];
         if (names.Count > 1)
         {
             PrintAllAvailableNames(names, groupName);
@@ -40,7 +40,7 @@ public static class MakerMenu
     private static void PrintAllAvailableNames(List<string> names, string groupName)
     {
         Console.WriteLine($"All available {groupName} types: ");
-        for (var i = 0; i < names.Count; i++)
+        for (int i = 0; i < names.Count; i++)
             Console.WriteLine($"  {i + 1} - {names[i]}");
     }
 
@@ -51,7 +51,7 @@ public static class MakerMenu
             $"Enter a number to select a {groupName} (number between 1 and {names.Count}): ",
             minValue: 1, maxValue: names.Count);
 
-        var selectedName = names[selectedNum - 1];
+        string selectedName = names[selectedNum - 1];
         return makerFunc[selectedName];
     }
 }
