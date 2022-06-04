@@ -7,6 +7,9 @@ public class MapPrinter
 {
     public void PrintMap(AppController appController)
     {
+        if (appController is null)
+            throw new ArgumentNullException(nameof(appController));
+
         var plateau = appController.Plateau;
         if (plateau is null)
             throw new Exception("Plateau not connected");
