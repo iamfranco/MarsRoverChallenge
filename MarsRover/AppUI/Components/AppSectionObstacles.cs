@@ -9,15 +9,6 @@ public static class AppSectionObstacles
     public static void AskForObstaclesUntilEmptyInput(
         IPositionStringConverter positionStringConverter, AppController appController, MapPrinter mapPrinter)
     {
-        if (positionStringConverter is null)
-            throw new ArgumentNullException(nameof(positionStringConverter));
-
-        if (appController is null)
-            throw new ArgumentNullException(nameof(appController));
-
-        if (mapPrinter is null)
-            throw new ArgumentNullException(nameof(mapPrinter));
-
         while (true)
         {
             try

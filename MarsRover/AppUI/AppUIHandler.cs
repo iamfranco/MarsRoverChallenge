@@ -48,6 +48,9 @@ public class AppUIHandler
 
     public void AskUserToMakeObstacles()
     {
+        if (_appController.Plateau is null)
+            throw new Exception("Plateau not connected, cannot add obstacle");
+
         AppSectionObstacles.AskForObstaclesUntilEmptyInput(_positionStringConverter, _appController, _mapPrinter);
     }
 

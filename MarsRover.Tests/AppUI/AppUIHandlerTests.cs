@@ -6,6 +6,7 @@ using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
+using MarsRover.Tests.AppUI.Helpers;
 
 namespace MarsRover.Tests.AppUI;
 internal class AppUIHandlerTests
@@ -84,9 +85,43 @@ internal class AppUIHandlerTests
     [Test]
     public void AskUserToMakePlateau_With_Empty_Maker_Should_Throw_Exception()
     {
-        plateauMakers.Clear();
-
-        Action act = () => appUIHandler.AskUserToMakePlateau(plateauMakers);
+        
+        Action act = () => appUIHandler.AskUserToMakePlateau(new());
         act.Should().Throw<ArgumentException>().WithMessage("plateauMakers cannot be empty");
+    }
+
+    [Test]
+    public void AskUserToMakePlateau_With_UserInput_1_Then_5_8_Then_AppController_Plateau_Should_Return_RectangularPlateau_Of_Size_5_by_8()
+    {
+        List<string> userInputs = new() { "1", "5 8" };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+
+        appUIHandler.AskUserToMakePlateau(plateauMakers);
+
+        appController.Plateau.Should().NotBeNull();
+        appController.Plateau.GetType().Name.Should().Be(nameof(RectangularPlateau));
+        appController.Plateau.MaximumCoordinates.Should().Be(new Coordinates(5, 8));
+    }
+
+    [Test]
+    public void AskUserToMakeObstacles_Before_ConnectingPlateau_Should_Throw_Exception()
+    {
+        Action act = () => appUIHandler.AskUserToMakeObstacles();
+        act.Should().Throw<Exception>().WithMessage("Plateau not connected, cannot add obstacle");
+    }
+
+    [Test]
+    public void AskUserToMakeObstacles_With_UserInput_4_5_Then_ajkdjslkfjd_Then1_2_Then_EmptyString_Then_Plateau_Should_Have_Obstacles_Only_On_4_5_And_1_2()
+    {
+        List<string> userInputs = new() { "4 5", "ajkdjslkfjd", "1 2", "" };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+        
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+        
+        appUIHandler.AskUserToMakeObstacles();
+
+        List<Coordinates> expectedObstacles = new() { new(4, 5), new(1, 2) };
+        List<Coordinates> actualObstacles = appController.Plateau.ObstaclesContainer.ObstacleCoordinates.ToList();
+        actualObstacles.Should().BeEquivalentTo(expectedObstacles);
     }
 }

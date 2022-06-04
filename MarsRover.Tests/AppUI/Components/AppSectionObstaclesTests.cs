@@ -29,27 +29,6 @@ internal class AppSectionObstaclesTests
     }
 
     [Test]
-    public void AskForObstaclesUntilEmptyInput_With_Null_PositionStringConverter_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionObstacles.AskForObstaclesUntilEmptyInput(null, appController, mapPrinter);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForObstaclesUntilEmptyInput_With_Null_appController_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionObstacles.AskForObstaclesUntilEmptyInput(positionStringConverter, null, mapPrinter);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForObstaclesUntilEmptyInput_With_Null_mapPrinter_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionObstacles.AskForObstaclesUntilEmptyInput(positionStringConverter, appController, null);
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
     public void AskForObstaclesUntilEmptyInput_With_UserInput_Empty_String_Should_Not_Add_Obstacles_To_Plateau()
     {
         List<string> userInputs = new() { "" };
