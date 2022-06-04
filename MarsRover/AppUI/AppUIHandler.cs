@@ -56,6 +56,12 @@ public class AppUIHandler
 
     public void AskUserToCreateNewVehicleOrConnectToExistingVehicle(Dictionary<string, Func<Position, VehicleBase>> vehicleMakers)
     {
+        if (vehicleMakers is null)
+            throw new ArgumentException("vehicleMakers cannot be null");
+
+        if (_appController.Plateau is null)
+            throw new Exception("Plateau not connected, cannot add vehicle or connect to vehicle");
+
         _appController.DisconnectVehicle();
         AppUIHelpers.ClearScreenAndPrintMap(_appController, _mapPrinter);
 

@@ -33,33 +33,6 @@ internal class AppSectionVehicleTests
     }
 
     [Test]
-    public void AskForPositionOrCoordinatesToCreateOrConnectVehicle_With_Null_PositionStringConverter_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-            null, appController, vehicleMakers);
-
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForPositionOrCoordinatesToCreateOrConnectVehicle_With_Null_AppController_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-            positionStringConverter, null, vehicleMakers);
-
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void AskForPositionOrCoordinatesToCreateOrConnectVehicle_With_Null_VehicleMakers_Should_Throw_Exception()
-    {
-        Action act = () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(
-            positionStringConverter, appController, null);
-
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
     public void AskForPositionOrCoordinatesToCreateOrConnectVehicle_With_UserInput_1_2_N_Then_2_Should_Create_New_WallE_Vehicle_At_Position_1_2_N()
     {
         List<string> userInput = new() { "1 2 N", "2" };

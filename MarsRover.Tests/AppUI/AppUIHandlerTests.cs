@@ -6,6 +6,7 @@ using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
+using MarsRover.Models.Vehicles;
 using MarsRover.Tests.AppUI.Helpers;
 
 namespace MarsRover.Tests.AppUI;
@@ -16,6 +17,7 @@ internal class AppUIHandlerTests
     MapPrinter mapPrinter;
     AppUIHandler appUIHandler;
     Dictionary<string, Func<PlateauBase>> plateauMakers;
+    Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
 
     [SetUp]
     public void Setup()
@@ -52,6 +54,12 @@ internal class AppUIHandlerTests
                 }
             },
         };
+
+        vehicleMakers = new()
+        {
+            { "Rover", position => new Rover(position) },
+            { "Wall E", position => new WallE(position) }
+        };
     }
 
     [Test]
@@ -85,7 +93,7 @@ internal class AppUIHandlerTests
     [Test]
     public void AskUserToMakePlateau_With_Empty_Maker_Should_Throw_Exception()
     {
-        
+
         Action act = () => appUIHandler.AskUserToMakePlateau(new());
         act.Should().Throw<ArgumentException>().WithMessage("plateauMakers cannot be empty");
     }
@@ -115,13 +123,62 @@ internal class AppUIHandlerTests
     {
         List<string> userInputs = new() { "4 5", "ajkdjslkfjd", "1 2", "" };
         InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
-        
+
         appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
-        
+
         appUIHandler.AskUserToMakeObstacles();
 
         List<Coordinates> expectedObstacles = new() { new(4, 5), new(1, 2) };
         List<Coordinates> actualObstacles = appController.Plateau.ObstaclesContainer.ObstacleCoordinates.ToList();
         actualObstacles.Should().BeEquivalentTo(expectedObstacles);
+    }
+
+    [Test]
+    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle_With_Null_VehicleMakers_Should_Throw_Exception()
+    {
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+
+        Action act = () => appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(null);
+        act.Should().Throw<ArgumentException>().WithMessage("vehicleMakers cannot be null");
+    }
+
+    [Test]
+    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle_Before_ConnectingPlateau_Should_Throw_Exception()
+    {
+        Action act = () => appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
+        act.Should().Throw<Exception>().WithMessage("Plateau not connected, cannot add vehicle or connect to vehicle");
+    }
+
+    [Test]
+    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle_With_UserInputs_4_5_S_Then_1_Should_Create_Vehicle_On_Plateau_At_4_5_S_Of_Type_Rover()
+    {
+        List<string> userInputs = new() { "4 5 S", "1" };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+
+        appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
+
+        appController.Vehicle.Position.Should().Be(new Position(new(4, 5), Direction.South));
+        appController.Vehicle.GetType().Name.Should().Be("Rover");
+    }
+
+    [Test]
+    public void AskUserToCreateNewVehicleOrConnectToExistingVehicle_With_UserInputs_4_5_On_Plateau_With_A_Vehicle_On_4_5_Should_Connect_To_It()
+    {
+        VehicleBase vehicle = new Rover(new(new(4, 5), Direction.South));
+
+        appController.ConnectPlateau(new RectangularPlateau(new(10, 10)));
+        appController.AddVehicleToPlateau(vehicle);
+        appController.AddVehicleToPlateau(new WallE(new(new(0, 0), Direction.North)));
+        appController.AddVehicleToPlateau(new Rover(new(new(2, 4), Direction.East)));
+
+        List<string> userInputs = new() { "4 5" };
+        InputReaderContainer.SetInputReader(new InputReaderForTest(userInputs));
+
+        appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
+
+        appController.Vehicle.Position.Should().Be(new Position(new(4, 5), Direction.South));
+        appController.Vehicle.GetType().Name.Should().Be("Rover");
     }
 }
