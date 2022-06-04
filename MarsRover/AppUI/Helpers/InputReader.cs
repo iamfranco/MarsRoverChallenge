@@ -12,4 +12,6 @@ public class InputReader
 
         return input;
     }
+
+    public virtual ConsoleKeyInfo ReadKey() => Console.ReadKey();
 }

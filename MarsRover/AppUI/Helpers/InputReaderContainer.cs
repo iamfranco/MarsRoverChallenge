@@ -12,4 +12,5 @@ public static class InputReaderContainer
     }
 
     public static string GetUserInput(string prompt) => _inputReader.GetUserInput(prompt);
+    public static ConsoleKeyInfo ReadKey() => _inputReader.ReadKey();
 }
