@@ -56,7 +56,9 @@ public static class AppUIHelpers
 
     public static void ClearScreenAndPrintMap(AppController appController, MapPrinter mapPrinter)
     {
-        Console.Clear();
+        if (!Console.IsOutputRedirected)
+            Console.Clear();
+
         Console.WriteLine("ctrl-C to exit");
 
         mapPrinter.PrintMap(appController);
