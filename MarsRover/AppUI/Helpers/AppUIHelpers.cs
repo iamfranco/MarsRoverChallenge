@@ -26,7 +26,7 @@ public static class AppUIHelpers
     {
         return ExecuteUntilNoException(() =>
         {
-            var input = GetUserInput(prompt);
+            var input = InputReaderContainer.GetUserInput(prompt);
 
             if (!validationFunc(input))
                 throw new Exception($"Input [{input}] is not in correct format");
@@ -39,7 +39,7 @@ public static class AppUIHelpers
     {
         return ExecuteUntilNoException(() =>
         {
-            var input = GetUserInput(prompt);
+            var input = InputReaderContainer.GetUserInput(prompt);
 
             if (!int.TryParse(input, out var num))
                 throw new Exception($"Input [{input}] needs to be integer");
@@ -56,23 +56,13 @@ public static class AppUIHelpers
 
     public static void ClearScreenAndPrintMap(AppController appController, MapPrinter mapPrinter)
     {
-        Console.Clear();
+        if (!Console.IsOutputRedirected)
+            Console.Clear();
+
         Console.WriteLine("ctrl-C to exit");
 
         mapPrinter.PrintMap(appController);
 
         Console.WriteLine();
-    }
-
-    public static string GetUserInput(string prompt)
-    {
-        Console.WriteLine();
-        Console.Write(prompt);
-        var input = Console.ReadLine();
-
-        if (input is null)
-            throw new Exception($"Input cannot be null");
-
-        return input;
     }
 }

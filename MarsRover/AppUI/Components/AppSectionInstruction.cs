@@ -12,6 +12,7 @@ public static class AppSectionInstruction
     public static string AskForInstructionAndSendToVehicle(
         IPositionStringConverter positionStringConverter, AppController appController)
     {
+
         IInstructionReader instructionReader = appController.InstructionReader;
 
         string instructionString = AppUIHelpers.AskUntilValidStringInput(

@@ -11,8 +11,6 @@ using MarsRover.Models.Vehicles;
 IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
 IInstructionReader instructionReader = new StandardInstructionReader();
 MapPrinter mapPrinter = new MapPrinter();
-AppController appController = new(instructionReader);
-AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
 {
@@ -45,15 +43,7 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
     { "Wall E", position => new WallE(position) }
 };
 
-appUIHandler.AskUserToMakePlateau(plateauMakers);
-appUIHandler.AskUserToMakeObstacles();
+AppController appController = new(instructionReader);
+AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
 
-while (true)
-{
-    appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
-    appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
-
-    Console.WriteLine();
-    Console.Write("Press any key to continue.. ");
-    Console.ReadKey();
-}
+ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
