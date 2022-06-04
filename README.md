@@ -215,7 +215,7 @@ with the new code that does the same thing:
 string radius = InputReaderContainer.GetUserInput("Enter Radius: ");
 ```
 
-With the benefit that `InputReader` is substitutable in the unit test.
+with the benefit that `InputReader` is substitutable in the unit test.
 
 So in the unit testing **MarsRover.Tests** project, I can simulate the user inputting `10` for the radius by doing:
 
