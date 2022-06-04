@@ -1,0 +1,44 @@
+@startuml "InputReader"
+skinparam classAttributeIconSize 0
+
+package MarsRover
+{
+    class InputReader
+    {
+        + GetUserInput(prompt : string) : string
+        + ReadKey() : ConsoleKeyInfo
+    }
+
+    class InputReaderContainer <<static>>
+    {
+        - inputReader : InputReader
+
+        + SetInputReader(inputReader : InputReader) : void
+        
+        + GetUserInput(prompt : string) : string
+        + ReadKey() : ConsoleKeyInfo
+    }
+}
+
+package MarsRover.Tests
+{
+    class InputReaderForTest 
+    {
+        - inputs : List<string>
+        - inputsIndex : int
+
+        - keyInfos : List<ConsoleKeyInfo>
+        - keyInfosIndex : int
+
+        + InputReaderForTest(inputs : List<string>, keyInfos : List<ConsoleKeyInfo>)
+        + InputReaderForTest(inputs : List<string>)
+
+        + GetUserInput(prompt : string) : string
+        + ReadKey() : ConsoleKeyInfo
+    }
+}
+
+InputReaderContainer o-r- InputReader
+InputReader <|-- InputReaderForTest 
+
+@enduml

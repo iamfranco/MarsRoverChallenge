@@ -12,10 +12,10 @@ using MarsRover.Tests.AppUI.Helpers;
 namespace MarsRover.Tests.AppUI;
 internal class ConsoleAppTests
 {
-    AppUIHandler appUIHandler;
-    Dictionary<string, Func<PlateauBase>> plateauMakers;
-    Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
-    AppController appController;
+    private AppUIHandler appUIHandler;
+    private Dictionary<string, Func<PlateauBase>> plateauMakers;
+    private Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
+    private AppController appController;
 
     [SetUp]
     public void Setup()

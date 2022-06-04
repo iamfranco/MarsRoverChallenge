@@ -6,7 +6,7 @@ using MarsRover.Models.Vehicles;
 namespace MarsRover.AppUI;
 public static class ConsoleApp
 {
-    private static ConsoleKeyInfo _qKeyInfo = new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false);
+    private static readonly ConsoleKeyInfo _qKeyInfo = new('q', ConsoleKey.Q, false, false, false);
 
     public static void Run(AppUIHandler appUIHandler,
         Dictionary<string, Func<PlateauBase>> plateauMakers,
@@ -33,7 +33,7 @@ public static class ConsoleApp
 
                 Console.WriteLine();
 
-                Console.Write("Press [Q] key to quit, any other key to continue.. ");
+                Console.Write("Press [q] key to quit, press any other key to continue.. ");
                 var keyInfo = InputReaderContainer.ReadKey();
                 if (keyInfo == _qKeyInfo)
                     break;
