@@ -12,6 +12,12 @@ public static class AppSectionInstruction
     public static string AskForInstructionAndSendToVehicle(
         IPositionStringConverter positionStringConverter, AppController appController)
     {
+        if (positionStringConverter is null)
+            throw new ArgumentNullException(nameof(positionStringConverter));
+
+        if (appController is null)
+            throw new ArgumentNullException(nameof(appController));
+
         IInstructionReader instructionReader = appController.InstructionReader;
 
         string instructionString = AppUIHelpers.AskUntilValidStringInput(
