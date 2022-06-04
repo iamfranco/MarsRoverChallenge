@@ -5,9 +5,9 @@ public class CircularPlateau : PlateauBase
 {
     private readonly int _radius;
 
-    public override Coordinates MaximumCoordinates => new(_radius * 2, _radius * 2);
+    public override Coordinates MaximumCoordinates => new(_radius, _radius);
 
-    public override Coordinates MinimumCoordinates => new(0, 0);
+    public override Coordinates MinimumCoordinates => new(-_radius, -_radius);
 
     public CircularPlateau(int radius)
     {
@@ -19,7 +19,7 @@ public class CircularPlateau : PlateauBase
 
     public override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates)
     {
-        return Squared(coordinates.X - _radius) + Squared(coordinates.Y - _radius) <= Squared(_radius);
+        return Squared(coordinates.X) + Squared(coordinates.Y) <= Squared(_radius);
     }
 
     private static int Squared(int num) => num * num;
