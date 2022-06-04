@@ -12,12 +12,12 @@ using MarsRover.Tests.AppUI.Helpers;
 namespace MarsRover.Tests.AppUI;
 internal class AppUIHandlerTests
 {
-    IPositionStringConverter positionStringConverter;
-    AppController appController;
-    MapPrinter mapPrinter;
-    AppUIHandler appUIHandler;
-    Dictionary<string, Func<PlateauBase>> plateauMakers;
-    Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
+    private IPositionStringConverter positionStringConverter;
+    private AppController appController;
+    private MapPrinter mapPrinter;
+    private AppUIHandler appUIHandler;
+    private Dictionary<string, Func<PlateauBase>> plateauMakers;
+    private Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
 
     [SetUp]
     public void Setup()

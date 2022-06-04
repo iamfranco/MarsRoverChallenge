@@ -8,8 +8,8 @@ using MarsRover.Tests.AppUI.Helpers;
 namespace MarsRover.Tests.AppUI.Components;
 internal class AppSectionPlateauTests
 {
-    AppController appController;
-    Dictionary<string, Func<PlateauBase>> plateauMakers;
+    private AppController appController;
+    private Dictionary<string, Func<PlateauBase>> plateauMakers;
 
     [SetUp]
     public void Setup()

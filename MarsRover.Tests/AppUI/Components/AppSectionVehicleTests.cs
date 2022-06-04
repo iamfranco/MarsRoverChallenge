@@ -11,15 +11,15 @@ using MarsRover.Tests.AppUI.Helpers;
 namespace MarsRover.Tests.AppUI.Components;
 internal class AppSectionVehicleTests
 {
-    IPositionStringConverter positionStringConverter;
-    AppController appController;
-    Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
+    private IPositionStringConverter positionStringConverter;
+    private AppController appController;
+    private Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;
 
     [SetUp]
     public void Setup()
     {
         IInstructionReader instructionReader = new StandardInstructionReader();
-        PlateauBase plateau = new RectangularPlateau(new(10, 10)); 
+        PlateauBase plateau = new RectangularPlateau(new(10, 10));
 
         positionStringConverter = new StandardPositionStringConverter();
         appController = new AppController(instructionReader);
@@ -37,7 +37,7 @@ internal class AppSectionVehicleTests
     {
         List<string> userInput = new() { "1 2 N", "2" };
         InputReaderContainer.SetInputReader(new InputReaderForTest(userInput));
-        
+
         AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(positionStringConverter, appController, vehicleMakers);
 
         appController.Vehicle!.Position.Should().Be(new Position(new(1, 2), Direction.North));
@@ -82,7 +82,7 @@ internal class AppSectionVehicleTests
         InputReaderContainer.SetInputReader(new InputReaderForTest(userInput));
 
         Action act = () => AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(positionStringConverter, appController, vehicleMakers);
-        
+
         act.Should().Throw<Exception>().WithMessage("Coordinates (1, 2) does not match any vehicle's coordinates on plateau");
     }
 
@@ -109,7 +109,7 @@ internal class AppSectionVehicleTests
         appController.AddVehicleToPlateau(wallE);
 
         string firstValidCoordinatesString = "1 2";
-        List<string> userInput = new() { "jaskdjfslkjskls", firstValidCoordinatesString, "4 5 N"};
+        List<string> userInput = new() { "jaskdjfslkjskls", firstValidCoordinatesString, "4 5 N" };
         InputReaderContainer.SetInputReader(new InputReaderForTest(userInput));
 
         AppSectionVehicle.AskForPositionOrCoordinatesToCreateOrConnectVehicle(positionStringConverter, appController, vehicleMakers);

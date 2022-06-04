@@ -6,8 +6,8 @@ using MarsRover.Models.Plateaus;
 namespace MarsRover.Tests.AppUI.Components;
 internal class MapPrinterTests
 {
-    MapPrinter mapPrinter;
-    AppController appController;
+    private MapPrinter mapPrinter;
+    private AppController appController;
     [SetUp]
     public void Setup()
     {

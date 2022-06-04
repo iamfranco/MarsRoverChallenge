@@ -75,7 +75,7 @@ internal class AppUIHelpersTests
     public void AskUntilValidStringInput_Should_Return_First_UserInput_That_Returns_True_For_ValidationFunc()
     {
         string firstValidUserInput = "someInput";
-        List<string> inputs = new() { "asjdkldsjf", "123", firstValidUserInput, "__A__", "sssssss"};
+        List<string> inputs = new() { "asjdkldsjf", "123", firstValidUserInput, "__A__", "sssssss" };
         bool validationFunc(string input) => input.StartsWith("s");
 
         InputReaderContainer.SetInputReader(new InputReaderForTest(inputs));
