@@ -1,5 +1,5 @@
-﻿using MarsRover.Models.Instructions;
-using MarsRover.Models.Instructions.Elementals;
+﻿using MarsRover.Models.Elementals;
+using MarsRover.Models.Instructions;
 
 namespace MarsRover.Tests.Models.Instructions;
 

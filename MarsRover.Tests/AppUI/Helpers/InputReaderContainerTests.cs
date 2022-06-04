@@ -77,7 +77,7 @@ internal class InputReaderContainerTests
         InputReaderForTest inputReader = new InputReaderForTest(userInputs, keyInfos);
         InputReaderContainer.SetInputReader(inputReader);
 
-        for (int i=0; i< userInputs.Count; i++)
+        for (int i = 0; i < userInputs.Count; i++)
         {
             var userInput = userInputs[i];
             var keyInfo = keyInfos[i];

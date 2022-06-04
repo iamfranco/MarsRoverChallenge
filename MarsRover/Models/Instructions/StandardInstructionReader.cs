@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using MarsRover.Models.Instructions.Elementals;
+using MarsRover.Models.Elementals;
 
 namespace MarsRover.Models.Instructions;
 
