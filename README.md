@@ -8,7 +8,7 @@ Here we have 3 folders:
 2. The `MarsRover.Tests` folder contains the unit tests for the solution
 3. The `diagrams` folder contains diagrams related to the solution
 
-## Instructions
+# Instructions
 
 To run the application:
 
@@ -20,11 +20,11 @@ To run the application:
 dotnet run
 ```
 
-## Demo
+# Demo
 
 ![alt text](diagrams/appDemo.gif "app demo GIF")
 
-## Key Features
+# Key Features
 
 The application can:
 
@@ -34,10 +34,10 @@ The application can:
 4. move vehicles on the Plateau by reading **movement instruction**, such as "LMMRMMMRLMRMMLMR", from user input
 5. print the vehicle's updated position after applying the movement instruction to the console
 
-## Assumptions
+# Assumptions
 
 1. Vehicles will only face 1 of 4 different directions:
-   North, East, South, and West.
+   **North**, **East**, **South**, and **West**.
 
 2. We will use cartesian coordinates $(x, y)$ to represent any location on a plateau. In particular, $x$ and $y$ are both integer values, so the plateau can be separated into "grids" on a 2D plane.
 
@@ -47,15 +47,17 @@ The application can:
 
 5. No vehicle can "overcome" obstacles, or "escape" the plateau boundary. In reality, something like a helicopter would not be restricted by obstacles or plateau boundary, but in this application we will assume that all vehicles are restricted by obstacles and boundaries.
 
-6. vehicles will not crash into another object (obstacles or other vehicles) or fall off the plateau boundary. Instead they will stop moving immediately before crashing into something.
+6. Vehicles will not crash into another object (obstacles or other vehicles) or fall off the plateau boundary. Instead they will stop moving immediately before crashing into something.
 
-## Approaches
+7. Vehicles all take up the just one grid. This application assumes that we won't have long vehicles that take up multiple grids on the plateau.
+
+# Approaches
 
 Before I describe my approach and design decisions, let me show the full UML diagram so we can see the big picture before I dive into the individual parts:
 
 ![UML Diagram](https://raw.githubusercontent.com/iamfranco/MarsRoverChallenge/main/diagrams/Mars%20Rover%20Challenge.png)
 
-### Design decision on `Direction`, and `Coordinates`
+## Design decision on `Direction`, and `Coordinates`
 
 We assumed that vehicles will only face 4 directions. Since direction can only be 1 of 4 possible values, we can use an `enum` to store the `Direction`:
 
@@ -140,21 +142,21 @@ public static Coordinates GetMovementVector(this Direction direction)
 
 so that if a vehicle is currently at coordinates $(3, 4)$ and facing **north** and is about to "move forward", then its next coordinates after moving forward would be:
 $$\texttt{next coordinates} = (3, 4) + \texttt{north} = (3, 4) + (0, 1) = (3, 5)$$
-So the c# code for "moving forward" can written as:
+So the c# code for "moving forward" can be written as:
 
 ```c#
 nextCoordinates = currentCoordinates + currentDirection.GetMovementVector();
 ```
 
-Doing this whole "overload the `+` operator for `Coordinates` and have an extension method to turn `Direction` into `Coordinates`" saves me from writing switch statements on the part of code that applies the "moving forward" action, which would be in a completely different file from the `Coordinates` file.
+Doing this whole "overload the `+` operator for `Coordinates` and have an extension method to turn `Direction` into `Coordinates`" thing saves me from writing switch statements on the part of code that applies the "moving forward" action, which would be in a completely different file from the `Coordinates` file.
 
 Although the extension method `GetMovementVector()` also uses switch statements, it is at least in the same file as the `Direction` enum, so if later on we decided to change the way we define `Direction`, we can do the appropriate adjustment to the `GetMovementVector` in the same file.
 
-### Design Decision on `PlateauBase`, `VehicleBase`, `IInstructionReader` and `IPositionStringConverter`
+## Design Decision on `PlateauBase`, `VehicleBase`, `IInstructionReader` and `IPositionStringConverter`
 
 From the UML, we can see that `PlateauBase` and `VehicleBase` are abstract classes, and `IInstructionReader` and `IPositionStringConverter` are interfaces.
 
-In particular, other classes can only interact with their concrete subclass through them. For example, the `AppController` class doesn't interact directly with the `Rover` class, instead `AppController` interacts with `VehicleBase` which is the parent class of `Rover`.
+In particular, other classes can only interact with their concrete subclasses through them. For example, the `AppController` class doesn't interact directly with the `Rover` class, instead `AppController` interacts with `VehicleBase` which is the abstract base class of `Rover`.
 
 This is to make **plateau**, **vehicle**, **instructionReader** and **positionStringConverter** easily "extendable" by users. For example, if a user wants to model a "Tesla" as a vehicle in this application, then they would just need to:
 
@@ -169,13 +171,13 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
 };
 ```
 
-3. then the application will "know" about the `Tesla` class, so when it comes to a stage where the application is about to create a vehicle, it'll ask the user to select what type of vehicle to create (`Rover` or `Tesla`).
+3. then the application will "know" about the `Tesla` class, so when it comes to a stage where the application is about to create a new vehicle, it'll include `Tesla` in its "list of vehicle types".
 
-To extend for **plateau**, **instructionReader** or **positionStringConverter**, the user will do something similar (create a new class that inherits from the base class, then add a new line in the "dependency injection container"). The procedure for them will be fully explained in later sections.
+To extend for **plateau**, **instructionReader** or **positionStringConverter**, the user will do something similar (create a new class that inherits from the base class, then add a new line in the "dependency injection container"). The procedure for them will be fully explained in the [Open for extension but closed for modification](#open-for-extension-but-closed-for-modification) section.
 
-### `AppController` and `AppUIHandler`
+## `AppController` and `AppUIHandler`
 
-`AppController` controls the interaction between `VehicleBase` and `PlateauBase` "at a high level". This means the `AppController` will NOT micro-manage the mechanics of **plateau** and **vehicle**. Instead, it'll just "tell" **plateau** and **vehicle** to "do their thing".
+`AppController` controls the interaction between `PlateauBase` and `VehicleBase` "at a high level". This means the `AppController` will NOT micro-manage the mechanics of **plateau** and **vehicle**. Instead, it'll just "tell" **plateau** and **vehicle** to "do their thing".
 
 For example, the `SendMoveInstruction(string instruction)` method in `AppController` does the following things:
 
@@ -193,7 +195,7 @@ Now for `AppUIHandler`, it has methods that:
 2. then delegates to `AppController` to actually perform the user requests,
 3. then displays the **result** back to the user (where the **result** will be formatted using `IPositionStringConvert`)
 
-## Open for extension but closed for modification
+# Open for extension but closed for modification
 
 The user can extend the application in the following ways:
 
@@ -202,9 +204,9 @@ The user can extend the application in the following ways:
 3. Make a new instruction reader (default instruction reader only undertands string that consist of "L", "R", and "M")
 4. Make a new position string converter (default position string converter will format position as `1 2 N`, and coordinates as `1 2`)
 
-### New Plateau Shape
+## New Plateau Shape
 
-Let's say the user wants to make a circular plateau, then they'll just need to:
+Let's say the user wants to make a **circular** plateau, then they'll just need to:
 
 1. create a class for `CircularPlateau` that inherits from the `PlateauBase` class
 2. add a new "key value pair" in `Program.cs` where it defines the `plateauMakers`:
@@ -254,11 +256,11 @@ If the user enters `2`, which selects the circular plateau, the console app will
 Enter Radius (eg "5"):
 ```
 
-which is the prompt the user specified in the new item in `plateauMakers`.
+which is the prompt the user specified in the new "key value pair" in `plateauMakers`.
 
-### New Vehicle Type
+## New Vehicle Type
 
-Let's say the user wants to make a Tesla as vehicle, then they'll just need to:
+Let's say the user wants to make a **Tesla** as vehicle, then they'll just need to:
 
 1. create a class for `Tesla` that inherits from the `VehicleBase` class
 2. add a new line in `Program.cs` where it defines the `vehicleMakers`:
@@ -273,7 +275,7 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
 
 Now that the user added a new class for `Tesla` and added a new item for it in the `Program.cs`'s `vehicleMakers`, the application will now know about the `Tesla` class.
 
-So that when the user runs the application, the application will include `Tesla` as an "available plateau type". So when it comes to the stage where a new vehicle needs to be created, the console app will show this:
+So that if the user runs the application, then when it comes to the stage where a new vehicle needs to be created, the console app will show this:
 
 ```
 All available vehicle types:
@@ -285,7 +287,7 @@ Enter a number to select a vehicle (number between 1 and 2):
 
 And the user can select the `Tesla` by entering `2`.
 
-### New Instruction Reader
+## New Instruction Reader
 
 Let's say the user is tired of typing `LMMMMMMMMMMR` just to make the vehicle "turn left, then move forward **10** steps, then turn right".
 
@@ -293,7 +295,7 @@ Instead, they want to just type `L M10 R` and want the application understand th
 
 To achieve this, they'll just need to:
 
-1. create a class for `StepCountInstructionReader` that implements from the `IInstructionReader` interface. In particular, they'll code the body of the `EvaluateInstruction` method so that it will evaluates `L M10 R` correctly.
+1. create a class for `StepCountInstructionReader` that implements from the `IInstructionReader` interface. In particular, they'll code the body of the `EvaluateInstruction` method so that it will evaluate `L M10 R` correctly.
 2. modify a line `Program.cs` where it defines the `instructionReader`:
 
 ```c#
@@ -309,7 +311,7 @@ Enter Movement Instruction (eg "L M3 R M2 L2"):
 
 And the user can enter `L M10 R` and the application will understand it.
 
-### new position string converter
+## New position string converter
 
 Let's say the user doesn't like the standard position string formatting of `1 2 N`, and prefers it to be `1 2 North`.
 
@@ -319,10 +321,8 @@ To achieve that, they'll just need to:
 2. modify a line `Program.cs` where it defines the `positionStringConverter`:
 
 ```c#
-// IPositionStringConverter positionStringConverter =
-//  new StandardPositionStringConverter(); // old
-IPositionStringConverter positionStringConverter =
-    new FullWordPositionStringConverter(); // new
+// IPositionStringConverter positionStringConverter = new StandardPositionStringConverter(); // old
+IPositionStringConverter positionStringConverter = new FullWordPositionStringConverter(); // new
 ```
 
 Now the application will read position and coordinates strings using the new format.
@@ -333,4 +333,12 @@ For example, the console app would now show the connected rover position like th
 Connected to [Rover] at [1 2 North]
 ```
 
-## Future thoughts
+# Future thoughts
+
+The 4 possible directions might be too restrictive for our vehicles. It might be good to use Direction that can be more precise, such as "North West", "South East" etc. Or even to use angular direction.
+
+We assumed that all vehicles treat obstacles the same, such that no vehicle can "overcome" an obstacle. But as said in the assumptions section, helicopter is a vehicle and yet it probably wouldn't see big rocks on the ground as obstacles. So it might be a good idea to differentiate different types of obstacles and let the the vehicle class individually specify whether a particular type of "obstacle" is actually an obstacle for that vehicle class.
+
+We assumed that all vehicles will perform an emergency stop immediately before it's about to crash. This assumption is to simplify the application so we don't have to deal with the uncertainty of what happens when a vehicle crash, because the outcome of a crash is arguably non-deterministic. But in reality, not every vehicle would have that "danger detection mechanism".
+
+For TDD, it is challenging to test the `AppUIHandler` class since it takes user input and only prints results back to the console. It would be interesting to learn ways to test code that involves user input and output.
