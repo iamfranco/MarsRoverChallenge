@@ -40,7 +40,8 @@ The application can:
    **North**, **East**, **South**, and **West**.
 
 2. We will use cartesian coordinates $(x, y)$ to represent any location on a plateau. In particular, $x$ and $y$ are both integer values, so the plateau can be separated into "grids" on a 2D plane.
-   ![Plateau Grids](/diagrams/illustration/plateauGrids.png)
+
+![Plateau Grids](/diagrams/illustration/plateauGrids.png)
 
 3. Vehicles only have 3 different movements: turn left, turn right, and move forward. Turning left or right will rotate the vehicle by 90 degrees counter-clockwise or clockwise, and moving forward will move the vehicle in the direction its facing by "1 unit".
 
