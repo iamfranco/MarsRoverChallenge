@@ -1,9 +1,9 @@
-﻿using MarsRover.AppUI.Components;
+﻿using MarsRover.AppUI.MapPrinters;
 using MarsRover.Controllers;
 using MarsRover.Models.Instructions;
 using MarsRover.Models.Plateaus;
 
-namespace MarsRover.Tests.AppUI.Components;
+namespace MarsRover.Tests.AppUI.MapPrinters;
 internal class MapPrinterTests
 {
     private MapPrinter mapPrinter;

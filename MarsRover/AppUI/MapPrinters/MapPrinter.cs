@@ -3,7 +3,7 @@ using MarsRover.Models.Elementals;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.AppUI.Components;
+namespace MarsRover.AppUI.MapPrinters;
 public class MapPrinter
 {
     private readonly ConsoleColor _defaultGroundColor = Console.BackgroundColor;

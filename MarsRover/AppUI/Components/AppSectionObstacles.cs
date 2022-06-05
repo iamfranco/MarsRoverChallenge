@@ -1,4 +1,5 @@
 ﻿using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.MapPrinters;
 using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
 

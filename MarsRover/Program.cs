@@ -1,6 +1,6 @@
 ﻿using MarsRover.AppUI;
-using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.MapPrinters;
 using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
 using MarsRover.Models.Elementals;

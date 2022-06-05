@@ -1,4 +1,4 @@
-﻿using MarsRover.AppUI.Components;
+﻿using MarsRover.AppUI.MapPrinters;
 using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Helpers;
