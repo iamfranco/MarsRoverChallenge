@@ -372,7 +372,7 @@ Connected to [Rover] at [1 2 North]
 
 ## New Map Printer
 
-Let's say the user doesn't look and feel of the default map printer, and they want to their map printer to use a different sized grids with different white spaces and perhaps different font or background color.
+Let's say the user doesn't like the look and feel of the default map printer, and they want to their map printer to use a different sized grids with different white spaces and perhaps different font or background color.
 
 To achieve that, they'll just need to:
 
