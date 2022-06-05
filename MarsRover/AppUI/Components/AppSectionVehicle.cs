@@ -40,7 +40,7 @@ public static class AppSectionVehicle
                 $"Coordinates {initialPosition.Coordinates}, which is not valid on Plateau");
         }
 
-        Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers = 
+        Dictionary<string, Func<VehicleBase>> vehicleWithKnownPositionMakers =
             MakerMenu.GetMakersWithKnownPosition(vehicleMakers, initialPosition);
 
         Func<VehicleBase> selectedVehicleMaker = MakerMenu.AskUserToSelectMaker(
