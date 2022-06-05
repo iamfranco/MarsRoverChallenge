@@ -41,6 +41,8 @@ The application can:
 
 2. We will use cartesian coordinates $(x, y)$ to represent any location on a plateau. In particular, $x$ and $y$ are both integer values, so the plateau can be separated into "grids" on a 2D plane.
 
+![Plateau Grids](/diagrams/illustration/plateauGrids.png)
+
 3. Vehicles only have 3 different movements: turn left, turn right, and move forward. Turning left or right will rotate the vehicle by 90 degrees counter-clockwise or clockwise, and moving forward will move the vehicle in the direction its facing by "1 unit".
 
 4. Vehicles will only move one at a time. This means when one vehicle is moving, we can assume all other vehicles are not moving.
@@ -49,7 +51,7 @@ The application can:
 
 6. Vehicles will not crash into another object (obstacles or other vehicles) or fall off the plateau boundary. Instead they will stop moving immediately before crashing into something.
 
-7. Vehicles all take up the just one grid. This application assumes that we won't have long vehicles that take up multiple grids on the plateau.
+7. All vehicles take up precisely one grid on the plateau. This application assumes that we won't have long vehicles that take up multiple grids on the plateau.
 
 # Approaches
 
