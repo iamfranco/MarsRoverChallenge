@@ -35,4 +35,12 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
 AppController appController = new(instructionReader);
 AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
 
-ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+try
+{
+    ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+    Console.ReadLine();
+}
