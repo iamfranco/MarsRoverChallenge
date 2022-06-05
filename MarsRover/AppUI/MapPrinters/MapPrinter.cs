@@ -1,11 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using MarsRover.Controllers;
+﻿using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
 using MarsRover.Models.Plateaus;
 using MarsRover.Models.Vehicles;
 
-namespace MarsRover.AppUI.Components;
-public class MapPrinter
+namespace MarsRover.AppUI.MapPrinters;
+public class MapPrinter : IMapPrinter
 {
     private readonly ConsoleColor _defaultGroundColor = Console.BackgroundColor;
     private readonly ConsoleColor _validGroundColor = ConsoleColor.Blue;

@@ -1,5 +1,6 @@
 ﻿using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.MapPrinters;
 using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
@@ -13,7 +14,7 @@ internal class AppSectionObstaclesTests
     private IPositionStringConverter positionStringConverter;
     private IInstructionReader instructionReader;
     private AppController appController;
-    private MapPrinter mapPrinter;
+    private IMapPrinter mapPrinter;
 
     [SetUp]
     public void Setup()

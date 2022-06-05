@@ -1,4 +1,4 @@
-﻿using MarsRover.AppUI.Components;
+﻿using MarsRover.AppUI.MapPrinters;
 using MarsRover.Controllers;
 
 namespace MarsRover.AppUI.Helpers;
@@ -54,7 +54,7 @@ public static class AppUIHelpers
         });
     }
 
-    public static void ClearScreenAndPrintMap(AppController appController, MapPrinter mapPrinter)
+    public static void ClearScreenAndPrintMap(AppController appController, IMapPrinter mapPrinter)
     {
         if (!Console.IsOutputRedirected)
             Console.Clear();

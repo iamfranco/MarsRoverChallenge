@@ -1,6 +1,6 @@
 ﻿using MarsRover.AppUI;
-using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.MapPrinters;
 using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
@@ -14,7 +14,7 @@ internal class AppUIHandlerTests
 {
     private IPositionStringConverter positionStringConverter;
     private AppController appController;
-    private MapPrinter mapPrinter;
+    private IMapPrinter mapPrinter;
     private AppUIHandler appUIHandler;
     private Dictionary<string, Func<PlateauBase>> plateauMakers;
     private Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;

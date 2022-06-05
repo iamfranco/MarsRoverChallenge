@@ -1,5 +1,6 @@
 ﻿using MarsRover.AppUI.Components;
 using MarsRover.AppUI.Helpers;
+using MarsRover.AppUI.MapPrinters;
 using MarsRover.AppUI.PositionStringFormat;
 using MarsRover.Controllers;
 using MarsRover.Models.Elementals;
@@ -12,12 +13,12 @@ public class AppUIHandler
 {
     private readonly IPositionStringConverter _positionStringConverter;
     private readonly AppController _appController;
-    private readonly MapPrinter _mapPrinter;
+    private readonly IMapPrinter _mapPrinter;
 
     public AppUIHandler(
         IPositionStringConverter positionStringConverter,
         AppController appController,
-        MapPrinter mapPrinter)
+        IMapPrinter mapPrinter)
     {
         if (positionStringConverter is null)
             throw new ArgumentNullException(nameof(positionStringConverter));

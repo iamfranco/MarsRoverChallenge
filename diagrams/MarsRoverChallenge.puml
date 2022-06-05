@@ -1,6 +1,11 @@
 @startuml "Mars Rover Challenge"
 skinparam classAttributeIconSize 0
 
+interface IMapPrinter <<interface>>
+{
+  + PrintMap(appController : AppController) : void
+}
+
 class MapPrinter
 {
   + PrintMap(appController : AppController) : void
@@ -10,9 +15,9 @@ class AppUIHandler
 {
   - positionStringConverter : IPositionStringConverter
   - appController : AppController
-  - mapPrinter : MapPrinter
+  - mapPrinter : IMapPrinter
 
-  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : MapPrinter)
+  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : IMapPrinter)
 
   + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : void
   
@@ -21,6 +26,14 @@ class AppUIHandler
   + AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers : Dictionary<string, Func<Position, VehicleBase>>) : void
 
   + AskUserForMovementInstructionAndSendToVehicle() : void
+}
+
+class ConsoleApp
+{
+  + Run(appUIHandler : AppUIHandler, \n\
+      plateauMakers : Dictionary<string, Func<PlateauBase>>, \n\
+      vehicleMakers : Dictionary<string, Func<Position, VehicleBase>> \n\
+    ) : void
 }
 
 enum VehicleMovementStatus
@@ -208,12 +221,32 @@ abstract VehicleBase <<abstract>>
     ) : (List<Position>, bool)
 }
 
+ConsoleApp -> AppUIHandler
+Program_cs -> ConsoleApp
+
+note bottom of Program_cs
+
+IPositionStringConverter positionStringConverter = ...
+IInstructionReader instructionReader = ...
+IMapPrinter mapPrinter = ...
+
+Dictionary<string, Func<PlateauBase>> plateauMakers = new() { ... }
+Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new() { ... }
+
+AppController appController = new(instructionReader);
+AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
+
+ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+
+end note
+
 AppUIHandler o--- AppController
-AppUIHandler o-- MapPrinter
+AppUIHandler o-- IMapPrinter
 AppUIHandler o---- IPositionStringConverter
 AppUIHandler --> VehicleMovementStatus
 
-MapPrinter ---> AppController
+IMapPrinter ---> AppController
+IMapPrinter <|.. MapPrinter
 
 AppController o-- IInstructionReader
 AppController o-- PlateauBase
