@@ -300,7 +300,7 @@ which is the prompt the user specified in the new "key value pair" in `plateauMa
 Let's say the user wants to make a **Tesla** as vehicle, then they'll just need to:
 
 1. create a class for `Tesla` that inherits from the `VehicleBase` class
-2. add a new line in `Program.cs` where it defines the `vehicleMakers`:
+2. add a new "key value pair" in `Program.cs` where it defines the `vehicleMakers`:
 
 ```c#
 Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
@@ -333,7 +333,7 @@ Instead, they want to just type `L M10 R` and want the application understand th
 To achieve this, they'll just need to:
 
 1. create a class for `StepCountInstructionReader` that implements the `IInstructionReader` interface. In particular, they'll code the body of the `EvaluateInstruction` method so that it will evaluate `L M10 R` correctly.
-2. modify a line `Program.cs` where it defines the `instructionReader`:
+2. modify a line in `Program.cs` where it defines the `instructionReader`:
 
 ```c#
 // IInstructionReader instructionReader = new StandardInstructionReader(); // old
@@ -355,7 +355,7 @@ Let's say the user doesn't like the standard position string formatting of `1 2 
 To achieve that, they'll just need to:
 
 1. Create a new class, say `FullWordPositionStringConverter`, that implements the `IPositionStringConverter` interface. Implement the method bodies appropriately to achieve the `1 2 North` string format.
-2. modify a line `Program.cs` where it defines the `positionStringConverter`:
+2. modify a line in `Program.cs` where it defines the `positionStringConverter`:
 
 ```c#
 // IPositionStringConverter positionStringConverter = new StandardPositionStringConverter(); // old
@@ -372,19 +372,19 @@ Connected to [Rover] at [1 2 North]
 
 ## New Map Printer
 
-Let's say the user doesn't like the look and feel of the default map printer, and they want to their map printer to use a different sized grids with different white spaces and perhaps different font or background color.
+Let's say the user doesn't like the look and feel of the default map printer, and they want their map printer to use a different sized grid with different white spaces or perhaps different font or background color.
 
 To achieve that, they'll just need to:
 
 1. Create a new class, say `NewMapPrinter`, that implements the `IMapPrinter` interface. Implement the `PrintMap` method to achieve their desired look and feel.
-2. modify a line `Program.cs` where it defines the `mapPrinter`:
+2. modify a line in `Program.cs` where it defines the `mapPrinter`:
 
 ```c#
 // IMapPrinter mapPrinter = new MapPrinter(); // old
 IMapPrinter mapPrinter = new NewMapPrinter(); // new
 ```
 
-Now the application will use the `NewMapPrinter`'s `PrintMap` method to print map on the console.
+Now the application will use the `NewMapPrinter`'s `PrintMap()` method to print map on the console.
 
 # Future thoughts
 
