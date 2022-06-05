@@ -21,28 +21,26 @@ public static class ConsoleApp
         if (vehicleMakers is null)
             throw new ArgumentNullException(nameof(vehicleMakers));
 
-        try
+        if (!plateauMakers.Any())
+            throw new ArgumentException($"{nameof(plateauMakers)} cannot be empty");
+
+        if (!vehicleMakers.Any())
+            throw new ArgumentException($"{nameof(vehicleMakers)} cannot be empty");
+
+        appUIHandler.AskUserToMakePlateau(plateauMakers);
+        appUIHandler.AskUserToMakeObstacles();
+
+        while (true)
         {
-            appUIHandler.AskUserToMakePlateau(plateauMakers);
-            appUIHandler.AskUserToMakeObstacles();
+            appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
+            appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
 
-            while (true)
-            {
-                appUIHandler.AskUserToCreateNewVehicleOrConnectToExistingVehicle(vehicleMakers);
-                appUIHandler.AskUserForMovementInstructionAndSendToVehicle();
+            Console.WriteLine();
 
-                Console.WriteLine();
-
-                Console.Write("Press [q] key to quit, press any other key to continue.. ");
-                ConsoleKeyInfo keyInfo = InputReaderContainer.ReadKey();
-                if (keyInfo == _qKeyInfo)
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            Console.ReadLine();
+            Console.Write("Press [q] key to quit, press any other key to continue.. ");
+            ConsoleKeyInfo keyInfo = InputReaderContainer.ReadKey();
+            if (keyInfo == _qKeyInfo)
+                break;
         }
     }
 }

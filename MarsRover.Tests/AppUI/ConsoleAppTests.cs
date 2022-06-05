@@ -81,6 +81,20 @@ internal class ConsoleAppTests
     }
 
     [Test]
+    public void Run_With_Empty_PlateauMakers_Should_Throw_Exception()
+    {
+        Action act = () => ConsoleApp.Run(appUIHandler, new(), vehicleMakers);
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Test]
+    public void Run_With_Empty_vehicleMakers_Should_Throw_Exception()
+    {
+        Action act = () => ConsoleApp.Run(appUIHandler, plateauMakers, new());
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Test]
     public void Run_With_UserInputs_1_Then_5_5_Then_1_2_N_Then_1_Then_LMLMLMLMM_Then_Vehicle_Should_Be_In_1_3_N()
     {
         List<string> userInputs = new() { "1", "5 5", "", "1 2 N", "1", "LMLMLMLMM" };

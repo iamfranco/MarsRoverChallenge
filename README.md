@@ -247,10 +247,41 @@ The user can extend the application in the following ways:
 
 ## New Plateau Shape
 
-Let's say the user wants to make a **circular** plateau, then they'll just need to:
+Let's say the user wants to make a **circular** plateau, then they'll just need to do 2 steps:
 
-1. create a class for `CircularPlateau` that inherits from the `PlateauBase` class
-2. add a new "key value pair" in `Program.cs` where it defines the `plateauMakers`:
+### Step 1: Create `CircularPlateau`
+
+Create a class for `CircularPlateau` that inherits from the `PlateauBase` class:
+
+```c#
+public class CircularPlateau : PlateauBase
+{
+    private readonly int _radius;
+    public override Coordinates MaximumCoordinates => new(_radius, _radius);
+    public override Coordinates MinimumCoordinates => new(-_radius, -_radius);
+
+    public CircularPlateau(int radius)
+    {
+        if (radius < 1)
+            throw new ArgumentException("Radius must be at least 1");
+
+        _radius = radius;
+    }
+
+    public override bool IsCoordinateWithinPlateauBoundary(Coordinates coordinates) =>
+         Squared(coordinates.X) + Squared(coordinates.Y) <= Squared(_radius);
+
+    private static int Squared(int num) => num * num;
+}
+```
+
+Where in particular, the `MaximumCoordinates` and `MinimumCoordinates` properties are the **top right** and **bottom left** coordinates that "surround" the entire plateau.
+
+![Circular Plateau Boundary](/diagrams/illustration/circularPlateau.png)
+
+### Step 2: add "key value pair" in `Program.cs` for "how to make a new `CircularPlateau`"
+
+add a new "key value pair" in `Program.cs` where it defines the `plateauMakers`:
 
 ```c#
 Dictionary<string, Func<PlateauBase>> plateauMakers = new()
