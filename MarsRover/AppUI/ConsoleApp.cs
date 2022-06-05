@@ -21,6 +21,12 @@ public static class ConsoleApp
         if (vehicleMakers is null)
             throw new ArgumentNullException(nameof(vehicleMakers));
 
+        if (!plateauMakers.Any())
+            throw new ArgumentException($"{nameof(plateauMakers)} cannot be empty");
+
+        if (!vehicleMakers.Any())
+            throw new ArgumentException($"{nameof(vehicleMakers)} cannot be empty");
+
         try
         {
             appUIHandler.AskUserToMakePlateau(plateauMakers);
