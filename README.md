@@ -103,7 +103,9 @@ public struct Coordinates
 }
 ```
 
-where we overload the `+` operator so that adding 2 Coordinates will return its "vector sum":
+In theory, I could use a `class` for the `Coordinates` instead of a `struct`. But `class` is reference type whereas `struct` is value type, so it is easier to do equality comparison for `struct`. Also, `struct` is not nullable, so I don't have to perform null check for methods that take `Coordinates` as input.
+
+In the `Coordinates` struct, we overloaded the `+` operator so that adding 2 Coordinates will return its "vector sum":
 
 $$
 \begin{align}
@@ -124,7 +126,7 @@ $$
 \end{align}
 $$
 
-The "vector sum" is important because we can represent a direction's "movement vector" as `Coordinates`:
+The "vector sum" is useful for the application, because we can represent a direction's "movement vector" as `Coordinates`:
 
 ```c#
 public static Coordinates GetMovementVector(this Direction direction)
@@ -142,11 +144,13 @@ public static Coordinates GetMovementVector(this Direction direction)
 
 so that if a vehicle is currently at coordinates $(3, 4)$ and facing **north** and is about to "move forward", then its next coordinates after moving forward would be:
 $$\texttt{next coordinates} = (3, 4) + \texttt{north} = (3, 4) + (0, 1) = (3, 5)$$
-So the c# code for "moving forward" can be written as:
+So the c# code for "moving forward" can be written simply as:
 
 ```c#
 nextCoordinates = currentCoordinates + currentDirection.GetMovementVector();
 ```
+
+where the `Coordinates` are added together using the overloaded `+` operator.
 
 Doing this whole "overload the `+` operator for `Coordinates` and have an extension method to turn `Direction` into `Coordinates`" thing saves me from writing switch statements on the part of code that applies the "moving forward" action, which would be in a completely different file from the `Coordinates` file.
 
