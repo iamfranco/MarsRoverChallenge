@@ -4,7 +4,7 @@ using MarsRover.Models.Plateaus;
 using MarsRover.Models.Vehicles;
 
 namespace MarsRover.AppUI.MapPrinters;
-public class MapPrinter
+public class MapPrinter : IMapPrinter
 {
     private readonly ConsoleColor _defaultGroundColor = Console.BackgroundColor;
     private readonly ConsoleColor _validGroundColor = ConsoleColor.Blue;

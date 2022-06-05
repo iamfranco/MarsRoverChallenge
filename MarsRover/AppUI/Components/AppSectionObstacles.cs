@@ -8,7 +8,7 @@ namespace MarsRover.AppUI.Components;
 public static class AppSectionObstacles
 {
     public static void AskForObstaclesUntilEmptyInput(
-        IPositionStringConverter positionStringConverter, AppController appController, MapPrinter mapPrinter)
+        IPositionStringConverter positionStringConverter, AppController appController, IMapPrinter mapPrinter)
     {
         while (true)
         {

@@ -14,7 +14,7 @@ internal class AppSectionObstaclesTests
     private IPositionStringConverter positionStringConverter;
     private IInstructionReader instructionReader;
     private AppController appController;
-    private MapPrinter mapPrinter;
+    private IMapPrinter mapPrinter;
 
     [SetUp]
     public void Setup()

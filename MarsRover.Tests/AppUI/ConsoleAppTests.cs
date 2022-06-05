@@ -22,7 +22,7 @@ internal class ConsoleAppTests
     {
         IPositionStringConverter positionStringConverter = new StandardPositionStringConverter();
         IInstructionReader instructionReader = new StandardInstructionReader();
-        MapPrinter mapPrinter = new MapPrinter();
+        IMapPrinter mapPrinter = new MapPrinter();
 
         plateauMakers = new()
         {

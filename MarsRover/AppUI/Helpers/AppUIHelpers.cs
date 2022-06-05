@@ -54,7 +54,7 @@ public static class AppUIHelpers
         });
     }
 
-    public static void ClearScreenAndPrintMap(AppController appController, MapPrinter mapPrinter)
+    public static void ClearScreenAndPrintMap(AppController appController, IMapPrinter mapPrinter)
     {
         if (!Console.IsOutputRedirected)
             Console.Clear();

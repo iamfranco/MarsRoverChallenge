@@ -14,7 +14,7 @@ internal class AppUIHandlerTests
 {
     private IPositionStringConverter positionStringConverter;
     private AppController appController;
-    private MapPrinter mapPrinter;
+    private IMapPrinter mapPrinter;
     private AppUIHandler appUIHandler;
     private Dictionary<string, Func<PlateauBase>> plateauMakers;
     private Dictionary<string, Func<Position, VehicleBase>> vehicleMakers;

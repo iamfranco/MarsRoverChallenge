@@ -13,12 +13,12 @@ public class AppUIHandler
 {
     private readonly IPositionStringConverter _positionStringConverter;
     private readonly AppController _appController;
-    private readonly MapPrinter _mapPrinter;
+    private readonly IMapPrinter _mapPrinter;
 
     public AppUIHandler(
         IPositionStringConverter positionStringConverter,
         AppController appController,
-        MapPrinter mapPrinter)
+        IMapPrinter mapPrinter)
     {
         if (positionStringConverter is null)
             throw new ArgumentNullException(nameof(positionStringConverter));
