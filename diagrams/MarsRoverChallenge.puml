@@ -23,6 +23,14 @@ class AppUIHandler
   + AskUserForMovementInstructionAndSendToVehicle() : void
 }
 
+class ConsoleApp
+{
+  + Run(appUIHandler : AppUIHandler, \n\
+      plateauMakers : Dictionary<string, Func<PlateauBase>>, \n\
+      vehicleMakers : Dictionary<string, Func<Position, VehicleBase>> \n\
+    ) : void
+}
+
 enum VehicleMovementStatus
 {
   NoMovement
@@ -207,6 +215,25 @@ abstract VehicleBase <<abstract>>
       plateau : PlateauBase \n\
     ) : (List<Position>, bool)
 }
+
+ConsoleApp -> AppUIHandler
+Program_cs -> ConsoleApp
+
+note bottom of Program_cs
+
+IPositionStringConverter positionStringConverter = ...
+IInstructionReader instructionReader = ...
+MapPrinter mapPrinter = ...
+
+Dictionary<string, Func<PlateauBase>> plateauMakers = new() { ... }
+Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new() { ... }
+
+AppController appController = new(instructionReader);
+AppUIHandler appUIHandler = new(positionStringConverter, appController, mapPrinter);
+
+ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
+
+end note
 
 AppUIHandler o--- AppController
 AppUIHandler o-- MapPrinter
