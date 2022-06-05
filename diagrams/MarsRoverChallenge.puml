@@ -1,6 +1,11 @@
 @startuml "Mars Rover Challenge"
 skinparam classAttributeIconSize 0
 
+interface IMapPrinter <<interface>>
+{
+  + PrintMap(appController : AppController) : void
+}
+
 class MapPrinter
 {
   + PrintMap(appController : AppController) : void
@@ -10,9 +15,9 @@ class AppUIHandler
 {
   - positionStringConverter : IPositionStringConverter
   - appController : AppController
-  - mapPrinter : MapPrinter
+  - mapPrinter : IMapPrinter
 
-  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : MapPrinter)
+  + AppUIHandler(positionStringConverter : IPositionStringConverter, appController : AppController, mapPrinter : IMapPrinter)
 
   + AskUserToMakePlateau(plateauMakers : Dictionary<string, Func<PlateauBase>>) : void
   
@@ -223,7 +228,7 @@ note bottom of Program_cs
 
 IPositionStringConverter positionStringConverter = ...
 IInstructionReader instructionReader = ...
-MapPrinter mapPrinter = ...
+IMapPrinter mapPrinter = ...
 
 Dictionary<string, Func<PlateauBase>> plateauMakers = new() { ... }
 Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new() { ... }
@@ -236,11 +241,12 @@ ConsoleApp.Run(appUIHandler, plateauMakers, vehicleMakers);
 end note
 
 AppUIHandler o--- AppController
-AppUIHandler o-- MapPrinter
+AppUIHandler o-- IMapPrinter
 AppUIHandler o---- IPositionStringConverter
 AppUIHandler --> VehicleMovementStatus
 
-MapPrinter ---> AppController
+IMapPrinter ---> AppController
+IMapPrinter <|.. MapPrinter
 
 AppController o-- IInstructionReader
 AppController o-- PlateauBase
