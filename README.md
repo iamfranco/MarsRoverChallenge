@@ -152,13 +152,13 @@ Doing this whole "overload the `+` operator for `Coordinates` and have an extens
 
 Although the extension method `GetMovementVector()` also uses switch statements, it is at least in the same file as the `Direction` enum, so if later on we decided to change the way we define `Direction`, we can do the appropriate adjustment to the `GetMovementVector` in the same file.
 
-## Design Decision on `PlateauBase`, `VehicleBase`, `IInstructionReader` and `IPositionStringConverter`
+## Design Decision on `PlateauBase`, `VehicleBase`, `IInstructionReader`, `IPositionStringConverter`, and `IMapPrinter`
 
-From the UML, we can see that `PlateauBase` and `VehicleBase` are abstract classes, and `IInstructionReader` and `IPositionStringConverter` are interfaces.
+From the UML, we can see that `PlateauBase` and `VehicleBase` are abstract classes, and `IInstructionReader`, `IPositionStringConverter` and `IMapPrinter` are interfaces.
 
 In particular, other classes can only interact with their concrete subclasses through them. For example, the `AppController` class doesn't interact directly with the `Rover` class, instead `AppController` interacts with `VehicleBase` which is the abstract base class of `Rover`.
 
-This is to make **plateau**, **vehicle**, **instructionReader** and **positionStringConverter** easily "extendable" by users. For example, if a user wants to model a "Tesla" as a vehicle in this application, then they would just need to:
+This is to make **plateau**, **vehicle**, **instructionReader**, **positionStringConverter** and **mapPrinter** easily "extendable" by users. For example, if a user wants to model a "Tesla" as a vehicle in this application, then they would just need to:
 
 1. create a class for `Tesla` that inherits from the `VehicleBase` class
 2. add a new line in `Program.cs` where it defines the `vehicleMakers`:
@@ -173,7 +173,7 @@ Dictionary<string, Func<Position, VehicleBase>> vehicleMakers = new()
 
 3. then the application will "know" about the `Tesla` class, so when it comes to a stage where the application is about to create a new vehicle, it'll include `Tesla` in its "list of vehicle types".
 
-To extend for **plateau**, **instructionReader** or **positionStringConverter**, the user will do something similar (create a new class that inherits from the base class, then add a new line in the "dependency injection container"). The procedure for them will be fully explained in the [Open for extension but closed for modification](#open-for-extension-but-closed-for-modification) section.
+To extend for **plateau**, **instructionReader**, **positionStringConverter** or **mapPrinter**, the user will do something similar (create a new class that inherits from the base class, then add a new line in the "dependency injection container"). The procedure for them will be fully explained in the [Open for extension but closed for modification](#open-for-extension-but-closed-for-modification) section.
 
 ## `AppController` and `AppUIHandler`
 
@@ -239,6 +239,7 @@ The user can extend the application in the following ways:
 2. Make a new vehicle (default vehicle is **rover**)
 3. Make a new instruction reader (default instruction reader only undertands string that consist of "L", "R", and "M")
 4. Make a new position string converter (default position string converter will format position as `1 2 N`, and coordinates as `1 2`)
+5. Make a new map printer
 
 ## New Plateau Shape
 
@@ -331,7 +332,7 @@ Instead, they want to just type `L M10 R` and want the application understand th
 
 To achieve this, they'll just need to:
 
-1. create a class for `StepCountInstructionReader` that implements from the `IInstructionReader` interface. In particular, they'll code the body of the `EvaluateInstruction` method so that it will evaluate `L M10 R` correctly.
+1. create a class for `StepCountInstructionReader` that implements the `IInstructionReader` interface. In particular, they'll code the body of the `EvaluateInstruction` method so that it will evaluate `L M10 R` correctly.
 2. modify a line `Program.cs` where it defines the `instructionReader`:
 
 ```c#
@@ -353,7 +354,7 @@ Let's say the user doesn't like the standard position string formatting of `1 2 
 
 To achieve that, they'll just need to:
 
-1. Create a new class, say `FullWordPositionStringConverter`, that implements the `IPositionStringConverter`. Implement the method bodies appropriately to achieve the `1 2 North` string format.
+1. Create a new class, say `FullWordPositionStringConverter`, that implements the `IPositionStringConverter` interface. Implement the method bodies appropriately to achieve the `1 2 North` string format.
 2. modify a line `Program.cs` where it defines the `positionStringConverter`:
 
 ```c#
@@ -369,12 +370,28 @@ For example, the console app would now show the connected rover position like th
 Connected to [Rover] at [1 2 North]
 ```
 
+## New Map Printer
+
+Let's say the user doesn't look and feel of the default map printer, and they want to their map printer to use a different sized grids with different white spaces and perhaps different font or background color.
+
+To achieve that, they'll just need to:
+
+1. Create a new class, say `NewMapPrinter`, that implements the `IMapPrinter` interface. Implement the `PrintMap` method to achieve their desired look and feel.
+2. modify a line `Program.cs` where it defines the `mapPrinter`:
+
+```c#
+// IMapPrinter mapPrinter = new MapPrinter(); // old
+IMapPrinter mapPrinter = new NewMapPrinter(); // new
+```
+
+Now the application will use the `NewMapPrinter`'s `PrintMap` method to print map on the console.
+
 # Future thoughts
 
 The 4 possible directions might be too restrictive for our vehicles. It might be good to use Direction that can be more precise, such as "North West", "South East" etc. Or even to use angular direction.
 
 We assumed that all vehicles treat obstacles the same, such that no vehicle can "overcome" an obstacle. But as said in the assumptions section, helicopter is a vehicle and yet it probably wouldn't see big rocks on the ground as obstacles. So it might be a good idea to differentiate different types of obstacles and let the vehicle class individually specify whether a particular type of "obstacle" is actually an obstacle for that vehicle class.
 
-We assumed that all vehicles will perform an emergency stop immediately before it's about to crash. This assumption is to simplify the application so we don't have to deal with the uncertainty of what happens when a vehicle crash, because the outcome of a crash is arguably non-deterministic. But in reality, not every vehicle would have that "danger detection mechanism".
+We assumed that all vehicles would perform an emergency stop immediately before it's about to crash. This assumption is to simplify the application so we don't have to deal with the uncertainty of what happens when a vehicle crashes, because the outcome of a crash is arguably non-deterministic. But in reality, not every vehicle has a "danger detection mechanism".
 
 For TDD, it is challenging to unit test the `AppUIHandler` class since it prints the result to the console with the color grids. It would be interesting to learn ways to test methods that only prints stuff to console.
