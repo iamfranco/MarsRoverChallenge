@@ -47,7 +47,7 @@ internal class VehiclesContainerTests
 
         var vehicleList = vehiclesContainer.Vehicles.ToList();
         vehicleList.Count.Should().Be(2);
-        vehicleList.Should().BeEquivalentTo(roverList);
+        vehicleList.Should().Equal(roverList);
     }
 
     [Test]
@@ -115,6 +115,6 @@ internal class VehiclesContainerTests
         var vehicleList = vehiclesContainer.Vehicles.ToList();
 
         vehicleList.Count.Should().Be(originalVehicleList.Count);
-        vehicleList.Should().BeEquivalentTo(originalVehicleList);
+        vehicleList.Should().Equal(originalVehicleList);
     }
 }

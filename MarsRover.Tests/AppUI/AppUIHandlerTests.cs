@@ -130,7 +130,7 @@ internal class AppUIHandlerTests
 
         List<Coordinates> expectedObstacles = new() { new(4, 5), new(1, 2) };
         List<Coordinates> actualObstacles = appController.Plateau.ObstaclesContainer.ObstacleCoordinates.ToList();
-        actualObstacles.Should().BeEquivalentTo(expectedObstacles);
+        actualObstacles.Should().Equal(expectedObstacles);
     }
 
     [Test]

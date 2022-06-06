@@ -322,7 +322,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().Be(originalPosition);
     }
 
     [Test]
@@ -337,7 +337,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().NotThrow();
-        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().Be(originalPosition);
     }
 
     [Test]
@@ -352,7 +352,7 @@ internal class AppControllerTests
         Action act = () => appController.SendMoveInstruction(instruction);
 
         act.Should().Throw<ArgumentException>();
-        appController.Vehicle!.Position.Should().BeEquivalentTo(originalPosition);
+        appController.Vehicle!.Position.Should().Be(originalPosition);
     }
 
     [Test]
@@ -456,7 +456,7 @@ internal class AppControllerTests
         var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]
@@ -481,7 +481,7 @@ internal class AppControllerTests
         var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]
@@ -509,7 +509,7 @@ internal class AppControllerTests
         var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]
@@ -534,7 +534,7 @@ internal class AppControllerTests
         var actualResult = appController.RecentPath;
 
         actualResult.Count.Should().Be(expectedResult.Count);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]

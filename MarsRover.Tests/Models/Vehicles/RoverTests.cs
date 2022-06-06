@@ -113,7 +113,7 @@ internal class RoverTests
 
         rover.Position.Should().Be(new Position(new(1, 3), Direction.North));
         recentPath.Count.Should().Be(10);
-        recentPath.Should().BeEquivalentTo(new List<Position>()
+        recentPath.Should().Equal(new List<Position>()
         {
             new(new(1,2), Direction.North),
             new(new(1,2), Direction.West),
@@ -146,7 +146,7 @@ internal class RoverTests
 
         rover.Position.Should().Be(new Position(new(5, 1), Direction.East));
         recentPath.Count.Should().Be(11);
-        recentPath.Should().BeEquivalentTo(new List<Position>()
+        recentPath.Should().Equal(new List<Position>()
         {
             new(new(3,3), Direction.East),
             new(new(4,3), Direction.East),
@@ -187,7 +187,7 @@ internal class RoverTests
 
         rover.Position.Should().Be(new Position(new(1, 3), Direction.East));
         recentPath.Count.Should().Be(5);
-        recentPath.Should().BeEquivalentTo(new List<Position>()
+        recentPath.Should().Equal(new List<Position>()
         {
             new(new(1, 2), Direction.North),
             new(new(1, 2), Direction.East),
