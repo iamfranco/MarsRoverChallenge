@@ -67,7 +67,7 @@ internal class StandardInstructionReaderTests
         List<SingularInstruction> expectedResult = new();
 
         List<SingularInstruction> actualResult = standardInstructionReader.EvaluateInstruction(validInstruction);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]
@@ -84,7 +84,7 @@ internal class StandardInstructionReaderTests
         };
 
         List<SingularInstruction> actualResult = standardInstructionReader.EvaluateInstruction(validInstruction);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]
@@ -101,7 +101,7 @@ internal class StandardInstructionReaderTests
         };
 
         List<SingularInstruction> actualResult = standardInstructionReader.EvaluateInstruction(validInstruction);
-        actualResult.Should().BeEquivalentTo(expectedResult);
+        actualResult.Should().Equal(expectedResult);
     }
 
     [Test]

@@ -63,7 +63,7 @@ internal class RectangularPlateauTests
         List<VehicleBase> VehicleListAfterAddingInvalidVehicles = plateau.VehiclesContainer.Vehicles.ToList();
 
         VehicleListAfterAddingInvalidVehicles.Count.Should().Be(initialVehicleList.Count);
-        VehicleListAfterAddingInvalidVehicles.Should().BeEquivalentTo(initialVehicleList);
+        VehicleListAfterAddingInvalidVehicles.Should().Equal(initialVehicleList);
     }
 
 

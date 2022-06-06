@@ -50,6 +50,6 @@ internal class AppSectionObstaclesTests
         AppSectionObstacles.AskForObstaclesUntilEmptyInput(positionStringConverter, appController, mapPrinter);
         List<Coordinates> actualObstacles = appController.Plateau!.ObstaclesContainer.ObstacleCoordinates.ToList();
 
-        actualObstacles.Should().BeEquivalentTo(expectedObstacles);
+        actualObstacles.Should().Equal(expectedObstacles);
     }
 }
