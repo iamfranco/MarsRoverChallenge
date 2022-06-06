@@ -10,6 +10,8 @@ Here we have 3 folders:
 
 # Instructions
 
+**Prerequisite**: The machine running the application should have [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) (or above) installed.
+
 To run the application:
 
 1. clone the repository to your computer
@@ -34,6 +36,8 @@ The application can:
 4. move vehicles on the Plateau by reading **movement instruction**, such as "LMMRMMMRLMRMMLMR", from user input
 5. print the vehicle's updated position after applying the movement instruction to the console
 
+The application should also allow users to extend functionality, more on that in the [[Open for extension but closed for modification](#open-for-extension-but-closed-for-modification)] section.
+
 # Assumptions
 
 1. Vehicles will only face 1 of 4 different directions:
@@ -41,7 +45,7 @@ The application can:
 
 2. We will use cartesian coordinates $(x, y)$ to represent any location on a plateau. In particular, $x$ and $y$ are both integer values, so the plateau can be separated into "grids" on a 2D plane.
 
-![Plateau Grids](/diagrams/illustration/plateauGrids.png)
+![Plateau Grids](diagrams/illustration/plateauGrids.png)
 
 3. Vehicles only have 3 different movements: turn left, turn right, and move forward. Turning left or right will rotate the vehicle by 90 degrees counter-clockwise or clockwise, and moving forward will move the vehicle in the direction its facing by "1 unit".
 
@@ -206,7 +210,7 @@ Now for `AppUIHandler`, it has methods that:
 At the later stages, I wanted to expand the tests to cover even methods that requires user inputs (for example, methods that uses `Console.ReadLine()` or `Console.ReadKey()`).
 
 To achieve that, I decided to create 2 classes in the "MarsRover" project called `InputReader` and `InputReaderContainer`, and create a class in "MarsRover.Tests" project called `InputReaderForTest`, as shown in UML diagram below:
-![InputReader](/diagrams/InputReader/InputReader.png)
+![InputReader](diagrams/InputReader/InputReader.png)
 
 So that in the main **MarsRover** project, I can replace the old code that gets the user input:
 
