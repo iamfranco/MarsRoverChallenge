@@ -247,7 +247,7 @@ The user can extend the application in the following ways:
 
 1. Make a new plateau of a different shape (default shape is **rectangular**)
 2. Make a new vehicle (default vehicle is **rover**)
-3. Make a new instruction reader (default instruction reader only undertands string that consist of "L", "R", and "M")
+3. Make a new instruction reader (default instruction reader only understands string that consist of "L", "R", and "M")
 4. Make a new position string converter (default position string converter will format position as `1 2 N`, and coordinates as `1 2`)
 5. Make a new map printer
 
